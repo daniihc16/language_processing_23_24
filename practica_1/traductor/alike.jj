@@ -1,0 +1,125 @@
+//*****************************************************************
+// File:   cl.jj
+// Author: Procesadores de Lenguajes-University of Zaragoza
+// Date:   julio 2023
+// Coms:   compilar mediante "ant"
+//*****************************************************************
+
+options {
+	IGNORE_CASE = true;	//No distinguir entre mayúsculas y minúsculas
+	COMMON_TOKEN_ACTION = true; //Se generan acciones por defecto
+}
+
+TOKEN_MGR_DECLS : {
+	void CommonTokenAction(Token token) {
+		if (token.kind == "tRESTO") System.out.println("ERROR LEXICO: (" + nLin + ", " + nCol + "): simbolo no reconocido: " + token.image)
+		print("f, c, tipo_token. token.image")
+		System.out.println("(" + nLin + ", " + nCol + "): " + token.kind + " " + token.image);
+		nCol += token.image.length();
+	}
+	static int nCol = 0;
+	static int nLin = 0;
+	
+}
+
+PARSER_BEGIN(alike)
+
+package traductor;
+
+//...
+
+public class alike {
+   //...
+   
+   public static void main(String[] args) {
+	   alike parser = null;
+	   
+	   try {
+		   if(args.length == 0) {
+			   parser = new alike(System.in);
+		   }
+		   else {
+			   parser = new alike(new java.io.FileInputStream(args[0]));
+		   }
+		   //Programa es el símbolo inicial de la gramática
+		   parser.Programa();
+		   //...
+		   System.out.println("***** Análisis terminado con éxito *****");
+	   }
+	   catch (java.io.FileNotFoundException e) {
+		   System.err.println ("Fichero " + args[0] + " no encontrado.");
+	   }
+	   catch (TokenMgrError e) {
+		   System.err.println("LEX_ERROR: " + e.getMessage());
+	   }
+	   //...
+   }
+}
+PARSER_END(alike)
+
+SKIP : {  " " { nCol++ } |  "\n" { nLin++; nCol=0 } |  "\t" { nCol += 2 } |  "\r" {nCol=0} } 
+
+TOKEN : {
+	< #LETTER: (["a"-"z","A"-"Z"]) >
+|	< #DIGIT: ["0"-"9"] >
+}
+
+TOKEN : {
+	//Propios del programa
+	< tBEGIN: "begin" >
+|	< tEND: "end" >
+|   < tCOMMENT: "-- .*$" >
+|	< tASIGN: ":=" >
+|	< tREF: "ref" >
+|	< tIS: "is" >
+|	< tOF: "of" >
+|	< tPROC: "procedure" >
+|	< tNULL: "null" >
+|	< tRETURN: "return" >
+
+
+	//Tipos de datos
+|	< tCHAR: "character" >
+|	< tBOOL: "boolean" >
+|	< tINT: "integer" >
+|	< tCHARCONST: "'".+"'" >
+|	< tINTCONST: -? ( <DIGIT> )+ ( "." ( <DIGIT> )+ )? >
+|	< tBOOLCONST: "true" | "false" >
+
+	//Operadores
+|	< tPLUS: "+" >
+|	< tMINUS: "-" >
+|	< tTIMES: "*" >
+|	< tDIV: "/" >
+|   < tLESS: "<" >
+|   < tGREATER: ">" >
+|   < tEQUAL: "=" >
+
+
+
+
+
+	//Condicionales
+|	< tIF: "if" >
+|	< tELSE: "else" >
+|   < tELSIF: "elsif" >
+|   < tTHEN: "then" >
+|
+|	< tWHILE: "while" >
+| 	< tLOOP: "loop" >
+|   < tIDENTIFIER: ( <LETTER> |"_") (<LETTER> | <DIGIT> | "_")* >
+|	< tRESTO: ~[] >
+   
+}
+
+//------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
+void Programa() : 
+{
+
+}
+{
+   ( 
+	   < tBEGIN > | < tBOOL > | < tCHAR > | ...
+   )+
+   < EOF >
+}
