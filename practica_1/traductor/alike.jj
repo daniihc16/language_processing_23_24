@@ -10,18 +10,6 @@ options {
 	COMMON_TOKEN_ACTION = true; //Se generan acciones por defecto
 }
 
-TOKEN_MGR_DECLS : {
-	void CommonTokenAction(Token token) {
-		if (token.kind == "tRESTO") System.out.println("ERROR LEXICO: (" + nLin + ", " + nCol + "): simbolo no reconocido: " + token.image)
-		print("f, c, tipo_token. token.image")
-		System.out.println("(" + nLin + ", " + nCol + "): " + token.kind + " " + token.image);
-		nCol += token.image.length();
-	}
-	static int nCol = 0;
-	static int nLin = 0;
-	
-}
-
 PARSER_BEGIN(alike)
 
 package traductor;
@@ -52,23 +40,26 @@ public class alike {
 	   catch (TokenMgrError e) {
 		   System.err.println("LEX_ERROR: " + e.getMessage());
 	   }
+	   catch (ParseException e) {
+			System.err.println("PARSE_ERROR: " + e.getMessage());
+	   }
 	   //...
    }
 }
 PARSER_END(alike)
-
-SKIP : {  " " { nCol++ } |  "\n" { nLin++; nCol=0 } |  "\t" { nCol += 2 } |  "\r" {nCol=0} } 
+<COMILLAS> SKIP: { "\"" : DEFAULT }
+SKIP : { <tCOMMENT :"--" (~["\n"])* "\n"> | " " |  "\n" |  "\t"|  "\r" } 
 
 TOKEN : {
 	< #LETTER: (["a"-"z","A"-"Z"]) >
 |	< #DIGIT: ["0"-"9"] >
+
 }
 
 TOKEN : {
 	//Propios del programa
 	< tBEGIN: "begin" >
 |	< tEND: "end" >
-|   < tCOMMENT: "-- .*$" >
 |	< tASIGN: ":=" >
 |	< tREF: "ref" >
 |	< tIS: "is" >
@@ -82,31 +73,49 @@ TOKEN : {
 |	< tCHAR: "character" >
 |	< tBOOL: "boolean" >
 |	< tINT: "integer" >
-|	< tCHARCONST: "'".+"'" >
-|	< tINTCONST: -? ( <DIGIT> )+ ( "." ( <DIGIT> )+ )? >
+|	< tCHARCONST: "\'" ~["\n"] "\'" >
+|	< tINTCONST: ("-")?(<DIGIT>)+ >
 |	< tBOOLCONST: "true" | "false" >
+|   < tSTRING: "\"" ((~["\n", "\""])* ("\"\"")? )* "\""  > {
+	// quitamos la doble "" por "
+	matchedToken.image = image.toString().replaceAll("\"\"", "\"");
+}
 
 	//Operadores
 |	< tPLUS: "+" >
 |	< tMINUS: "-" >
 |	< tTIMES: "*" >
 |	< tDIV: "/" >
-|   < tLESS: "<" >
-|   < tGREATER: ">" >
-|   < tEQUAL: "=" >
+|   < tLT: "<" >
+|   < tGT: ">" >
+|   < tEQ: "=" >
+|	< tNE: "/=" >
+|	< tLE: "<=" >
+|	< tGE: ">=" >
+|	< tMOD: "mod" >
+|	< tAPAR: "(" >
+|	< tCPAR: ")" >
+|	< tSCOL: ";" >
+|	< tCOL: ":" >
+|	< tCOMA: "," >
+|	< tRANGE: ".." >
+// Built in functions
+|	< tSKIPLINE: "skip_line" >
+|	< tGET: "get" >
+|	< tPUTLINE: "put_line" >
+|	< tPUT: "put" >
+|   < tINT2CHAR: "int2char" >
+|   < tCHAR2INT: "char2int" >
 
-
-
-
-
-	//Condicionales
+//Condicionales
 |	< tIF: "if" >
 |	< tELSE: "else" >
 |   < tELSIF: "elsif" >
 |   < tTHEN: "then" >
-|
 |	< tWHILE: "while" >
 | 	< tLOOP: "loop" >
+
+//Identificadores
 |   < tIDENTIFIER: ( <LETTER> |"_") (<LETTER> | <DIGIT> | "_")* >
 |	< tRESTO: ~[] >
    
@@ -119,7 +128,67 @@ void Programa() :
 }
 {
    ( 
-	   < tBEGIN > | < tBOOL > | < tCHAR > | ...
+	   < tBEGIN > | <tEND> | <tASIGN> | <tREF> | <tIS> | <tOF> | <tPROC> | <tNULL> | <tRETURN> 
+	   | <tCHAR> | <tBOOL> | <tINT> | <tCHARCONST> | <tINTCONST> | <tBOOLCONST> | <tSTRING>
+	   | <tPLUS> | <tMINUS> | <tTIMES> | <tDIV> | comparacion() | <tMOD>
+	   | <tAPAR> | <tCPAR> | <tSCOL> | <tCOL> | <tCOMA> | <tRANGE>
+	   | <tIF> | <tELSE> | <tELSIF> | <tTHEN> 
+	   | <tWHILE> | <tLOOP> 
+	   | <tIDENTIFIER> 
+	   | builtin_function()
+	   | <tRESTO> 
    )+
    < EOF >
+}
+
+void tipo_dato():
+{
+
+}
+{
+	<tCHAR> | <tBOOL> | <tINT>
+}
+
+void tipo_constante():
+{
+
+}
+{
+	<tCHARCONST> | <tINTCONST> | <tBOOLCONST> | <tSTRING>
+}
+
+void operador():
+{
+
+}
+{
+	<tPLUS> | <tMINUS> | <tTIMES> | <tDIV> | <tMOD>
+}
+
+
+void comparacion():
+{
+
+}
+{
+	<tLT> | <tGT> | <tEQ> | <tNE> | <tLE> | <tGE>
+}
+
+void builtin_function():
+{
+
+}
+{
+	<tSKIPLINE> | <tGET> | <tPUT> | <tPUTLINE> | <tINT2CHAR> | <tCHAR2INT>
+}
+
+
+
+
+TOKEN_MGR_DECLS : {
+	static void CommonTokenAction(Token token) {
+		if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
+		System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
+	}
+	
 }

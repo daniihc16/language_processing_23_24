@@ -42,3 +42,5 @@ begin
 	put_line("dec_b(",num,",",base,"): ",enB);
 	put_line("b_dec(",enB,",",base,"): ",b_dec(enB,base));
 end;
+
+"Hola""caracola"
