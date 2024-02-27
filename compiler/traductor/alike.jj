@@ -1,0 +1,405 @@
+//*****************************************************************
+// File:   cl.jj
+// Author: Procesadores de Lenguajes-University of Zaragoza
+// Date:   julio 2023
+// Coms:   compilar mediante "ant"
+//*****************************************************************
+
+options {
+	IGNORE_CASE = true;	//No distinguir entre mayúsculas y minúsculas
+	COMMON_TOKEN_ACTION = true; //Se generan acciones por defecto
+}
+
+PARSER_BEGIN(alike)
+
+package traductor;
+
+//...
+
+public class alike {
+   //...
+   
+   public static void main(String[] args) {
+	   alike parser = null;
+	   
+	   try {
+		   if(args.length == 0) {
+			   parser = new alike(System.in);
+		   }
+		   else {
+			   parser = new alike(new java.io.FileInputStream(args[0]));
+		   }
+		   //Programa es el símbolo inicial de la gramática
+		   parser.Programa();
+		   //...
+		   System.out.println("***** Análisis terminado con éxito *****");
+	   }
+	   catch (java.io.FileNotFoundException e) {
+		   System.err.println ("Fichero " + args[0] + " no encontrado.");
+	   }
+	   catch (TokenMgrError e) {
+		   System.err.println("LEX_ERROR: " + e.getMessage());
+	   }
+	   catch (ParseException e) {
+			System.err.println("PARSE_ERROR: " + e.getMessage());
+	   }
+	   //...
+   }
+}
+PARSER_END(alike)
+<COMILLAS> SKIP: { "\"" : DEFAULT }
+SKIP : { <tCOMMENT :"--" (~["\n"])* "\n"> | " " |  "\n" |  "\t"|  "\r" } 
+
+TOKEN : {
+	< #LETTER: (["a"-"z","A"-"Z"]) >
+|	< #DIGIT: ["0"-"9"] >
+
+}
+
+TOKEN : {
+	//Propios del programa
+	< tBEGIN: "begin" >
+|	< tEND: "end" >
+|	< tASIGN: ":=" >
+|	< tREF: "ref" >
+|	< tIS: "is" >
+|	< tOF: "of" >
+|	< tPROC: "procedure" >
+|	< tFUNC: "function" >
+|	< tNULL: "null" >
+|	< tARRAY: "array" >
+|	< tRETURN: "return" >
+
+
+	//Tipos de datos
+|	< tCHAR: "character" >
+|	< tBOOL: "boolean" >
+|	< tINT: "integer" >
+|	< tCHARCONST: "\'" ~["\n"] "\'" >
+|	< tINTCONST: ("-")?(<DIGIT>)+ >
+|	< tTRUE: "true" >
+|	< tFALSE: "false" >
+|   < tSTRING: "\"" ((~["\n", "\""])* ("\"\"")? )* "\""  > {
+	// quitamos la doble "" por "
+	matchedToken.image = image.toString().replaceAll("\"\"", "\"");
+}
+
+	//Operadores
+|	<tAND: "and" >
+|	<tOR: "or" >
+|	<tNOT: "not" >
+|	< tPLUS: "+" >
+|	< tMINUS: "-" >
+|	< tTIMES: "*" >
+|	< tDIV: "/" >
+|   < tLT: "<" >
+|   < tGT: ">" >
+|   < tEQ: "=" >
+|	< tNE: "/=" >
+|	< tLE: "<=" >
+|	< tGE: ">=" >
+|	< tMOD: "mod" >
+|	< tAPAR: "(" >
+|	< tCPAR: ")" >
+|	< tPC: ";" >
+|	< tDP: ":" >
+|	< tCOMA: "," >
+|	< tRANGE: ".." >
+// Built in functions
+|	< tSKIPLINE: "skip_line" >
+|	< tGET: "get" >
+|	< tPUTLINE: "put_line" >
+|	< tPUT: "put" >
+|   < tINT2CHAR: "int2char" >
+|   < tCHAR2INT: "char2int" >
+
+//Condicionales
+|	< tIF: "if" >
+|	< tELSE: "else" >
+|   < tELSIF: "elsif" >
+|   < tTHEN: "then" >
+|	< tWHILE: "while" >
+| 	< tLOOP: "loop" >
+
+//Identificadores
+|   < tID: ( <LETTER> |"_") (<LETTER> | <DIGIT> | "_")* >
+|	< tRESTO: ~[] >
+   
+}
+
+void boolconst():
+{}
+{
+	<tTRUE> | <tFALSE>
+}
+
+void tipo_dato():
+{
+
+}
+{
+	//? Preguntar si es mejor esto:
+	//? (<tARRAY> <tAPAR> <tINTCONST> <tRANGE> <tINTCONST> <tCPAR> <tOF>)? tipo_base()
+	tipo_base()
+	| <tARRAY> <tAPAR> <tINTCONST> <tRANGE> <tINTCONST> <tCPAR> <tOF> tipo_base()
+}
+
+void tipo_base():
+{
+
+}
+{
+	<tCHAR> | <tBOOL> | <tINT>
+}
+
+void tipo_constante():
+{
+
+}
+{
+	<tCHARCONST> | <tINTCONST> | boolconst()| <tSTRING>
+}
+
+
+//------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
+void Programa() : 
+{
+
+}
+{
+	cabecera_procedimiento()
+	( declaracion_variables() )?
+	( declaracion_procs_funcs() )?
+	<tBEGIN>
+	(instruccion())*
+	<tEND>
+	<tPC>
+   < EOF >
+}
+
+void declaracion_variables() :
+{
+
+}
+{
+	( declaracion_var() )+
+}
+	
+
+void declaracion_var() :
+{
+
+}
+{ 
+	lista_ids() <tDP> tipo_dato() <tPC>
+}
+
+void declaracion_procs_funcs() : 
+{
+
+}
+{
+	( declaracion_proc() | declaracion_func() )+
+}
+
+void declaracion_proc():
+{}
+{
+	cabecera_procedimiento()
+	( declaracion_variables() )?
+	( declaracion_procs_funcs() )?
+	<tBEGIN>
+	(instruccion())+
+	<tEND>
+	<tPC>
+}
+
+void declaracion_func():
+{}
+{
+	cabecera_funcion()
+	( declaracion_variables() )?
+	<tBEGIN>
+	(instruccion())+
+	<tEND>
+	<tPC>
+}
+
+void declaracion_param() :
+{
+
+}
+{
+	lista_ids() <tDP> ( <tREF> )? tipo_dato()
+}
+
+
+void lista_ids() :
+{
+
+}
+{
+	LOOKAHEAD(2) <tID> <tCOMA> lista_ids()
+|	<tID>
+	
+	//( <tID> <tCOMA> )* <tID>
+}
+
+void cabecera_procedimiento():
+{}
+{
+	<tPROC> <tID> ( parametros_formales() )? <tIS>
+}
+
+void cabecera_funcion():
+{}
+{
+	<tFUNC> <tID> ( parametros_formales() )? <tRETURN> tipo_dato() <tIS>
+}
+
+
+void parametros_formales():
+{}
+{
+	// <tAPAR> decl_params() <tCPAR>
+	//<tAPAR>	( (declaracion_param() <tPC>)* (declaracion_param()) )+ <tCPAR> // con parámetros 
+	<tAPAR>	( ( declaracion_param() (<tPC> declaracion_param())* ) )+ <tCPAR> // con parámetros 
+| ""// sin parámetros (épsilon)
+}
+
+
+
+void instruccion() :
+{}
+{
+    (inst_leer()
+|   <tSKIPLINE>
+|	inst_escribir()
+|   inst_escribir_linea()
+|   inst_invocacion_o_asignacion()
+|   inst_if()
+|   inst_while()
+|   inst_return()
+|   <tNULL>) <tPC>
+}
+
+void inst_leer() :
+{}
+{
+	<tGET> <tAPAR> lista_ids() <tCPAR>
+}
+
+void inst_escribir() :
+{}
+{
+	<tPUT> <tAPAR> lista_una_o_mas_exps() <tCPAR>
+}
+
+void inst_escribir_linea() :
+{}
+{
+	<tPUTLINE> (<tAPAR> lista_una_o_mas_exps()	<tCPAR>)? {
+		// añadir inst de salto de línea
+	}
+}
+
+void inst_invocacion_o_asignacion() :
+{}
+{
+	primario() ( <tASIGN> expresion())? // preguntar si bien o restringir más
+}
+
+void inst_if():
+{}
+{
+	// debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
+	<tIF> expresion() <tTHEN> (instruccion())+
+	(<tELSIF> expresion() <tTHEN> (instruccion())+)*
+	(<tELSE> (instruccion())+)?
+	<tEND> <tIF>
+}
+
+void inst_while() :
+{}
+{
+	<tWHILE> expresion() <tLOOP> (instruccion())+ <tEND> <tLOOP>
+}
+
+void inst_return() :
+{}
+{
+	<tRETURN> expresion()
+}
+
+void expresion(): 
+{}
+{
+    relacion()
+	((<tAND> | <tOR>) relacion())*
+}
+
+void relacion():
+{}
+{
+    expresion_simple()
+ 	( operador_relacional() expresion_simple() )?
+}
+
+void operador_relacional():
+{}
+{
+	<tEQ> | <tNE> | <tLT> | <tLE> | <tGT> | <tGE>
+}
+
+void expresion_simple():
+{}
+{
+    ( <tPLUS> |	<tMINUS> )? 
+    termino()
+	( ( <tPLUS> | <tMINUS> ) termino() )*
+}
+
+void termino():
+{}
+{
+	factor() ( operador_multiplicativo() factor() )*
+}
+
+void operador_multiplicativo():
+{}
+{
+    <tTIMES> | <tMOD> | <tDIV>
+}
+
+void factor():
+{}
+{
+	primario()
+	| <tNOT> primario()
+}
+
+void primario() :
+{}
+{
+    <tAPAR> expresion() <tCPAR>
+|	<tINT2CHAR> <tAPAR> expresion() <tCPAR>
+|	<tCHAR2INT> <tAPAR> expresion() <tCPAR>
+|	LOOKAHEAD(2)
+    <tID> <tAPAR> lista_una_o_mas_exps() <tCPAR> //invoc. func. o comp. array
+|	<tID>              //var. o func. sin pars
+|	tipo_constante()
+}
+
+void lista_una_o_mas_exps() :
+{}
+{
+	( expresion() (<tCOMA> expresion())* )+
+}
+
+TOKEN_MGR_DECLS : {
+	static void CommonTokenAction(Token token) {
+		if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
+		System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
+	}
+	
+}
