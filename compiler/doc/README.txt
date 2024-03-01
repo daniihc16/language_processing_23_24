@@ -15,6 +15,18 @@ java -jar alike.jar <fichero_fuente_clike>
 
 Si se invoca sin parámetros, lee desde la entrada estándar.
 
+Compilación (desde la raíz del proyecto):
+
+-------------------------------------------------------------
+ant
+-------------------------------------------------------------
+
+
+Ejecución de los tests:
+-------------------------------------------------------------
+python3 ../test/test_alike.py ./dist/alike.jar ../test/
+-------------------------------------------------------------
 
 Características generales:
-....
+
+Contiene un analizador léxico y sintáctico (parser) para el lenguaje Alike
