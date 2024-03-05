@@ -12,12 +12,10 @@ public class SymbolInt extends Symbol implements Cloneable {
     
     public SymbolInt(String _name) {
     	super(_name, Types.INT, ParameterClass.NONE); 
-    	value = 0;
     }
 
     public SymbolInt(String _name, ParameterClass _class) {
     	super(_name, Types.INT, _class); 
-    	value = 0;
     }
 
     public SymbolInt(String _name, int _value, ParameterClass _class) {

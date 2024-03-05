@@ -15,11 +15,13 @@ PARSER_BEGIN(alike)
 
 package traductor;
 
-//...
+import lib.symbolTable.*;
+import java.util.*;
+
 
 public class alike {
    //...
-   
+   public static SymbolTable st = new SymbolTable();
    public static void main(String[] args) {
 	   alike parser = null;
 	   
@@ -134,23 +136,47 @@ void boolconst():
 	<tTRUE> | <tFALSE>
 }
 
-void tipo_dato():
+ArrayList<Symbol> tipo_dato(ArrayList<String> ids, Token ref):
 {
-
+	ArrayList<Symbol> t;
+	Token neg1, neg2, min, max;
 }
 {
-	//? Preguntar si es mejor esto:
-	//? (<tARRAY> <tAPAR> <tINTCONST> <tRANGE> <tINTCONST> <tCPAR> <tOF>)? tipo_base()
-	tipo_base()
-	| <tARRAY> <tAPAR> (<tMINUS>)? <tINTCONST> <tRANGE> (<tMINUS>)? <tINTCONST> <tCPAR> <tOF> tipo_dato()
+	t = tipo_base(ids, ref) { return t; }
+	| <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, ref) {
+		Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
+		if (ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+		int minInd = Integer.parseInt(min.image);
+		int maxInd = Integer.parseInt(max.image);
+		if (neg1 != null) minInd = minInd*(-1);
+		if (neg2 != null) maxInd = maxInd*(-1);
+		ArrayList<Symbol> ids_con_tipo = new ArrayList<Symbol>();
+		for (int i=0; i<ids.size(); i++) {
+			ids_con_tipo.add(new SymbolArray(ids[i], minInd, maxInd, t[i].type, p_class));
+		}
+		return ids_con_tipo;
+	}
 }
 
-void tipo_base():
+ArrayList<Symbol> tipo_base(ArrayList<String> ids, Token ref):
 {
-
+	Symbol t;
 }
 {
-	<tCHAR> | <tBOOL> | <tINT>
+	
+	
+	(<tCHAR> {t = new SymbolChar("");} | <tBOOL> {t = new SymbolBool("");} | <tINT>{t = new SymbolInt("");} ) {
+		ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
+		Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
+		if (ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+		for (String id : ids) {
+			Symbol t_clone = t.clone();
+			t_clone.name = id;
+			t_clone.parClass = p_class;
+			ids_symbols.add(t_clone);
+		}
+		return ids_symbols;
+	}
 }
 
 void tipo_constante():
@@ -165,11 +191,13 @@ void tipo_constante():
 //------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
 void Programa() : 
 {
-
+	SymbolProcedure proc_main;
 }
 {
    try {
-	cabecera_procedimiento()
+	proc_main = cabecera_procedimiento() {
+		st.insertSymbol(proc_main);
+	}
 	( declaracion_variables() )?
 	( declaracion_procs_funcs() )?
 	<tBEGIN>
@@ -200,11 +228,11 @@ void declaracion_variables() :
 
 void declaracion_var() :
 {
-
+	ArrayList<String> ids;
 }
 { 
 	try {
-		lista_ids() <tDP> tipo_dato() <tPC>
+		ids = lista_ids() <tDP> tipo_dato(ids, new Token()) <tPC>
 	} catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -268,45 +296,78 @@ void declaracion_func():
 	}
 }
 
-void declaracion_param() :
+ArrayList<Symbol> declaracion_param() :
 {
-
+	ArrayList<String> ids;
+	ArrayList<Symbol> ids_con_tipo;
+	Token ref;
 }
 {
-	lista_ids() <tDP> ( <tREF> )? tipo_dato()
+	ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref)
+	{
+		return ids_con_tipo;
+	}
 }
 
 
-void lista_ids() :
+ArrayList<String> lista_ids() :
 {
-
+	ArrayList<String> ids = new ArrayList<String>();
+	ArrayList<String> resto_ids;
+	Token id;
 }
 {
-	LOOKAHEAD(2) <tID> <tCOMA> lista_ids()
-|	<tID>
-	
-	//( <tID> <tCOMA> )* <tID>
+	( LOOKAHEAD(2) id = <tID> <tCOMA> resto_ids = lista_ids()
+|	id = <tID>) {
+	if (!st.containsSymbol(id.image)) {
+		ids.add(id.image);
+	} else {
+		System.err.println(id.image + " ya está definido");
+	}
+	if (resto_ids != null) {
+		for (String sid : resto_ids) ids.add(sid);
+	}
+	return ids;
+}
 }
 
-void cabecera_procedimiento():
-{}
+SymbolProcedure cabecera_procedimiento():
 {
-	<tPROC> <tID> ( parametros_formales() )? <tIS>
+	Token id_proc;
+	ArrayList<Symbol> proc_params;
+}
+{
+	<tPROC> id_proc = <tID> ( proc_params = parametros_formales() )? <tIS>
+	{
+		if (!st.containsSymbol(id_proc.image)) return SymbolProcedure(id_proc.image, proc_params);
+		else System.err.println(id_proc.image + " ya está definido");
+	}
 }
 
 void cabecera_funcion():
 {}
 {
-	<tFUNC> <tID> ( parametros_formales() )? <tRETURN> tipo_dato() <tIS>
+	<tFUNC> <tID> ( parametros_formales() )? <tRETURN> tipo_dato(new ArrayList<Symbol>(), new Token()) <tIS>
 }
 
 
-void parametros_formales():
-{}
+ArrayList<Symbol> parametros_formales():
+{
+	ArrayList<Symbol> params = new ArrayList<Symbol>();
+	ArrayList<Symbol> ps, resto_p;
+}
 {
 	try {
-		<tAPAR>	( ( declaracion_param() (<tPC> declaracion_param())* ) )+ <tCPAR> // con parámetros 
-		| ""// sin parámetros (épsilon)
+		( <tAPAR>	ps = declaracion_param() 
+			{
+				for (Symbol p :  ps) params.add(p);
+			}
+		
+		resto_p = lista_parametros_formales() {
+			for (Symbol p :  resto_p) params.add(p);
+		} <tCPAR> // con parámetros 
+		| "" ) // sin parámetros (épsilon)
+		{ return params; } 
 	} catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -316,6 +377,21 @@ void parametros_formales():
 			if (t.kind == tPC) break;
 		}
 	}
+}
+
+void lista_parametros_formales():
+{
+	ArrayList<Symbol> params = new ArrayList<Symbol>();;
+}
+{
+	( <tPC> ps = declaracion_param() 
+		{
+			for (Symbol p :  ps) params.add(p);
+		}
+	resto_p = lista_parametros_formales() {
+		for (Symbol p :  resto_p) params.add(p);
+	}
+	| "")  { return params; }
 }
 
 
@@ -462,7 +538,7 @@ TOKEN_MGR_DECLS : {
 	static void CommonTokenAction(Token token) {
 		if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
 		System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
-		System.err.println(st.toString())
+		System.err.println(st.toString());
 	}
 	
 }
