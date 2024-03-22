@@ -30,3 +30,9 @@ python3 ../test/test_alike.py ./dist/alike.jar ../test/
 Características generales:
 
 Contiene un analizador léxico y sintáctico (parser) para el lenguaje Alike
+
+
+Analizador Semántico:
+---------------------------------------------
+Las inserciones en la tabla de símbolos se realizan en el nivel más alto que se pueda.
+De esta forma se tiene control total sobre qué símbolos se insertan en qué bloque y cuándo.

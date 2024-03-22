@@ -16,6 +16,7 @@ PARSER_BEGIN(alike)
 package traductor;
 
 import lib.symbolTable.*;
+import lib.symbolTable.exceptions.*;
 import java.util.*;
 
 
@@ -136,10 +137,11 @@ void boolconst():
 	<tTRUE> | <tFALSE>
 }
 
+// Devuelve el array con los símbolos de los identificadores con su tipo
 ArrayList<Symbol> tipo_dato(ArrayList<String> ids, Token ref):
 {
 	ArrayList<Symbol> t;
-	Token neg1, neg2, min, max;
+	Token neg1 = null, neg2 = null, min, max;
 }
 {
 	t = tipo_base(ids, ref) { return t; }
@@ -152,7 +154,7 @@ ArrayList<Symbol> tipo_dato(ArrayList<String> ids, Token ref):
 		if (neg2 != null) maxInd = maxInd*(-1);
 		ArrayList<Symbol> ids_con_tipo = new ArrayList<Symbol>();
 		for (int i=0; i<ids.size(); i++) {
-			ids_con_tipo.add(new SymbolArray(ids[i], minInd, maxInd, t[i].type, p_class));
+			ids_con_tipo.add(new SymbolArray(ids.get(i), minInd, maxInd, t.get(i).type, p_class));
 		}
 		return ids_con_tipo;
 	}
@@ -168,7 +170,7 @@ ArrayList<Symbol> tipo_base(ArrayList<String> ids, Token ref):
 	(<tCHAR> {t = new SymbolChar("");} | <tBOOL> {t = new SymbolBool("");} | <tINT>{t = new SymbolInt("");} ) {
 		ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
 		Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
-		if (ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+		if (ref != null && ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
 		for (String id : ids) {
 			Symbol t_clone = t.clone();
 			t_clone.name = id;
@@ -191,14 +193,28 @@ void tipo_constante():
 //------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
 void Programa() : 
 {
-	SymbolProcedure proc_main;
+	SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
 }
 {
    try {
 	proc_main = cabecera_procedimiento() {
 		st.insertSymbol(proc_main);
+		System.out.println("Nuevo símbolo: " + st.toString());
 	}
-	( declaracion_variables() )?
+	( vars = declaracion_variables() )? {
+			if (vars != null) {
+				for (Symbol var : vars) {
+					try{
+						st.insertSymbol(var);
+					} catch (AlreadyDefinedSymbolException ads){
+						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+					}
+					
+				}
+			} else {
+				vars = new ArrayList<Symbol>();
+			}
+		}
 	( declaracion_procs_funcs() )?
 	<tBEGIN>
 	(instruccion())*
@@ -213,26 +229,37 @@ void Programa() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
+	} catch (AlreadyDefinedSymbolException ads) {
+		System.err.println("SEMANTIC_ERROR: " + ads.getMessage(proc_main));
 	}
 
 }
 
-void declaracion_variables() :
+ArrayList<Symbol> declaracion_variables() :
 {
-
+	ArrayList<Symbol> vars = new ArrayList<Symbol>();
+	ArrayList<Symbol> var_list = null;
 }
 {
-	( declaracion_var() )+
+	( var_list = declaracion_var() {
+		for (Symbol var: var_list) vars.add(var);
+	} )+ {
+		return vars;
+	}
 }
 	
 
-void declaracion_var() :
+ArrayList<Symbol> declaracion_var() :
 {
 	ArrayList<String> ids;
+	ArrayList<Symbol> vars;
 }
 { 
 	try {
-		ids = lista_ids() <tDP> tipo_dato(ids, new Token()) <tPC>
+		// tipo_dato devuelve el símbolo 
+		ids = lista_ids() <tDP> vars = tipo_dato(ids, new Token()) <tPC> {
+			return vars;
+		}
 	} catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -253,11 +280,37 @@ void declaracion_procs_funcs() :
 }
 
 void declaracion_proc():
-{}
+{
+	SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+	ArrayList<Symbol> vars = null;
+}
 {
 	try {
-		cabecera_procedimiento()
-		( declaracion_variables() )?
+		proc = cabecera_procedimiento() {
+			st.insertSymbol(proc);
+			st.insertBlock();
+			for (Symbol param : proc.parList) {
+				try {
+					st.insertSymbol(param);
+				} catch (AlreadyDefinedSymbolException ads) {
+					System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+				}
+			}
+		}
+		( vars = declaracion_variables() )? {
+			if (vars != null) {
+				for (Symbol var : vars) {
+					try{
+						st.insertSymbol(var);
+					} catch (AlreadyDefinedSymbolException ads){
+						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+					}
+					
+				}
+			} else {
+				vars = new ArrayList<Symbol>();
+			}
+		}
 		( declaracion_procs_funcs() )?
 		<tBEGIN>
 		(instruccion())+
@@ -271,6 +324,8 @@ void declaracion_proc():
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
+	}catch (AlreadyDefinedSymbolException ads) {
+	   System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Procedimiento o parámetros ya declarados");
 	}
 }
 
@@ -280,7 +335,20 @@ void declaracion_func():
 	
 	try {
 		cabecera_funcion()
-		( declaracion_variables() )?
+		( vars = declaracion_variables() )? {
+			if (vars != null) {
+				for (Symbol var : vars) {
+					try{
+						st.insertSymbol(var);
+					} catch (AlreadyDefinedSymbolException ads){
+						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+					}
+					
+				}
+			} else {
+				vars = new ArrayList<Symbol>();
+			}
+		}
 		<tBEGIN>
 		(instruccion())+
 		<tEND>
@@ -300,7 +368,7 @@ ArrayList<Symbol> declaracion_param() :
 {
 	ArrayList<String> ids;
 	ArrayList<Symbol> ids_con_tipo;
-	Token ref;
+	Token ref = null;
 }
 {
 	ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref)
@@ -313,7 +381,7 @@ ArrayList<Symbol> declaracion_param() :
 ArrayList<String> lista_ids() :
 {
 	ArrayList<String> ids = new ArrayList<String>();
-	ArrayList<String> resto_ids;
+	ArrayList<String> resto_ids = null;
 	Token id;
 }
 {
@@ -334,20 +402,19 @@ ArrayList<String> lista_ids() :
 SymbolProcedure cabecera_procedimiento():
 {
 	Token id_proc;
-	ArrayList<Symbol> proc_params;
+	ArrayList<Symbol> proc_params = null;
 }
 {
 	<tPROC> id_proc = <tID> ( proc_params = parametros_formales() )? <tIS>
 	{
-		if (!st.containsSymbol(id_proc.image)) return SymbolProcedure(id_proc.image, proc_params);
-		else System.err.println(id_proc.image + " ya está definido");
+		return new SymbolProcedure(id_proc.image, proc_params);
 	}
 }
 
 void cabecera_funcion():
 {}
 {
-	<tFUNC> <tID> ( parametros_formales() )? <tRETURN> tipo_dato(new ArrayList<Symbol>(), new Token()) <tIS>
+	<tFUNC> <tID> ( parametros_formales() )? <tRETURN> tipo_dato(new ArrayList<String>(), new Token()) <tIS>
 }
 
 
@@ -367,7 +434,6 @@ ArrayList<Symbol> parametros_formales():
 			for (Symbol p :  resto_p) params.add(p);
 		} <tCPAR> // con parámetros 
 		| "" ) // sin parámetros (épsilon)
-		{ return params; } 
 	} catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -377,21 +443,24 @@ ArrayList<Symbol> parametros_formales():
 			if (t.kind == tPC) break;
 		}
 	}
+	{ return params; } 
 }
 
-void lista_parametros_formales():
+ArrayList<Symbol> lista_parametros_formales():
 {
-	ArrayList<Symbol> params = new ArrayList<Symbol>();;
+	ArrayList<Symbol> params = new ArrayList<Symbol>();
+	ArrayList<Symbol> ps, resto_p;
 }
 {
-	( <tPC> ps = declaracion_param() 
-		{
-			for (Symbol p :  ps) params.add(p);
+	 (<tPC> ps = declaracion_param() 
+			{
+				for (Symbol p :  ps) params.add(p);
+			}
+		resto_p = lista_parametros_formales() {
+			for (Symbol p :  resto_p) params.add(p);
 		}
-	resto_p = lista_parametros_formales() {
-		for (Symbol p :  resto_p) params.add(p);
-	}
-	| "")  { return params; }
+	 )
+	| { return params; }
 }
 
 
@@ -527,7 +596,6 @@ void primario() :
 |	<tID>              //var. o func. sin pars
 |	tipo_constante()
 }
-
 void lista_una_o_mas_exps() :
 {}
 {
@@ -538,7 +606,7 @@ TOKEN_MGR_DECLS : {
 	static void CommonTokenAction(Token token) {
 		if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
 		System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
-		System.err.println(st.toString());
+		System.out.println();
 	}
 	
 }

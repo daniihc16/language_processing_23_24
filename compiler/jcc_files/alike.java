@@ -3,6 +3,7 @@
 package traductor;
 
 import lib.symbolTable.*;
+import lib.symbolTable.exceptions.*;
 import java.util.*;
 
 
@@ -63,7 +64,7 @@ public class alike implements alikeConstants {
     trace_call("tipo_dato");
     try {
 ArrayList<Symbol> t;
-        Token neg1, neg2, min, max;
+        Token neg1 = null, neg2 = null, min, max;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tCHAR:
       case tBOOL:
@@ -107,7 +108,7 @@ Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
                 if (neg2 != null) maxInd = maxInd*(-1);
                 ArrayList<Symbol> ids_con_tipo = new ArrayList<Symbol>();
                 for (int i=0; i<ids.size(); i++) {
-                        ids_con_tipo.add(new SymbolArray(ids[i], minInd, maxInd, t[i].type, p_class));
+                        ids_con_tipo.add(new SymbolArray(ids.get(i), minInd, maxInd, t.get(i).type, p_class));
                 }
                 {if ("" != null) return ids_con_tipo;}
         break;
@@ -150,7 +151,7 @@ t = new SymbolInt("");
       }
 ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
                 Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
-                if (ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+                if (ref != null && ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
                 for (String id : ids) {
                         Symbol t_clone = t.clone();
                         t_clone.name = id;
@@ -200,10 +201,11 @@ ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
   static final public void Programa() throws ParseException {
     trace_call("Programa");
     try {
-SymbolProcedure proc_main;
+SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
       try {
         proc_main = cabecera_procedimiento();
 st.insertSymbol(proc_main);
+                System.out.println("Nuevo s\u00edmbolo: " + st.toString());
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           declaracion_variables();
@@ -264,6 +266,8 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
+      } catch (AlreadyDefinedSymbolException ads) {
+System.err.println("SEMANTIC_ERROR: " + ads.getMessage(proc_main));
       }
     } finally {
       trace_return("Programa");
@@ -297,7 +301,8 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     try {
 ArrayList<String> ids;
       try {
-        ids = lista_ids();
+        // tipo_dato inserta los símbolos en la tabla de símbolos
+                        ids = lista_ids();
         jj_consume_token(tDP);
         tipo_dato(ids, new Token());
         jj_consume_token(tPC);
@@ -354,9 +359,18 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
   static final public void declaracion_proc() throws ParseException {
     trace_call("declaracion_proc");
     try {
-
+SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
       try {
-        cabecera_procedimiento();
+        proc = cabecera_procedimiento();
+st.insertSymbol(proc);
+                        st.insertBlock();
+                        for (Symbol param : proc.parList) {
+                                try {
+                                        st.insertSymbol(param);
+                                } catch (AlreadyDefinedSymbolException ads) {
+                                        System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Par\u00e1metro ya declarado");
+                                }
+                        }
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           declaracion_variables();
@@ -416,6 +430,8 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
+      } catch (AlreadyDefinedSymbolException ads) {
+System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Procedimiento o par\u00e1metros ya declarados");
       }
     } finally {
       trace_return("declaracion_proc");
@@ -488,7 +504,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     try {
 ArrayList<String> ids;
         ArrayList<Symbol> ids_con_tipo;
-        Token ref;
+        Token ref = null;
       ids = lista_ids();
       jj_consume_token(tDP);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -512,7 +528,7 @@ ArrayList<String> ids;
     trace_call("lista_ids");
     try {
 ArrayList<String> ids = new ArrayList<String>();
-        ArrayList<String> resto_ids;
+        ArrayList<String> resto_ids = null;
         Token id;
       if (jj_2_1(2)) {
         id = jj_consume_token(tID);
@@ -549,7 +565,7 @@ if (!st.containsSymbol(id.image)) {
     trace_call("cabecera_procedimiento");
     try {
 Token id_proc;
-        ArrayList<Symbol> params;
+        ArrayList<Symbol> proc_params = null;
       jj_consume_token(tPROC);
       id_proc = jj_consume_token(tID);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -563,8 +579,7 @@ Token id_proc;
         ;
       }
       jj_consume_token(tIS);
-if (!st.containsSymbol(id_proc.image)) {if ("" != null) return SymbolProcedure(id_proc.image, proc_params);}
-                else System.err.println(id_proc.image + " ya est\u00e1 definido");
+{if ("" != null) return new SymbolProcedure(id_proc.image, proc_params);}
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("cabecera_procedimiento");
@@ -588,7 +603,7 @@ if (!st.containsSymbol(id_proc.image)) {if ("" != null) return SymbolProcedure(i
         ;
       }
       jj_consume_token(tRETURN);
-      tipo_dato(new ArrayList<Symbol>(), new Token());
+      tipo_dato(new ArrayList<String>(), new Token());
       jj_consume_token(tIS);
     } finally {
       trace_return("cabecera_funcion");
@@ -620,7 +635,6 @@ for (Symbol p :  resto_p) params.add(p);
           jj_consume_token(-1);
           throw new ParseException();
         }
-{if ("" != null) return params;}
       } catch (ParseException e) {
 System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -630,16 +644,18 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         if (t.kind == tPC) break;
                 }
       }
+{if ("" != null) return params;}
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("parametros_formales");
     }
 }
 
-  static final public void lista_parametros_formales() throws ParseException {
+  static final public ArrayList<Symbol> lista_parametros_formales() throws ParseException {
     trace_call("lista_parametros_formales");
     try {
-ArrayList<Symbol> params = new ArrayList<Symbol>();;
+ArrayList<Symbol> params = new ArrayList<Symbol>();
+        ArrayList<Symbol> ps, resto_p;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPC:{
         jj_consume_token(tPC);
@@ -649,16 +665,11 @@ for (Symbol p :  ps) params.add(p);
 for (Symbol p :  resto_p) params.add(p);
         break;
         }
-      case 62:{
-        jj_consume_token(62);
-        break;
-        }
       default:
         jj_la1[22] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
 {if ("" != null) return params;}
+      }
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("lista_parametros_formales");
     }
@@ -1350,17 +1361,17 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_2()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tAPAR)) return true;
-    return false;
-  }
-
   static private boolean jj_3_1()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tCOMA)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tAPAR)) return true;
     return false;
   }
 
@@ -1387,7 +1398,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
 	   jj_la1_0 = new int[] {0x6000000,0x0,0x0,0x740000,0x700000,0xf800000,0x0,0x18000,0xf8a0000,0x0,0x18000,0x18000,0x0,0x18000,0xf8a0000,0x0,0xf8a0000,0x1000,0x0,0x0,0x0,0x0,0x0,0xf8a0000,0x0,0x800,0xf8a0000,0x0,0xf8a0000,0xf8a0000,0x0,0xf8a0000,0x30000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x4f800000,0x0,0xf800000,0x0,0xcf800000,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x147f0400,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x40001000,0x147f0400,0x400,0x0,0x147f0400,0x1000000,0x147f0400,0x147f0400,0x800000,0x147f0400,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x206,0x206,0x10300400,0x300400,0x10000000,0x4000,0x10300401,};
+	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x147f0400,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x1000,0x147f0400,0x400,0x0,0x147f0400,0x1000000,0x147f0400,0x147f0400,0x800000,0x147f0400,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x206,0x206,0x10300400,0x300400,0x10000000,0x4000,0x10300401,};
 	}
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;

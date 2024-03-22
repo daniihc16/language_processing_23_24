@@ -10,15 +10,15 @@
 package lib.tools.SemanticFunctions;
 
 import java.util.*;
-import traductor.Token;
+//import traductor.Token;
 import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 
 public class SemanticFunctions {
-	private ErrorSemantico errSem; //clase común de errores semánticos
+	//private ErrorSemantico errSem; //clase común de errores semánticos
 
 	public SemanticFunctions() {
-		errSem = new ErrorSemantico();
+		//errSem = new ErrorSemantico();
 	}
 
 	//COMPLETAR

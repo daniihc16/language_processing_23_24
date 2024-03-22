@@ -10,9 +10,15 @@
 
 package lib.symbolTable.exceptions;
 
+import lib.symbolTable.Symbol;
+
 public class AlreadyDefinedSymbolException extends Exception {
 
 	public AlreadyDefinedSymbolException() {
 
+	}
+
+	public String getMessage(Symbol s) {
+		return "Symbol has already been defined" + s.toString();
 	}
 }
