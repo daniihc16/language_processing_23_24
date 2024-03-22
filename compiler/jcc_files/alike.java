@@ -60,7 +60,10 @@ public class alike implements alikeConstants {
     }
 }
 
-  static final public ArrayList<Symbol> tipo_dato(ArrayList<String> ids, Token ref) throws ParseException {
+// Devuelve el array con los símbolos de los identificadores con su tipo
+// @param ids: lista de identificadores a los que se les va a asignar un tipo
+// @param ref: token que indica si el tipo es por referencia
+  static final public ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef) throws ParseException {
     trace_call("tipo_dato");
     try {
 ArrayList<Symbol> t;
@@ -69,7 +72,7 @@ ArrayList<Symbol> t;
       case tCHAR:
       case tBOOL:
       case tINT:{
-        t = tipo_base(ids, ref);
+        t = tipo_base(ids, isRef);
 {if ("" != null) return t;}
         break;
         }
@@ -99,9 +102,8 @@ ArrayList<Symbol> t;
         max = jj_consume_token(tINTCONST);
         jj_consume_token(tCPAR);
         jj_consume_token(tOF);
-        t = tipo_base(ids, ref);
-Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
-                if (ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+        t = tipo_base(ids, isRef);
+Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
                 int minInd = Integer.parseInt(min.image);
                 int maxInd = Integer.parseInt(max.image);
                 if (neg1 != null) minInd = minInd*(-1);
@@ -124,7 +126,10 @@ Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
     }
 }
 
-  static final public ArrayList<Symbol> tipo_base(ArrayList<String> ids, Token ref) throws ParseException {
+// Devuelve el array con los símbolos de los identificadores con su tipo
+// @param ids: lista de identificadores a los que se les va a asignar un tipo
+// @param isRef: indica si el tipo es por referencia
+  static final public ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef) throws ParseException {
     trace_call("tipo_base");
     try {
 Symbol t;
@@ -150,8 +155,7 @@ t = new SymbolInt("");
         throw new ParseException();
       }
 ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
-                Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
-                if (ref != null && ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+                Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
                 for (String id : ids) {
                         Symbol t_clone = t.clone();
                         t_clone.name = id;
@@ -202,19 +206,32 @@ ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
     trace_call("Programa");
     try {
 SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+        ArrayList<Symbol> vars = null;
       try {
         proc_main = cabecera_procedimiento();
 st.insertSymbol(proc_main);
                 System.out.println("Nuevo s\u00edmbolo: " + st.toString());
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
-          declaracion_variables();
+          vars = declaracion_variables();
           break;
           }
         default:
           jj_la1[6] = jj_gen;
           ;
         }
+if (vars != null) {
+                                for (Symbol var : vars) {
+                                        try{
+                                                st.insertSymbol(var);
+                                        } catch (AlreadyDefinedSymbolException ads){
+                                                System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc_main) + ": Par\u00e1metro ya declarado");
+                                        }
+                                }
+                        } else {
+                                vars = new ArrayList<Symbol>();
+                        }
+                        System.out.println("Nuevo s\u00edmbolo: " + st.toString());
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tPROC:
         case tFUNC:{
@@ -274,13 +291,15 @@ System.err.println("SEMANTIC_ERROR: " + ads.getMessage(proc_main));
     }
 }
 
-  static final public void declaracion_variables() throws ParseException {
+  static final public ArrayList<Symbol> declaracion_variables() throws ParseException {
     trace_call("declaracion_variables");
     try {
-
+ArrayList<Symbol> vars = new ArrayList<Symbol>();
+        ArrayList<Symbol> var_list = null;
       label_2:
       while (true) {
-        declaracion_var();
+        var_list = declaracion_var();
+for (Symbol var: var_list) vars.add(var);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           ;
@@ -291,21 +310,25 @@ System.err.println("SEMANTIC_ERROR: " + ads.getMessage(proc_main));
           break label_2;
         }
       }
+{if ("" != null) return vars;}
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("declaracion_variables");
     }
 }
 
-  static final public void declaracion_var() throws ParseException {
+  static final public ArrayList<Symbol> declaracion_var() throws ParseException {
     trace_call("declaracion_var");
     try {
 ArrayList<String> ids;
+        ArrayList<Symbol> vars;
       try {
-        // tipo_dato inserta los símbolos en la tabla de símbolos
+        // tipo_dato devuelve el símbolo 
                         ids = lista_ids();
         jj_consume_token(tDP);
-        tipo_dato(ids, new Token());
+        vars = tipo_dato(ids, false);
         jj_consume_token(tPC);
+{if ("" != null) return vars;}
       } catch (ParseException e) {
 System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -315,6 +338,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         if (t.kind == tPC) break;
                 }
       }
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("declaracion_var");
     }
@@ -356,10 +380,15 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
+// Reconoce la declaración de un procedimiento
+// Inserta el símbolo del procedimiento en la tabla de símbolos
+// Inserta bloque en la tabla de símbolos
+// Inserta los parámetros y variables en la tabla de símbolos
   static final public void declaracion_proc() throws ParseException {
     trace_call("declaracion_proc");
     try {
 SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+        ArrayList<Symbol> vars = null;
       try {
         proc = cabecera_procedimiento();
 st.insertSymbol(proc);
@@ -373,13 +402,25 @@ st.insertSymbol(proc);
                         }
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
-          declaracion_variables();
+          vars = declaracion_variables();
           break;
           }
         default:
           jj_la1[12] = jj_gen;
           ;
         }
+if (vars != null) {
+                                for (Symbol var : vars) {
+                                        try{
+                                                st.insertSymbol(var);
+                                        } catch (AlreadyDefinedSymbolException ads){
+                                                System.err.println("SEMANTIC_ERROR: Error definiendo nuevo variable" + ads.getMessage(proc) + ": Variable ya declarado");
+                                        }
+
+                                }
+                        } else {
+                                vars = new ArrayList<Symbol>();
+                        }
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tPROC:
         case tFUNC:{
@@ -438,21 +479,51 @@ System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.
     }
 }
 
+// Reconoce la declaración de una función
+// Inserta el símbolo de la función en la tabla de símbolos
+// Inserta bloque en la tabla de símbolos
+// Inserta los parámetros y variables en la tabla de símbolos
   static final public void declaracion_func() throws ParseException {
     trace_call("declaracion_func");
     try {
-
+ArrayList<Symbol> vars = null;
+        SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
       try {
-        cabecera_funcion();
+        func = cabecera_funcion();
+try {
+                                st.insertSymbol(func);
+                        } catch (AlreadyDefinedSymbolException ads) {
+                                System.err.println("SEMANTIC_ERROR: Error definiendo nueva funci\u00f3n" + ads.getMessage(func) + ": Funci\u00f3n ya declarada");
+                        }
+                        st.insertBlock();
+                        for (Symbol param : func.parList) {
+                                try {
+                                        st.insertSymbol(param);
+                                } catch (AlreadyDefinedSymbolException ads) {
+                                        System.err.println("SEMANTIC_ERROR: Error definiendo nueva funci\u00f3n" + ads.getMessage(func) + ": Par\u00e1metro ya declarado");
+                                }
+                        }
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
-          declaracion_variables();
+          vars = declaracion_variables();
           break;
           }
         default:
           jj_la1[15] = jj_gen;
           ;
         }
+if (vars != null) {
+                                for (Symbol var : vars) {
+                                        try{
+                                                st.insertSymbol(var);
+                                        } catch (AlreadyDefinedSymbolException ads){
+                                                System.err.println("SEMANTIC_ERROR: Error definiendo nueva funcion" + ads.getMessage(func) + ": Variable ya declarada");
+                                        }
+
+                                }
+                        } else {
+                                vars = new ArrayList<Symbol>();
+                        }
         jj_consume_token(tBEGIN);
         label_5:
         while (true) {
@@ -485,6 +556,7 @@ System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.
         }
         jj_consume_token(tEND);
         jj_consume_token(tPC);
+st.removeBlock();
       } catch (ParseException e) {
 System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -516,7 +588,7 @@ ArrayList<String> ids;
         jj_la1[17] = jj_gen;
         ;
       }
-      ids_con_tipo = tipo_dato(ids, ref);
+      ids_con_tipo = tipo_dato(ids, ref != null);
 {if ("" != null) return ids_con_tipo;}
     throw new Error("Missing return statement in function");
     } finally {
@@ -561,6 +633,7 @@ if (!st.containsSymbol(id.image)) {
     }
 }
 
+// Devuelve el símbolo del procedimiento con los parámetros
   static final public SymbolProcedure cabecera_procedimiento() throws ParseException {
     trace_call("cabecera_procedimiento");
     try {
@@ -586,16 +659,19 @@ Token id_proc;
     }
 }
 
-  static final public void cabecera_funcion() throws ParseException {
+// Devuelve el símbolo de la función con los parámetros
+  static final public SymbolFunction cabecera_funcion() throws ParseException {
     trace_call("cabecera_funcion");
     try {
-
+Token id_func;
+        ArrayList<Symbol> func_params = null;
+        ArrayList<Symbol> returnType = null;
       jj_consume_token(tFUNC);
-      jj_consume_token(tID);
+      id_func = jj_consume_token(tID);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tAPAR:
       case 62:{
-        parametros_formales();
+        func_params = parametros_formales();
         break;
         }
       default:
@@ -603,8 +679,10 @@ Token id_proc;
         ;
       }
       jj_consume_token(tRETURN);
-      tipo_dato(new ArrayList<String>(), new Token());
+      returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false);
       jj_consume_token(tIS);
+{if ("" != null) return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);}
+    throw new Error("Missing return statement in function");
     } finally {
       trace_return("cabecera_funcion");
     }
@@ -1361,17 +1439,17 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_1()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tCOMA)) return true;
-    return false;
-  }
-
   static private boolean jj_3_2()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tAPAR)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tCOMA)) return true;
     return false;
   }
 

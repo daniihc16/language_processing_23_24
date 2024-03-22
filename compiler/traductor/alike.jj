@@ -138,16 +138,17 @@ void boolconst():
 }
 
 // Devuelve el array con los símbolos de los identificadores con su tipo
-ArrayList<Symbol> tipo_dato(ArrayList<String> ids, Token ref):
+// @param ids: lista de identificadores a los que se les va a asignar un tipo
+// @param ref: token que indica si el tipo es por referencia
+ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef):
 {
 	ArrayList<Symbol> t;
 	Token neg1 = null, neg2 = null, min, max;
 }
 {
-	t = tipo_base(ids, ref) { return t; }
-	| <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, ref) {
-		Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
-		if (ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+	t = tipo_base(ids, isRef) { return t; }
+	| <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, isRef) {
+		Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
 		int minInd = Integer.parseInt(min.image);
 		int maxInd = Integer.parseInt(max.image);
 		if (neg1 != null) minInd = minInd*(-1);
@@ -160,17 +161,18 @@ ArrayList<Symbol> tipo_dato(ArrayList<String> ids, Token ref):
 	}
 }
 
-ArrayList<Symbol> tipo_base(ArrayList<String> ids, Token ref):
+
+// Devuelve el array con los símbolos de los identificadores con su tipo
+// @param ids: lista de identificadores a los que se les va a asignar un tipo
+// @param isRef: indica si el tipo es por referencia
+ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef):
 {
 	Symbol t;
 }
 {
-	
-	
 	(<tCHAR> {t = new SymbolChar("");} | <tBOOL> {t = new SymbolBool("");} | <tINT>{t = new SymbolInt("");} ) {
 		ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
-		Symbol.ParameterClass p_class = Symbol.ParameterClass.VAL;
-		if (ref != null && ref.image == alikeConstants.tokenImage[tREF]) p_class = Symbol.ParameterClass.REF;
+		Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
 		for (String id : ids) {
 			Symbol t_clone = t.clone();
 			t_clone.name = id;
@@ -180,6 +182,7 @@ ArrayList<Symbol> tipo_base(ArrayList<String> ids, Token ref):
 		return ids_symbols;
 	}
 }
+
 
 void tipo_constante():
 {
@@ -194,6 +197,7 @@ void tipo_constante():
 void Programa() : 
 {
 	SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+	ArrayList<Symbol> vars = null;
 }
 {
    try {
@@ -207,13 +211,13 @@ void Programa() :
 					try{
 						st.insertSymbol(var);
 					} catch (AlreadyDefinedSymbolException ads){
-						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc_main) + ": Parámetro ya declarado");
 					}
-					
 				}
 			} else {
 				vars = new ArrayList<Symbol>();
 			}
+			System.out.println("Nuevo símbolo: " + st.toString());
 		}
 	( declaracion_procs_funcs() )?
 	<tBEGIN>
@@ -257,7 +261,7 @@ ArrayList<Symbol> declaracion_var() :
 { 
 	try {
 		// tipo_dato devuelve el símbolo 
-		ids = lista_ids() <tDP> vars = tipo_dato(ids, new Token()) <tPC> {
+		ids = lista_ids() <tDP> vars = tipo_dato(ids, false) <tPC> {
 			return vars;
 		}
 	} catch (ParseException e) {
@@ -271,6 +275,7 @@ ArrayList<Symbol> declaracion_var() :
 	}
 }
 
+
 void declaracion_procs_funcs() : 
 {
 
@@ -279,6 +284,10 @@ void declaracion_procs_funcs() :
 	( declaracion_proc() | declaracion_func() )+
 }
 
+// Reconoce la declaración de un procedimiento
+// Inserta el símbolo del procedimiento en la tabla de símbolos
+// Inserta bloque en la tabla de símbolos
+// Inserta los parámetros y variables en la tabla de símbolos
 void declaracion_proc():
 {
 	SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
@@ -287,7 +296,12 @@ void declaracion_proc():
 {
 	try {
 		proc = cabecera_procedimiento() {
-			st.insertSymbol(proc);
+			try {
+				st.insertSymbol(proc);
+			}	
+			catch (AlreadyDefinedSymbolException ads) {
+				System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Procedimiento o parámetros ya declarados");
+			}
 			st.insertBlock();
 			for (Symbol param : proc.parList) {
 				try {
@@ -303,7 +317,7 @@ void declaracion_proc():
 					try{
 						st.insertSymbol(var);
 					} catch (AlreadyDefinedSymbolException ads){
-						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo variable" + ads.getMessage(proc) + ": Variable ya declarado");
 					}
 					
 				}
@@ -324,24 +338,44 @@ void declaracion_proc():
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	}catch (AlreadyDefinedSymbolException ads) {
-	   System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Procedimiento o parámetros ya declarados");
 	}
 }
 
+
+// Reconoce la declaración de una función
+// Inserta el símbolo de la función en la tabla de símbolos
+// Inserta bloque en la tabla de símbolos
+// Inserta los parámetros y variables en la tabla de símbolos
 void declaracion_func():
-{}
+{
+	ArrayList<Symbol> vars = null;
+	SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
+}
 {
 	
 	try {
-		cabecera_funcion()
+		func = cabecera_funcion() {
+			try {
+				st.insertSymbol(func);
+			} catch (AlreadyDefinedSymbolException ads) {
+				System.err.println("SEMANTIC_ERROR: Error definiendo nueva función" + ads.getMessage(func) + ": Función ya declarada");
+			}
+			st.insertBlock();
+			for (Symbol param : func.parList) {
+				try {
+					st.insertSymbol(param);
+				} catch (AlreadyDefinedSymbolException ads) {
+					System.err.println("SEMANTIC_ERROR: Error definiendo nueva función" + ads.getMessage(func) + ": Parámetro ya declarado");
+				}
+			}
+		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
 				for (Symbol var : vars) {
 					try{
 						st.insertSymbol(var);
 					} catch (AlreadyDefinedSymbolException ads){
-						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+						System.err.println("SEMANTIC_ERROR: Error definiendo nueva funcion" + ads.getMessage(func) + ": Variable ya declarada");
 					}
 					
 				}
@@ -353,6 +387,9 @@ void declaracion_func():
 		(instruccion())+
 		<tEND>
 		<tPC>
+		{
+			st.removeBlock();
+		}
 	} catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -371,7 +408,7 @@ ArrayList<Symbol> declaracion_param() :
 	Token ref = null;
 }
 {
-	ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref)
+	ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref != null)
 	{
 		return ids_con_tipo;
 	}
@@ -399,6 +436,7 @@ ArrayList<String> lista_ids() :
 }
 }
 
+// Devuelve el símbolo del procedimiento con los parámetros
 SymbolProcedure cabecera_procedimiento():
 {
 	Token id_proc;
@@ -411,10 +449,19 @@ SymbolProcedure cabecera_procedimiento():
 	}
 }
 
-void cabecera_funcion():
-{}
+
+// Devuelve el símbolo de la función con los parámetros
+SymbolFunction cabecera_funcion():
 {
-	<tFUNC> <tID> ( parametros_formales() )? <tRETURN> tipo_dato(new ArrayList<String>(), new Token()) <tIS>
+	Token id_func;
+	ArrayList<Symbol> func_params = null;
+	ArrayList<Symbol> returnType = null;
+	
+}
+{
+	<tFUNC> id_func = <tID> ( func_params = parametros_formales() )? <tRETURN> returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false) <tIS> {
+		return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);
+	}
 }
 
 
