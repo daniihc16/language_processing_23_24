@@ -8,7 +8,7 @@
 options {
 	IGNORE_CASE = true;	//No distinguir entre mayúsculas y minúsculas
 	COMMON_TOKEN_ACTION = false; //Se generan acciones por defecto
-	DEBUG_PARSER = true; //Genera información de depuración
+	DEBUG_PARSER = false; //Genera información de depuración
 }
 
 PARSER_BEGIN(alike)
@@ -18,6 +18,8 @@ package traductor;
 import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import java.util.*;
+import lib.tools.ExpresionResult;
+import lib.tools.exceptions.*;
 
 
 public class alike {
@@ -131,10 +133,12 @@ TOKEN : {
    
 }
 
-void boolconst():
-{}
+Token boolconst():
 {
-	<tTRUE> | <tFALSE>
+	Token bool_const = null;
+}
+{
+	( bool_const = <tTRUE> | bool_const = <tFALSE>) { return bool_const; }
 }
 
 // Devuelve el array con los símbolos de los identificadores con su tipo
@@ -184,12 +188,23 @@ ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef):
 }
 
 
-void tipo_constante():
+ExpresionResult tipo_constante():
 {
-
+	Token char_const = null;
+	Token int_const = null;
+	Token bool_const = null;
+	Token string_const = null;
 }
 {
-	<tCHARCONST> | <tINTCONST> | boolconst()| <tSTRING>
+	char_const = <tCHARCONST> {
+		return new ExpresionResult(Symbol.Types.CHAR, char_const.image.charAt(0));
+	} | int_const = <tINTCONST> {
+		return new ExpresionResult(Symbol.Types.INT, Integer.parseInt(int_const.image));
+	} | bool_const = boolconst() {
+		return new ExpresionResult(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
+	} | string_const = <tSTRING> {
+		return new ExpresionResult(Symbol.Types.STRING, string_const.image);
+	}
 }
 
 
@@ -303,13 +318,16 @@ void declaracion_proc():
 				System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Procedimiento o parámetros ya declarados");
 			}
 			st.insertBlock();
-			for (Symbol param : proc.parList) {
-				try {
-					st.insertSymbol(param);
-				} catch (AlreadyDefinedSymbolException ads) {
-					System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+			if (proc.parList != null) {
+				for (Symbol param : proc.parList) {
+					try {
+						st.insertSymbol(param);
+					} catch (AlreadyDefinedSymbolException ads) {
+						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
+					}
 				}
 			}
+			
 		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
@@ -330,6 +348,10 @@ void declaracion_proc():
 		(instruccion())+
 		<tEND>
 		<tPC>
+		{
+			System.out.println("Procedimiento reconocido: " + st.toString());
+			st.removeBlock();
+		}
 	} catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
@@ -348,7 +370,7 @@ void declaracion_proc():
 // Inserta los parámetros y variables en la tabla de símbolos
 void declaracion_func():
 {
-	ArrayList<Symbol> vars = null;
+	ArrayList<Symbol> vars = new ArrayList<Symbol>();
 	SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
 }
 {
@@ -361,15 +383,18 @@ void declaracion_func():
 				System.err.println("SEMANTIC_ERROR: Error definiendo nueva función" + ads.getMessage(func) + ": Función ya declarada");
 			}
 			st.insertBlock();
-			for (Symbol param : func.parList) {
-				try {
-					st.insertSymbol(param);
-				} catch (AlreadyDefinedSymbolException ads) {
-					System.err.println("SEMANTIC_ERROR: Error definiendo nueva función" + ads.getMessage(func) + ": Parámetro ya declarado");
+			if (func.parList != null){
+				for (Symbol param : func.parList) {
+					try {
+						st.insertSymbol(param);
+					} catch (AlreadyDefinedSymbolException ads) {
+						System.err.println("SEMANTIC_ERROR: Error definiendo nueva función" + ads.getMessage(func) + ": Parámetro ya declarado");
+					}
 				}
 			}
 		}
 		( vars = declaracion_variables() )? {
+			
 			if (vars != null) {
 				for (Symbol var : vars) {
 					try{
@@ -379,8 +404,6 @@ void declaracion_func():
 					}
 					
 				}
-			} else {
-				vars = new ArrayList<Symbol>();
 			}
 		}
 		<tBEGIN>
@@ -388,6 +411,7 @@ void declaracion_func():
 		<tEND>
 		<tPC>
 		{
+			System.out.println("Función reconocida: " + st.toString());
 			st.removeBlock();
 		}
 	} catch (ParseException e) {
@@ -414,7 +438,7 @@ ArrayList<Symbol> declaracion_param() :
 	}
 }
 
-
+// Devuelve la lista de identificadores reconocidos
 ArrayList<String> lista_ids() :
 {
 	ArrayList<String> ids = new ArrayList<String>();
@@ -424,16 +448,12 @@ ArrayList<String> lista_ids() :
 {
 	( LOOKAHEAD(2) id = <tID> <tCOMA> resto_ids = lista_ids()
 |	id = <tID>) {
-	if (!st.containsSymbol(id.image)) {
 		ids.add(id.image);
-	} else {
-		System.err.println(id.image + " ya está definido");
+		if (resto_ids != null) {
+			for (String sid : resto_ids) ids.add(sid);
+		}
+		return ids;
 	}
-	if (resto_ids != null) {
-		for (String sid : resto_ids) ids.add(sid);
-	}
-	return ids;
-}
 }
 
 // Devuelve el símbolo del procedimiento con los parámetros
@@ -506,7 +526,7 @@ ArrayList<Symbol> lista_parametros_formales():
 		resto_p = lista_parametros_formales() {
 			for (Symbol p :  resto_p) params.add(p);
 		}
-	 )
+	 ) { return params; }
 	| { return params; }
 }
 
@@ -538,9 +558,12 @@ void instruccion() :
 }
 
 void inst_leer() :
-{}
 {
-	<tGET> <tAPAR> lista_ids() <tCPAR>
+	ArrayList<String> ids = null;
+}
+{
+	<tGET> <tAPAR> ids = lista_ids() <tCPAR> {
+	}
 }
 
 void inst_escribir() :
@@ -560,7 +583,7 @@ void inst_escribir_linea() :
 void inst_invocacion_o_asignacion() :
 {}
 {
-	primario() ( <tASIGN> expresion())? // preguntar si bien o restringir más
+	primario() ( <tASIGN> expresion())?
 }
 
 void inst_if():
@@ -585,7 +608,7 @@ void inst_return() :
 	<tRETURN> expresion()
 }
 
-void expresion(): 
+ExpresionResult expresion(): 
 {}
 {
     relacion()
@@ -632,12 +655,26 @@ void factor():
 	| <tNOT> primario()
 }
 
-void primario() :
-{}
+ExpresionResult primario() :
+{
+	ExpresionResult exp = null;
+}
 {
     <tAPAR> expresion() <tCPAR>
-|	<tINT2CHAR> <tAPAR> expresion() <tCPAR>
-|	<tCHAR2INT> <tAPAR> expresion() <tCPAR>
+|	<tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
+	if (exp.type == Symbol.Types.INT) {
+		return new ExpresionResult(Symbol.Types.CHAR, (char)exp.value);
+	} else {
+		throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);
+	}
+}
+|	<tCHAR2INT> <tAPAR> expresion() <tCPAR> {
+	if (exp.type == Symbol.Types.CHAR) {
+		return new ExpresionResult(Symbol.Types.INT, String.valueOf(exp.value));
+	} else {
+		throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);
+	}
+}
 |	LOOKAHEAD(2)
     <tID> <tAPAR> lista_una_o_mas_exps() <tCPAR> //invoc. func. o comp. array
 |	<tID>              //var. o func. sin pars

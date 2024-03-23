@@ -36,3 +36,8 @@ Analizador Semántico:
 ---------------------------------------------
 Las inserciones en la tabla de símbolos se realizan en el nivel más alto que se pueda.
 De esta forma se tiene control total sobre qué símbolos se insertan en qué bloque y cuándo.
+
+TODOS
+- Funciones tienen que tener un return y que sea adecuado
+- Mirar posibles bucles infinitos (guardas constantes)
+- GET() los params pueden ser variables o comp de array -> donde meter que puedan ser comp de array y checkear que no estén fuera de rango si la expresion es constante
