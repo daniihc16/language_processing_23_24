@@ -98,7 +98,8 @@ public class alike implements alikeConstants {
       jj_consume_token(tCPAR);
       jj_consume_token(tOF);
       t = tipo_base(ids, isRef);
-Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
+//return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);
+                Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
                 int minInd = Integer.parseInt(min.image);
                 int maxInd = Integer.parseInt(max.image);
                 if (neg1 != null) minInd = minInd*(-1);
@@ -736,9 +737,17 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
+    } catch (UnexpectedTypeException e) {
+System.err.println("SEMANTIC ERROR: " + e.getMessage());
+                // Reconocer hasta el token <tPC>
+                while (true) {
+                        Token t = getNextToken();
+                        if (t.kind == tPC) break;
+                }
     }
 }
 
+// la dejamos pq puede haber indexaciones a arrays y eso hay que pensarlo donde poner el sintáctico de las indexaciones
   static final public void inst_leer() throws ParseException {ArrayList<String> ids = null;
     jj_consume_token(tGET);
     jj_consume_token(tAPAR);
@@ -747,19 +756,28 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
 
 }
 
-  static final public void inst_escribir() throws ParseException {
+  static final public void inst_escribir() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
     jj_consume_token(tPUT);
     jj_consume_token(tAPAR);
-    lista_una_o_mas_exps();
+    exps = lista_una_o_mas_exps();
     jj_consume_token(tCPAR);
+// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
+                // han de convertirse con int2char()
+                for (ExpresionResult exp:exps) {
+                        if (exp.type != Symbol.Types.STRING &&
+                        exp.type != Symbol.Types.CHAR &&
+                        exp.type != Symbol.Types.INT &&
+                        exp.type != Symbol.Types.BOOL) {if (true) throw new UnexpectedTypeException(Symbol.Types.STRING, exp.type);}
+                }
+                System.out.println("Encontrada instrucci\u00f3n put correcta");
 }
 
-  static final public void inst_escribir_linea() throws ParseException {
+  static final public void inst_escribir_linea() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
     jj_consume_token(tPUTLINE);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAPAR:{
       jj_consume_token(tAPAR);
-      lista_una_o_mas_exps();
+      exps = lista_una_o_mas_exps();
       jj_consume_token(tCPAR);
       break;
       }
@@ -767,10 +785,24 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
       jj_la1[24] = jj_gen;
       ;
     }
+// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
+                // han de convertirse con int2char()
+                if (exps != null) {
+                        for (ExpresionResult exp:exps) {
+                                if (exp.type != Symbol.Types.STRING &&
+                                        exp.type != Symbol.Types.CHAR &&
+                                        exp.type != Symbol.Types.INT &&
+                                        exp.type != Symbol.Types.BOOL) {if (true) throw new UnexpectedTypeException(Symbol.Types.STRING, exp.type);}
+                        }
+                }
+
+                System.out.println("Encontrada instrucci\u00f3n put_line correcta");
+
+                // Añadir un salto de línea al final en la generación de código
 
 }
 
-  static final public void inst_invocacion_o_asignacion() throws ParseException {
+  static final public void inst_invocacion_o_asignacion() throws ParseException, UnexpectedTypeException {
     primario();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tASIGN:{
@@ -784,7 +816,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
-  static final public void inst_if() throws ParseException {
+  static final public void inst_if() throws ParseException, UnexpectedTypeException {
     jj_consume_token(tIF);
     expresion();
     jj_consume_token(tTHEN);
@@ -903,7 +935,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     jj_consume_token(tIF);
 }
 
-  static final public void inst_while() throws ParseException {
+  static final public void inst_while() throws ParseException, UnexpectedTypeException {
     jj_consume_token(tWHILE);
     expresion();
     jj_consume_token(tLOOP);
@@ -940,12 +972,12 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     jj_consume_token(tLOOP);
 }
 
-  static final public void inst_return() throws ParseException {
+  static final public void inst_return() throws ParseException, UnexpectedTypeException {
     jj_consume_token(tRETURN);
     expresion();
 }
 
-  static final public ExpresionResult expresion() throws ParseException {
+  static final public ExpresionResult expresion() throws ParseException, UnexpectedTypeException {
     relacion();
     label_11:
     while (true) {
@@ -975,9 +1007,11 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
       }
       relacion();
     }
+{if ("" != null) return new ExpresionResult(Symbol.Types.STRING, "");}
+    throw new Error("Missing return statement in function");
 }
 
-  static final public void relacion() throws ParseException {
+  static final public void relacion() throws ParseException, UnexpectedTypeException {
     expresion_simple();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tLT:
@@ -996,7 +1030,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
-  static final public void operador_relacional() throws ParseException {
+  static final public void operador_relacional() throws ParseException, UnexpectedTypeException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tEQ:{
       jj_consume_token(tEQ);
@@ -1029,7 +1063,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
-  static final public void expresion_simple() throws ParseException {
+  static final public void expresion_simple() throws ParseException, UnexpectedTypeException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tPLUS:
     case tMINUS:{
@@ -1084,7 +1118,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
-  static final public void termino() throws ParseException {
+  static final public void termino() throws ParseException, UnexpectedTypeException {
     factor();
     label_13:
     while (true) {
@@ -1104,18 +1138,18 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
-  static final public void operador_multiplicativo() throws ParseException {
+  static final public Token operador_multiplicativo() throws ParseException, UnexpectedTypeException {Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tTIMES:{
-      jj_consume_token(tTIMES);
-      break;
-      }
-    case tMOD:{
-      jj_consume_token(tMOD);
+      t = jj_consume_token(tTIMES);
       break;
       }
     case tDIV:{
-      jj_consume_token(tDIV);
+      t = jj_consume_token(tDIV);
+      break;
+      }
+    case tMOD:{
+      t = jj_consume_token(tMOD);
       break;
       }
     default:
@@ -1123,9 +1157,11 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
       jj_consume_token(-1);
       throw new ParseException();
     }
+{if ("" != null) return t;}
+    throw new Error("Missing return statement in function");
 }
 
-  static final public void factor() throws ParseException {
+  static final public void factor() throws ParseException, UnexpectedTypeException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tCHARCONST:
     case tINTCONST:
@@ -1151,12 +1187,13 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
-  static final public ExpresionResult primario() throws ParseException {ExpresionResult exp = null;
+  static final public ExpresionResult primario() throws ParseException, UnexpectedTypeException {ExpresionResult exp = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAPAR:{
       jj_consume_token(tAPAR);
-      expresion();
+      exp = expresion();
       jj_consume_token(tCPAR);
+{if ("" != null) return exp;}
       break;
       }
     case tINT2CHAR:{
@@ -1190,10 +1227,12 @@ if (exp.type == Symbol.Types.CHAR) {
         jj_consume_token(tAPAR);
         lista_una_o_mas_exps();
         jj_consume_token(tCPAR);
+{if ("" != null) return new ExpresionResult(Symbol.Types.INT, 0);}
       } else {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           jj_consume_token(tID);
+{if ("" != null) return new ExpresionResult(Symbol.Types.INT, 0);}
           break;
           }
         case tCHARCONST:
@@ -1202,6 +1241,7 @@ if (exp.type == Symbol.Types.CHAR) {
         case tFALSE:
         case tSTRING:{
           tipo_constante();
+{if ("" != null) return new ExpresionResult(Symbol.Types.INT, 0);}
           break;
           }
         default:
@@ -1214,45 +1254,31 @@ if (exp.type == Symbol.Types.CHAR) {
     throw new Error("Missing return statement in function");
 }
 
-  static final public void lista_una_o_mas_exps() throws ParseException {
-    label_14:
-    while (true) {
-      expresion();
-      label_15:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tCOMA:{
-          ;
-          break;
-          }
-        default:
-          jj_la1[45] = jj_gen;
-          break label_15;
-        }
-        jj_consume_token(tCOMA);
-        expresion();
+  static final public ArrayList<ExpresionResult> lista_una_o_mas_exps() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
+        ExpresionResult exp;
+    exp = expresion();
+    exps = lista_exps_ll();
+exps.add(exp);
+                {if ("" != null) return exps;}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public ArrayList<ExpresionResult> lista_exps_ll() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
+        ExpresionResult exp;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tCOMA:{
+      jj_consume_token(tCOMA);
+      exp = expresion();
+      exps = lista_exps_ll();
+exps.add(exp);
+                {if ("" != null) return exps;}
+      break;
       }
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tCHARCONST:
-      case tINTCONST:
-      case tTRUE:
-      case tFALSE:
-      case tSTRING:
-      case tNOT:
-      case tPLUS:
-      case tMINUS:
-      case tAPAR:
-      case tINT2CHAR:
-      case tCHAR2INT:
-      case tID:{
-        ;
-        break;
-        }
-      default:
-        jj_la1[46] = jj_gen;
-        break label_14;
-      }
+    default:
+      jj_la1[45] = jj_gen;
+{if ("" != null) return exps;}
     }
+    throw new Error("Missing return statement in function");
 }
 
   static private boolean jj_2_1(int xla)
@@ -1271,17 +1297,17 @@ if (exp.type == Symbol.Types.CHAR) {
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_1()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tCOMA)) return true;
-    return false;
-  }
-
   static private boolean jj_3_2()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tAPAR)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tCOMA)) return true;
     return false;
   }
 
@@ -1297,7 +1323,7 @@ if (exp.type == Symbol.Types.CHAR) {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[47];
+  static final private int[] jj_la1 = new int[46];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -1305,10 +1331,10 @@ if (exp.type == Symbol.Types.CHAR) {
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x6000000,0x0,0x0,0x740000,0x700000,0xf800000,0x0,0x18000,0xf8a0000,0x0,0x18000,0x18000,0x0,0x18000,0xf8a0000,0x0,0xf8a0000,0x1000,0x0,0x0,0x0,0x0,0x0,0xf8a0000,0x0,0x800,0xf8a0000,0x0,0xf8a0000,0xf8a0000,0x0,0xf8a0000,0x30000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x4f800000,0x0,0xf800000,0x0,0xcf800000,};
+	   jj_la1_0 = new int[] {0x6000000,0x0,0x0,0x740000,0x700000,0xf800000,0x0,0x18000,0xf8a0000,0x0,0x18000,0x18000,0x0,0x18000,0xf8a0000,0x0,0xf8a0000,0x1000,0x0,0x0,0x0,0x0,0x0,0xf8a0000,0x0,0x800,0xf8a0000,0x0,0xf8a0000,0xf8a0000,0x0,0xf8a0000,0x30000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x4f800000,0x0,0xf800000,0x0,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x147f0400,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x1000,0x147f0400,0x400,0x0,0x147f0400,0x1000000,0x147f0400,0x147f0400,0x800000,0x147f0400,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x206,0x206,0x10300400,0x300400,0x10000000,0x4000,0x10300401,};
+	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x147f0400,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x1000,0x147f0400,0x400,0x0,0x147f0400,0x1000000,0x147f0400,0x147f0400,0x800000,0x147f0400,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x206,0x206,0x10300400,0x300400,0x10000000,0x4000,};
 	}
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
@@ -1332,7 +1358,7 @@ if (exp.type == Symbol.Types.CHAR) {
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1347,7 +1373,7 @@ if (exp.type == Symbol.Types.CHAR) {
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1365,7 +1391,7 @@ if (exp.type == Symbol.Types.CHAR) {
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1384,7 +1410,7 @@ if (exp.type == Symbol.Types.CHAR) {
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1401,7 +1427,7 @@ if (exp.type == Symbol.Types.CHAR) {
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1411,7 +1437,7 @@ if (exp.type == Symbol.Types.CHAR) {
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1547,7 +1573,7 @@ if (exp.type == Symbol.Types.CHAR) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 47; i++) {
+	 for (int i = 0; i < 46; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

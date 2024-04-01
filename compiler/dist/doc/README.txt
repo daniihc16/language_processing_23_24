@@ -36,6 +36,7 @@ Analizador Semántico:
 ---------------------------------------------
 Las inserciones en la tabla de símbolos se realizan en el nivel más alto que se pueda.
 De esta forma se tiene control total sobre qué símbolos se insertan en qué bloque y cuándo.
+No se permite lógica booleana con operadores no booleanos (1 AND 0 no está permitido al igual que 2 OR 'a')
 
 TODOS
 - Funciones tienen que tener un return y que sea adecuado

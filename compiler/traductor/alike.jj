@@ -18,7 +18,7 @@ package traductor;
 import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import java.util.*;
-import lib.tools.ExpresionResult;
+import lib.tools.TypeValue;
 import lib.tools.exceptions.*;
 
 
@@ -152,6 +152,7 @@ ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef):
 {
 	t = tipo_base(ids, isRef) { return t; }
 	| <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, isRef) {
+		//return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);
 		Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
 		int minInd = Integer.parseInt(min.image);
 		int maxInd = Integer.parseInt(max.image);
@@ -188,7 +189,7 @@ ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef):
 }
 
 
-ExpresionResult tipo_constante():
+TypeValue tipo_constante():
 {
 	Token char_const = null;
 	Token int_const = null;
@@ -197,13 +198,13 @@ ExpresionResult tipo_constante():
 }
 {
 	char_const = <tCHARCONST> {
-		return new ExpresionResult(Symbol.Types.CHAR, char_const.image.charAt(0));
+		return new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));
 	} | int_const = <tINTCONST> {
-		return new ExpresionResult(Symbol.Types.INT, Integer.parseInt(int_const.image));
+		return new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
 	} | bool_const = boolconst() {
-		return new ExpresionResult(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
+		return new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
 	} | string_const = <tSTRING> {
-		return new ExpresionResult(Symbol.Types.STRING, string_const.image);
+		return new TypeValue(Symbol.Types.STRING, string_const.image);
 	}
 }
 
@@ -553,10 +554,18 @@ void instruccion() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
+	} catch (UnexpectedTypeException e) {
+		System.err.println("SEMANTIC ERROR: " + e.getMessage());
+		// Reconocer hasta el token <tPC>
+		while (true) {
+			Token t = getNextToken();
+			if (t.kind == tPC) break;
+		}
 	}
 
 }
 
+// la dejamos pq puede haber indexaciones a arrays y eso hay que pensarlo donde poner el sintáctico de las indexaciones
 void inst_leer() :
 {
 	ArrayList<String> ids = null;
@@ -566,27 +575,54 @@ void inst_leer() :
 	}
 }
 
-void inst_escribir() :
-{}
+void inst_escribir() throws UnexpectedTypeException :
 {
-	<tPUT> <tAPAR> lista_una_o_mas_exps() <tCPAR>
+	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 }
-
-void inst_escribir_linea() :
-{}
 {
-	<tPUTLINE> (<tAPAR> lista_una_o_mas_exps()	<tCPAR>)? {
-		// añadir inst de salto de línea
+	<tPUT> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
+		// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
+		// han de convertirse con int2char()
+		for (TypeValue exp:exps) {
+			if (exp.type != Symbol.Types.STRING && 
+			exp.type != Symbol.Types.CHAR &&
+			exp.type != Symbol.Types.INT &&
+			exp.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.STRING, exp.type);	
+		}
+		System.out.println("Encontrada instrucción put correcta");
 	}
 }
 
-void inst_invocacion_o_asignacion() :
+void inst_escribir_linea() throws UnexpectedTypeException :
+{
+	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+}
+{
+	<tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps()	<tCPAR>)? {
+		// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
+		// han de convertirse con int2char()
+		if (exps != null) {
+			for (TypeValue exp:exps) {
+				if (exp.type != Symbol.Types.STRING && 
+					exp.type != Symbol.Types.CHAR &&
+					exp.type != Symbol.Types.INT &&
+					exp.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.STRING, exp.type);	
+			}
+		}
+		
+		System.out.println("Encontrada instrucción put_line correcta");
+
+		// Añadir un salto de línea al final en la generación de código
+	}
+}
+
+void inst_invocacion_o_asignacion() throws UnexpectedTypeException :
 {}
 {
 	primario() ( <tASIGN> expresion())?
 }
 
-void inst_if():
+void inst_if() throws UnexpectedTypeException :
 {}
 {
 	// debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
@@ -596,95 +632,244 @@ void inst_if():
 	<tEND> <tIF>
 }
 
-void inst_while() :
+void inst_while() throws UnexpectedTypeException :
 {}
 {
 	<tWHILE> expresion() <tLOOP> (instruccion())+ <tEND> <tLOOP>
 }
 
-void inst_return() :
+void inst_return() throws UnexpectedTypeException :
 {}
 {
 	<tRETURN> expresion()
 }
 
-ExpresionResult expresion(): 
-{}
+TypeValue expresion() throws UnexpectedTypeException: 
 {
-    relacion()
-	((<tAND> | <tOR>) relacion())*
+	TypeValue prel, rest_rel;
+	Token op;
+}
+{
+    prel = relacion() ( (op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
+		if (rest_rel != null) {
+			if (prel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rel.type);
+			if (rest_rel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rest_rel.type);
+			// evaluamos prematuramente las relaciones para determinar un posible valor constante
+			if (prel.value != null && rest_rel.value != null) {
+				switch (op.kind) {
+					case tAND:
+						return new TypeValue(Symbol.Types.BOOL, prel.value && rest_rel.value);
+					case tOR:
+						return new TypeValue(Symbol.Types.BOOL, prel.value || rest_rel.value);
+				}
+			} else {
+				return new TypeValue(Symbol.Types.BOOL, null);
+			}
+		} else {
+			return prel;
+		}
+	}
 }
 
-void relacion():
-{}
+
+TypeValue lista_una_o_mas_relaciones_booleanas() throws UnexpectedTypeException:
 {
-    expresion_simple()
- 	( operador_relacional() expresion_simple() )?
+	TypeValue prel, rest_rel;
+	Token op;
+}
+{
+	prel = relacion() ((op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
+		if (prel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rel.type);
+		if (rest_rel != null) {
+			if (rest_rel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rest_rel.type);
+			// evaluamos prematuramente las relaciones para determinar un posible valor constante
+			if (prel.value != null && rest_rel.value != null) {
+				switch (op.kind) {
+					case tAND:
+						return new TypeValue(Symbol.Types.BOOL, prel.value && rest_rel.value);
+					case tOR:
+						return new TypeValue(Symbol.Types.BOOL, prel.value || rest_rel.value);
+				}
+			} else {
+				return new TypeValue(Symbol.Types.BOOL, null);
+			}
+		} else {
+			return prel;
+		}
+	}
 }
 
-void operador_relacional():
-{}
+TypeValue relacion() throws UnexpectedTypeException:
 {
-	<tEQ> | <tNE> | <tLT> | <tLE> | <tGT> | <tGE>
+	TypeValue exp1, exp2;	
+	Token op;
+}
+{
+    exp1 = expresion_simple()
+ 	( op = operador_relacional() exp2 = expresion_simple() )? {
+		// Si hay un operador relacional y por tanto una exp2 el resultado es un booleano
+		if (exp2 != null) {
+			// Si hay un operador relacional y las expresiones no son del mismo tipo, lanzamos una excepción
+			if (exp1.type != exp2.type) throw new UnexpectedTypeException(exp1.type, exp2.type);
+			if (exp1.value != null && exp2.value != null) {
+				// Si ambas expresiones son constantes, evaluamos la relación
+				switch (op.kind) {
+					case tEQ:
+						return new TypeValue(Symbol.Types.BOOL, exp1.value == exp2.value);
+					case tNE:
+						return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);
+					case tLT:
+						return new TypeValue(Symbol.Types.BOOL, exp1.value < exp2.value);
+					case tLE:
+						return new TypeValue(Symbol.Types.BOOL, exp1.value <= exp2.value);
+					case tGT:
+						return new TypeValue(Symbol.Types.BOOL, exp1.value > exp2.value);
+					case tGE:
+						return new TypeValue(Symbol.Types.BOOL, exp1.value >= exp2.value);
+				}
+			} else {
+				// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
+				return new TypeValue(Symbol.Types.BOOL, null);
+			}
+		} else {
+			return exp1;
+		}
+	}
 }
 
-void expresion_simple():
-{}
+Token operador_relacional() throws UnexpectedTypeException:
 {
-    ( <tPLUS> |	<tMINUS> )? 
-    termino()
-	( ( <tPLUS> | <tMINUS> ) termino() )*
+	Token t
+}
+{
+	(t = <tEQ> | t = <tNE> | t = <tLT> | t = <tLE> | t = <tGT> | t = <tGE>) { return t; }
 }
 
-void termino():
+TypeValue expresion_simple() throws UnexpectedTypeException:
+{
+	TypeValue term, term_resultante;
+	Token op, ops;
+	// HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
+}
+{
+    ( ops = <tPLUS> | ops =	<tMINUS> )? 
+    term = termino()  (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
+		if (ops != null && term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
+		if (term.value != null) {
+			if (ops == null || ops.kind == tPLUS) term = new TypeValue(term.type, term.value);
+			else term = new TypeValue(term.type, term.value*-1);
+		} else term =  new TypeValue(term.type, null);
+
+		if (term_resultante != null) {
+			if (term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
+			if (term_resultante.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term_resultante.type);
+			if (term.value != null && term_resultante != null) {
+				if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, term.value + term_resultante);
+				else return new TypeValue(Symbol.Types.INT, term.value - term_resultante);
+			} else { 
+				return new TypeValue(Symbol.Types.INT, null);
+			}
+		} else {
+			return term;
+		}
+	}
+}
+
+TypeValue una_o_mas_expresiones_simples() throws UnexpectedTypeException:
+{
+	TypeValue term, term_resultante;
+	Token op;
+}
+{
+	term = termino() (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
+		if (term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
+		if (term_resultante != null) {
+			if (term_resultante.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term_resultante.type);
+			if (term.value != null && term_resultante != null) {
+				if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, term.value + term_resultante);
+				else return new TypeValue(Symbol.Types.INT, term.value - term_resultante);
+			} else { 
+				return new TypeValue(Symbol.Types.INT, null);
+			}
+		} else {
+			return term;
+		}
+	}
+}
+
+void termino() throws UnexpectedTypeException:
 {}
 {
 	factor() ( operador_multiplicativo() factor() )*
 }
 
-void operador_multiplicativo():
-{}
+Token operador_multiplicativo() throws UnexpectedTypeException :
 {
-    <tTIMES> | <tMOD> | <tDIV>
+	Token t;
+}
+{
+	(t = <tTIMES> | t = <tDIV> | t = <tMOD>) { return t; }
 }
 
-void factor():
+void factor() throws UnexpectedTypeException:
 {}
 {
 	primario()
 	| <tNOT> primario()
 }
 
-ExpresionResult primario() :
+TypeValue primario() throws UnexpectedTypeException :
 {
-	ExpresionResult exp = null;
+	TypeValue exp = null;
 }
 {
-    <tAPAR> expresion() <tCPAR>
+    <tAPAR> exp = expresion() <tCPAR> { return exp; }
 |	<tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
 	if (exp.type == Symbol.Types.INT) {
-		return new ExpresionResult(Symbol.Types.CHAR, (char)exp.value);
+		return new TypeValue(Symbol.Types.CHAR, (char)exp.value);
 	} else {
 		throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);
 	}
 }
 |	<tCHAR2INT> <tAPAR> expresion() <tCPAR> {
 	if (exp.type == Symbol.Types.CHAR) {
-		return new ExpresionResult(Symbol.Types.INT, String.valueOf(exp.value));
+		return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
 	} else {
 		throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);
 	}
 }
 |	LOOKAHEAD(2)
-    <tID> <tAPAR> lista_una_o_mas_exps() <tCPAR> //invoc. func. o comp. array
-|	<tID>              //var. o func. sin pars
-|	tipo_constante()
+	//! ESTO ESTÁ MAL
+    <tID> <tAPAR> lista_una_o_mas_exps() <tCPAR> { return new TypeValue(Symbol.Types.INT, 0);}//invoc. func. o comp. array
+|	<tID>    { return new TypeValue(Symbol.Types.INT, 0);}          //var. o func. sin pars
+|	tipo_constante() { return new TypeValue(Symbol.Types.INT, 0);}
 }
-void lista_una_o_mas_exps() :
-{}
+
+ArrayList<TypeValue> lista_una_o_mas_exps() throws UnexpectedTypeException :
 {
-	( expresion() (<tCOMA> expresion())* )+
+	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+	TypeValue exp;
 }
+{
+	exp = expresion() exps = lista_exps_ll()    {
+		exps.add(exp);
+		return exps;
+	}
+}
+
+ArrayList<TypeValue> lista_exps_ll() throws UnexpectedTypeException :
+{
+	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+	TypeValue exp;
+}
+{
+	<tCOMA> exp = expresion() exps = lista_exps_ll() {
+		exps.add(exp);
+		return exps;
+	}
+	| {return exps;}
+}
+
 
 TOKEN_MGR_DECLS : {
 	static void CommonTokenAction(Token token) {
