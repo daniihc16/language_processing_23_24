@@ -646,21 +646,21 @@ void inst_return() throws UnexpectedTypeException :
 
 TypeValue expresion() throws UnexpectedTypeException: 
 {
-	TypeValue prel, rest_rel;
-	Token op;
+	TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+	Token op = null;
 }
 {
     prel = relacion() ( (op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
 		if (rest_rel != null) {
-			if (prel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rel.type);
+			if (prel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, prel.type);
 			if (rest_rel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rest_rel.type);
 			// evaluamos prematuramente las relaciones para determinar un posible valor constante
 			if (prel.value != null && rest_rel.value != null) {
 				switch (op.kind) {
 					case tAND:
-						return new TypeValue(Symbol.Types.BOOL, prel.value && rest_rel.value);
+						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean)rest_rel.value);
 					case tOR:
-						return new TypeValue(Symbol.Types.BOOL, prel.value || rest_rel.value);
+						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);
 				}
 			} else {
 				return new TypeValue(Symbol.Types.BOOL, null);
@@ -674,21 +674,21 @@ TypeValue expresion() throws UnexpectedTypeException:
 
 TypeValue lista_una_o_mas_relaciones_booleanas() throws UnexpectedTypeException:
 {
-	TypeValue prel, rest_rel;
-	Token op;
+	TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+	Token op = null;
 }
 {
 	prel = relacion() ((op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
-		if (prel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rel.type);
+		if (prel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, prel.type);
 		if (rest_rel != null) {
 			if (rest_rel.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.BOOL, rest_rel.type);
 			// evaluamos prematuramente las relaciones para determinar un posible valor constante
 			if (prel.value != null && rest_rel.value != null) {
 				switch (op.kind) {
 					case tAND:
-						return new TypeValue(Symbol.Types.BOOL, prel.value && rest_rel.value);
+						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean) rest_rel.value);
 					case tOR:
-						return new TypeValue(Symbol.Types.BOOL, prel.value || rest_rel.value);
+						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);
 				}
 			} else {
 				return new TypeValue(Symbol.Types.BOOL, null);
@@ -701,8 +701,8 @@ TypeValue lista_una_o_mas_relaciones_booleanas() throws UnexpectedTypeException:
 
 TypeValue relacion() throws UnexpectedTypeException:
 {
-	TypeValue exp1, exp2;	
-	Token op;
+	TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;	
+	Token op = null;
 }
 {
     exp1 = expresion_simple()
@@ -719,13 +719,13 @@ TypeValue relacion() throws UnexpectedTypeException:
 					case tNE:
 						return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);
 					case tLT:
-						return new TypeValue(Symbol.Types.BOOL, exp1.value < exp2.value);
+						return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);
 					case tLE:
-						return new TypeValue(Symbol.Types.BOOL, exp1.value <= exp2.value);
+						return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);
 					case tGT:
-						return new TypeValue(Symbol.Types.BOOL, exp1.value > exp2.value);
+						return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);
 					case tGE:
-						return new TypeValue(Symbol.Types.BOOL, exp1.value >= exp2.value);
+						return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);
 				}
 			} else {
 				// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
@@ -739,7 +739,7 @@ TypeValue relacion() throws UnexpectedTypeException:
 
 Token operador_relacional() throws UnexpectedTypeException:
 {
-	Token t
+	Token t;
 }
 {
 	(t = <tEQ> | t = <tNE> | t = <tLT> | t = <tLE> | t = <tGT> | t = <tGE>) { return t; }
@@ -747,38 +747,39 @@ Token operador_relacional() throws UnexpectedTypeException:
 
 TypeValue expresion_simple() throws UnexpectedTypeException:
 {
-	TypeValue term, term_resultante;
-	Token op, ops;
+	TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
+	Token op = null, ops = null;
 	// HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
 }
 {
     ( ops = <tPLUS> | ops =	<tMINUS> )? 
     term = termino()  (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
+		// Si hay un operador + o - el término debe ser de tipo entero
 		if (ops != null && term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
+		// Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
 		if (term.value != null) {
 			if (ops == null || ops.kind == tPLUS) term = new TypeValue(term.type, term.value);
-			else term = new TypeValue(term.type, term.value*-1);
+			else term = new TypeValue(term.type, (int)term.value*-1);
 		} else term =  new TypeValue(term.type, null);
 
-		if (term_resultante != null) {
-			if (term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
-			if (term_resultante.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term_resultante.type);
-			if (term.value != null && term_resultante != null) {
-				if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, term.value + term_resultante);
-				else return new TypeValue(Symbol.Types.INT, term.value - term_resultante);
-			} else { 
-				return new TypeValue(Symbol.Types.INT, null);
-			}
-		} else {
-			return term;
+		if (term_resultante == null) return term;
+		if (term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
+		if (term_resultante.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term_resultante.type);
+		
+		if (term.value != null && term_resultante != null) {
+			if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
+			else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
+		} else { 
+			return new TypeValue(Symbol.Types.INT, null);
 		}
+		
 	}
 }
 
 TypeValue una_o_mas_expresiones_simples() throws UnexpectedTypeException:
 {
-	TypeValue term, term_resultante;
-	Token op;
+	TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = new TypeValue(Symbol.Types.UNDEFINED, null);
+	Token op = null, ops = null;
 }
 {
 	term = termino() (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
@@ -786,8 +787,8 @@ TypeValue una_o_mas_expresiones_simples() throws UnexpectedTypeException:
 		if (term_resultante != null) {
 			if (term_resultante.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term_resultante.type);
 			if (term.value != null && term_resultante != null) {
-				if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, term.value + term_resultante);
-				else return new TypeValue(Symbol.Types.INT, term.value - term_resultante);
+				if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
+				else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
 			} else { 
 				return new TypeValue(Symbol.Types.INT, null);
 			}
@@ -797,10 +798,10 @@ TypeValue una_o_mas_expresiones_simples() throws UnexpectedTypeException:
 	}
 }
 
-void termino() throws UnexpectedTypeException:
+TypeValue termino() throws UnexpectedTypeException:
 {}
 {
-	factor() ( operador_multiplicativo() factor() )*
+	factor() ( operador_multiplicativo() factor() )* { return new TypeValue(Symbol.Types.INT, null);} //! HAY QUE ACABARLO
 }
 
 Token operador_multiplicativo() throws UnexpectedTypeException :

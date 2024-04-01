@@ -5,7 +5,7 @@ package traductor;
 import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import java.util.*;
-import lib.tools.ExpresionResult;
+import lib.tools.TypeValue;
 import lib.tools.exceptions.*;
 
 
@@ -156,30 +156,30 @@ ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
     throw new Error("Missing return statement in function");
 }
 
-  static final public ExpresionResult tipo_constante() throws ParseException {Token char_const = null;
+  static final public TypeValue tipo_constante() throws ParseException {Token char_const = null;
         Token int_const = null;
         Token bool_const = null;
         Token string_const = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tCHARCONST:{
       char_const = jj_consume_token(tCHARCONST);
-{if ("" != null) return new ExpresionResult(Symbol.Types.CHAR, char_const.image.charAt(0));}
+{if ("" != null) return new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));}
       break;
       }
     case tINTCONST:{
       int_const = jj_consume_token(tINTCONST);
-{if ("" != null) return new ExpresionResult(Symbol.Types.INT, Integer.parseInt(int_const.image));}
+{if ("" != null) return new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));}
       break;
       }
     case tTRUE:
     case tFALSE:{
       bool_const = boolconst();
-{if ("" != null) return new ExpresionResult(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));}
+{if ("" != null) return new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));}
       break;
       }
     case tSTRING:{
       string_const = jj_consume_token(tSTRING);
-{if ("" != null) return new ExpresionResult(Symbol.Types.STRING, string_const.image);}
+{if ("" != null) return new TypeValue(Symbol.Types.STRING, string_const.image);}
       break;
       }
     default:
@@ -756,14 +756,14 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
 
 }
 
-  static final public void inst_escribir() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
+  static final public void inst_escribir() throws ParseException, UnexpectedTypeException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
     jj_consume_token(tPUT);
     jj_consume_token(tAPAR);
     exps = lista_una_o_mas_exps();
     jj_consume_token(tCPAR);
 // todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
                 // han de convertirse con int2char()
-                for (ExpresionResult exp:exps) {
+                for (TypeValue exp:exps) {
                         if (exp.type != Symbol.Types.STRING &&
                         exp.type != Symbol.Types.CHAR &&
                         exp.type != Symbol.Types.INT &&
@@ -772,7 +772,7 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
                 System.out.println("Encontrada instrucci\u00f3n put correcta");
 }
 
-  static final public void inst_escribir_linea() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
+  static final public void inst_escribir_linea() throws ParseException, UnexpectedTypeException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
     jj_consume_token(tPUTLINE);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAPAR:{
@@ -788,7 +788,7 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
 // todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
                 // han de convertirse con int2char()
                 if (exps != null) {
-                        for (ExpresionResult exp:exps) {
+                        for (TypeValue exp:exps) {
                                 if (exp.type != Symbol.Types.STRING &&
                                         exp.type != Symbol.Types.CHAR &&
                                         exp.type != Symbol.Types.INT &&
@@ -977,42 +977,103 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
     expresion();
 }
 
-  static final public ExpresionResult expresion() throws ParseException, UnexpectedTypeException {
-    relacion();
-    label_11:
-    while (true) {
+  static final public TypeValue expresion() throws ParseException, UnexpectedTypeException {TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+        Token op = null;
+    prel = relacion();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAND:
+    case tOR:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAND:
+      case tAND:{
+        op = jj_consume_token(tAND);
+        break;
+        }
       case tOR:{
-        ;
+        op = jj_consume_token(tOR);
         break;
         }
       default:
         jj_la1[32] = jj_gen;
-        break label_11;
-      }
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAND:{
-        jj_consume_token(tAND);
-        break;
-        }
-      case tOR:{
-        jj_consume_token(tOR);
-        break;
-        }
-      default:
-        jj_la1[33] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      relacion();
+      rest_rel = lista_una_o_mas_relaciones_booleanas();
+      break;
+      }
+    default:
+      jj_la1[33] = jj_gen;
+      ;
     }
-{if ("" != null) return new ExpresionResult(Symbol.Types.STRING, "");}
+if (rest_rel != null) {
+                        if (prel.type != Symbol.Types.BOOL) {if (true) throw new UnexpectedTypeException(Symbol.Types.BOOL, prel.type);}
+                        if (rest_rel.type != Symbol.Types.BOOL) {if (true) throw new UnexpectedTypeException(Symbol.Types.BOOL, rest_rel.type);}
+                        // evaluamos prematuramente las relaciones para determinar un posible valor constante
+                        if (prel.value != null && rest_rel.value != null) {
+                                switch (op.kind) {
+                                        case tAND:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean)rest_rel.value);}
+                                        case tOR:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);}
+                                }
+                        } else {
+                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
+                        }
+                } else {
+                        {if ("" != null) return prel;}
+                }
     throw new Error("Missing return statement in function");
 }
 
-  static final public void relacion() throws ParseException, UnexpectedTypeException {
-    expresion_simple();
+  static final public TypeValue lista_una_o_mas_relaciones_booleanas() throws ParseException, UnexpectedTypeException {TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+        Token op = null;
+    prel = relacion();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAND:
+    case tOR:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tAND:{
+        op = jj_consume_token(tAND);
+        break;
+        }
+      case tOR:{
+        op = jj_consume_token(tOR);
+        break;
+        }
+      default:
+        jj_la1[34] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      rest_rel = lista_una_o_mas_relaciones_booleanas();
+      break;
+      }
+    default:
+      jj_la1[35] = jj_gen;
+      ;
+    }
+if (prel.type != Symbol.Types.BOOL) {if (true) throw new UnexpectedTypeException(Symbol.Types.BOOL, prel.type);}
+                if (rest_rel != null) {
+                        if (rest_rel.type != Symbol.Types.BOOL) {if (true) throw new UnexpectedTypeException(Symbol.Types.BOOL, rest_rel.type);}
+                        // evaluamos prematuramente las relaciones para determinar un posible valor constante
+                        if (prel.value != null && rest_rel.value != null) {
+                                switch (op.kind) {
+                                        case tAND:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean) rest_rel.value);}
+                                        case tOR:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);}
+                                }
+                        } else {
+                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
+                        }
+                } else {
+                        {if ("" != null) return prel;}
+                }
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue relacion() throws ParseException, UnexpectedTypeException {TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;
+        Token op = null;
+    exp1 = expresion_simple();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tLT:
     case tGT:
@@ -1020,107 +1081,197 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
     case tNE:
     case tLE:
     case tGE:{
-      operador_relacional();
-      expresion_simple();
+      op = operador_relacional();
+      exp2 = expresion_simple();
       break;
       }
     default:
-      jj_la1[34] = jj_gen;
+      jj_la1[36] = jj_gen;
       ;
     }
+// Si hay un operador relacional y por tanto una exp2 el resultado es un booleano
+                if (exp2 != null) {
+                        // Si hay un operador relacional y las expresiones no son del mismo tipo, lanzamos una excepción
+                        if (exp1.type != exp2.type) {if (true) throw new UnexpectedTypeException(exp1.type, exp2.type);}
+                        if (exp1.value != null && exp2.value != null) {
+                                // Si ambas expresiones son constantes, evaluamos la relación
+                                switch (op.kind) {
+                                        case tEQ:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, exp1.value == exp2.value);}
+                                        case tNE:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);}
+                                        case tLT:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);}
+                                        case tLE:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);}
+                                        case tGT:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);}
+                                        case tGE:
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);}
+                                }
+                        } else {
+                                // Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
+                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
+                        }
+                } else {
+                        {if ("" != null) return exp1;}
+                }
+    throw new Error("Missing return statement in function");
 }
 
-  static final public void operador_relacional() throws ParseException, UnexpectedTypeException {
+  static final public Token operador_relacional() throws ParseException, UnexpectedTypeException {Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tEQ:{
-      jj_consume_token(tEQ);
+      t = jj_consume_token(tEQ);
       break;
       }
     case tNE:{
-      jj_consume_token(tNE);
+      t = jj_consume_token(tNE);
       break;
       }
     case tLT:{
-      jj_consume_token(tLT);
+      t = jj_consume_token(tLT);
       break;
       }
     case tLE:{
-      jj_consume_token(tLE);
+      t = jj_consume_token(tLE);
       break;
       }
     case tGT:{
-      jj_consume_token(tGT);
+      t = jj_consume_token(tGT);
       break;
       }
     case tGE:{
-      jj_consume_token(tGE);
+      t = jj_consume_token(tGE);
       break;
       }
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+{if ("" != null) return t;}
+    throw new Error("Missing return statement in function");
 }
 
-  static final public void expresion_simple() throws ParseException, UnexpectedTypeException {
+  static final public TypeValue expresion_simple() throws ParseException, UnexpectedTypeException {TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
+        Token op = null, ops = null;
+        // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
+
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tPLUS:
     case tMINUS:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPLUS:{
-        jj_consume_token(tPLUS);
+        ops = jj_consume_token(tPLUS);
         break;
         }
       case tMINUS:{
-        jj_consume_token(tMINUS);
+        ops = jj_consume_token(tMINUS);
         break;
         }
       default:
-        jj_la1[36] = jj_gen;
+        jj_la1[38] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[37] = jj_gen;
+      jj_la1[39] = jj_gen;
       ;
     }
-    termino();
-    label_12:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tPLUS:
-      case tMINUS:{
-        ;
-        break;
-        }
-      default:
-        jj_la1[38] = jj_gen;
-        break label_12;
-      }
+    term = termino();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tPLUS:
+    case tMINUS:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPLUS:{
-        jj_consume_token(tPLUS);
+        op = jj_consume_token(tPLUS);
         break;
         }
       case tMINUS:{
-        jj_consume_token(tMINUS);
+        op = jj_consume_token(tMINUS);
         break;
         }
       default:
-        jj_la1[39] = jj_gen;
+        jj_la1[40] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      termino();
+      term_resultante = una_o_mas_expresiones_simples();
+      break;
+      }
+    default:
+      jj_la1[41] = jj_gen;
+      ;
     }
+// Si hay un operador + o - el término debe ser de tipo entero
+                if (ops != null && term.type != Symbol.Types.INT) {if (true) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);}
+                // Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
+                if (term.value != null) {
+                        if (ops == null || ops.kind == tPLUS) term = new TypeValue(term.type, term.value);
+                        else term = new TypeValue(term.type, (int)term.value*-1);
+                } else term =  new TypeValue(term.type, null);
+
+                if (term_resultante == null) {if ("" != null) return term;}
+                if (term.type != Symbol.Types.INT) {if (true) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);}
+                if (term_resultante.type != Symbol.Types.INT) {if (true) throw new UnexpectedTypeException(Symbol.Types.INT, term_resultante.type);}
+
+                if (term.value != null && term_resultante != null) {
+                        if (op.kind == tPLUS) {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);}
+                        else {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);}
+                } else {
+                        {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
+                }
+    throw new Error("Missing return statement in function");
 }
 
-  static final public void termino() throws ParseException, UnexpectedTypeException {
+  static final public TypeValue una_o_mas_expresiones_simples() throws ParseException, UnexpectedTypeException {TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = new TypeValue(Symbol.Types.UNDEFINED, null);
+        Token op = null, ops = null;
+    term = termino();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tPLUS:
+    case tMINUS:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPLUS:{
+        op = jj_consume_token(tPLUS);
+        break;
+        }
+      case tMINUS:{
+        op = jj_consume_token(tMINUS);
+        break;
+        }
+      default:
+        jj_la1[42] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      term_resultante = una_o_mas_expresiones_simples();
+      break;
+      }
+    default:
+      jj_la1[43] = jj_gen;
+      ;
+    }
+if (term.type != Symbol.Types.INT) {if (true) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);}
+                if (term_resultante != null) {
+                        if (term_resultante.type != Symbol.Types.INT) {if (true) throw new UnexpectedTypeException(Symbol.Types.INT, term_resultante.type);}
+                        if (term.value != null && term_resultante != null) {
+                                if (op.kind == tPLUS) {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);}
+                                else {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);}
+                        } else {
+                                {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
+                        }
+                } else {
+                        {if ("" != null) return term;}
+                }
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue termino() throws ParseException, UnexpectedTypeException {
     factor();
-    label_13:
+    label_11:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tTIMES:
@@ -1130,12 +1281,14 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
         break;
         }
       default:
-        jj_la1[40] = jj_gen;
-        break label_13;
+        jj_la1[44] = jj_gen;
+        break label_11;
       }
       operador_multiplicativo();
       factor();
     }
+{if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
+    throw new Error("Missing return statement in function");
 }
 
   static final public Token operador_multiplicativo() throws ParseException, UnexpectedTypeException {Token t;
@@ -1153,7 +1306,7 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
       break;
       }
     default:
-      jj_la1[41] = jj_gen;
+      jj_la1[45] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1181,13 +1334,13 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
       break;
       }
     default:
-      jj_la1[42] = jj_gen;
+      jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
 }
 
-  static final public ExpresionResult primario() throws ParseException, UnexpectedTypeException {ExpresionResult exp = null;
+  static final public TypeValue primario() throws ParseException, UnexpectedTypeException {TypeValue exp = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAPAR:{
       jj_consume_token(tAPAR);
@@ -1202,7 +1355,7 @@ System.err.println("SEMANTIC ERROR: " + e.getMessage());
       exp = expresion();
       jj_consume_token(tCPAR);
 if (exp.type == Symbol.Types.INT) {
-                {if ("" != null) return new ExpresionResult(Symbol.Types.CHAR, (char)exp.value);}
+                {if ("" != null) return new TypeValue(Symbol.Types.CHAR, (char)exp.value);}
         } else {
                 {if (true) throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);}
         }
@@ -1214,25 +1367,25 @@ if (exp.type == Symbol.Types.INT) {
       expresion();
       jj_consume_token(tCPAR);
 if (exp.type == Symbol.Types.CHAR) {
-                {if ("" != null) return new ExpresionResult(Symbol.Types.INT, String.valueOf(exp.value));}
+                {if ("" != null) return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));}
         } else {
                 {if (true) throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);}
         }
       break;
       }
     default:
-      jj_la1[43] = jj_gen;
+      jj_la1[47] = jj_gen;
       if (jj_2_2(2)) {
         jj_consume_token(tID);
         jj_consume_token(tAPAR);
         lista_una_o_mas_exps();
         jj_consume_token(tCPAR);
-{if ("" != null) return new ExpresionResult(Symbol.Types.INT, 0);}
+{if ("" != null) return new TypeValue(Symbol.Types.INT, 0);}
       } else {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           jj_consume_token(tID);
-{if ("" != null) return new ExpresionResult(Symbol.Types.INT, 0);}
+{if ("" != null) return new TypeValue(Symbol.Types.INT, 0);}
           break;
           }
         case tCHARCONST:
@@ -1241,11 +1394,11 @@ if (exp.type == Symbol.Types.CHAR) {
         case tFALSE:
         case tSTRING:{
           tipo_constante();
-{if ("" != null) return new ExpresionResult(Symbol.Types.INT, 0);}
+{if ("" != null) return new TypeValue(Symbol.Types.INT, 0);}
           break;
           }
         default:
-          jj_la1[44] = jj_gen;
+          jj_la1[48] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1254,8 +1407,8 @@ if (exp.type == Symbol.Types.CHAR) {
     throw new Error("Missing return statement in function");
 }
 
-  static final public ArrayList<ExpresionResult> lista_una_o_mas_exps() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
-        ExpresionResult exp;
+  static final public ArrayList<TypeValue> lista_una_o_mas_exps() throws ParseException, UnexpectedTypeException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+        TypeValue exp;
     exp = expresion();
     exps = lista_exps_ll();
 exps.add(exp);
@@ -1263,8 +1416,8 @@ exps.add(exp);
     throw new Error("Missing return statement in function");
 }
 
-  static final public ArrayList<ExpresionResult> lista_exps_ll() throws ParseException, UnexpectedTypeException {ArrayList<ExpresionResult> exps = new ArrayList<ExpresionResult>();
-        ExpresionResult exp;
+  static final public ArrayList<TypeValue> lista_exps_ll() throws ParseException, UnexpectedTypeException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+        TypeValue exp;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tCOMA:{
       jj_consume_token(tCOMA);
@@ -1275,7 +1428,7 @@ exps.add(exp);
       break;
       }
     default:
-      jj_la1[45] = jj_gen;
+      jj_la1[49] = jj_gen;
 {if ("" != null) return exps;}
     }
     throw new Error("Missing return statement in function");
@@ -1297,17 +1450,17 @@ exps.add(exp);
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_2()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tAPAR)) return true;
-    return false;
-  }
-
   static private boolean jj_3_1()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tCOMA)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tAPAR)) return true;
     return false;
   }
 
@@ -1323,7 +1476,7 @@ exps.add(exp);
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[46];
+  static final private int[] jj_la1 = new int[50];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -1331,10 +1484,10 @@ exps.add(exp);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x6000000,0x0,0x0,0x740000,0x700000,0xf800000,0x0,0x18000,0xf8a0000,0x0,0x18000,0x18000,0x0,0x18000,0xf8a0000,0x0,0xf8a0000,0x1000,0x0,0x0,0x0,0x0,0x0,0xf8a0000,0x0,0x800,0xf8a0000,0x0,0xf8a0000,0xf8a0000,0x0,0xf8a0000,0x30000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x4f800000,0x0,0xf800000,0x0,};
+	   jj_la1_0 = new int[] {0x6000000,0x0,0x0,0x740000,0x700000,0xf800000,0x0,0x18000,0xf8a0000,0x0,0x18000,0x18000,0x0,0x18000,0xf8a0000,0x0,0xf8a0000,0x1000,0x0,0x0,0x0,0x0,0x0,0xf8a0000,0x0,0x800,0xf8a0000,0x0,0xf8a0000,0xf8a0000,0x0,0xf8a0000,0x30000000,0x30000000,0x30000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0x80000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x4f800000,0x0,0xf800000,0x0,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x147f0400,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x1000,0x147f0400,0x400,0x0,0x147f0400,0x1000000,0x147f0400,0x147f0400,0x800000,0x147f0400,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x206,0x206,0x10300400,0x300400,0x10000000,0x4000,};
+	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x147f0400,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x1000,0x147f0400,0x400,0x0,0x147f0400,0x1000000,0x147f0400,0x147f0400,0x800000,0x147f0400,0x0,0x0,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x1,0x1,0x206,0x206,0x10300400,0x300400,0x10000000,0x4000,};
 	}
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
@@ -1358,7 +1511,7 @@ exps.add(exp);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 50; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1373,7 +1526,7 @@ exps.add(exp);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 50; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1391,7 +1544,7 @@ exps.add(exp);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 50; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1410,7 +1563,7 @@ exps.add(exp);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 50; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1427,7 +1580,7 @@ exps.add(exp);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 50; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1437,7 +1590,7 @@ exps.add(exp);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 46; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 50; i++) jj_la1[i] = -1;
 	 for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1573,7 +1726,7 @@ exps.add(exp);
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 46; i++) {
+	 for (int i = 0; i < 50; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

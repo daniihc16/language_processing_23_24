@@ -4,7 +4,7 @@ package traductor;
 import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import java.util.*;
-import lib.tools.ExpresionResult;
+import lib.tools.TypeValue;
 import lib.tools.exceptions.*;
 
 /** Token Manager. */
