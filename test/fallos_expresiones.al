@@ -1,5 +1,6 @@
 --Fichero que prueba el reconocimiento semántico de expresiones
 -- Probar (-true) o en general '-' <tipo no entero> da error
+-- Probar a pasar por referencia un '+x' y '+1' (el primero ok, el segundo no ok)
 procedure fallos_expresiones is
 	var_integer: integer;
 	var_char: character;
@@ -62,4 +63,5 @@ begin
 
 	
 
+	// Probar a pasar por referencia +var_int y -var_int
 end;

@@ -17,7 +17,7 @@ abstract public class Symbol implements Cloneable {
     }
 
     static public enum Types {
-        INT, BOOL, CHAR, ARRAY, FUNCTION, PROCEDURE, STRING, UNDEFINED
+        INT, BOOL, CHAR, ARRAY, FUNCTION, PROCEDURE, STRING, UNDEFINED, VOID
     }
 
     public String name;

@@ -249,8 +249,8 @@ void Programa() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	} catch (AlreadyDefinedSymbolException ads) {
-		System.err.println("SEMANTIC_ERROR: " + ads.getMessage(proc_main));
+	} catch (Exception ads) {
+		System.err.println("SEMANTIC_ERROR: " + ads.getMessage());
 	}
 
 }
@@ -554,7 +554,7 @@ void instruccion() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	} catch (UnexpectedTypeException e) {
+	} catch (Exception e) {
 		System.err.println("SEMANTIC ERROR: " + e.getMessage());
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -575,7 +575,7 @@ void inst_leer() :
 	}
 }
 
-void inst_escribir() throws UnexpectedTypeException :
+void inst_escribir() throws Exception :
 {
 	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 }
@@ -593,7 +593,7 @@ void inst_escribir() throws UnexpectedTypeException :
 	}
 }
 
-void inst_escribir_linea() throws UnexpectedTypeException :
+void inst_escribir_linea() throws Exception :
 {
 	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 }
@@ -616,13 +616,13 @@ void inst_escribir_linea() throws UnexpectedTypeException :
 	}
 }
 
-void inst_invocacion_o_asignacion() throws UnexpectedTypeException :
+void inst_invocacion_o_asignacion() throws Exception :
 {}
 {
 	primario() ( <tASIGN> expresion())?
 }
 
-void inst_if() throws UnexpectedTypeException :
+void inst_if() throws Exception :
 {}
 {
 	// debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
@@ -632,19 +632,19 @@ void inst_if() throws UnexpectedTypeException :
 	<tEND> <tIF>
 }
 
-void inst_while() throws UnexpectedTypeException :
+void inst_while() throws Exception :
 {}
 {
 	<tWHILE> expresion() <tLOOP> (instruccion())+ <tEND> <tLOOP>
 }
 
-void inst_return() throws UnexpectedTypeException :
+void inst_return() throws Exception :
 {}
 {
 	<tRETURN> expresion()
 }
 
-TypeValue expresion() throws UnexpectedTypeException: 
+TypeValue expresion() throws Exception: 
 {
 	TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
 	Token op = null;
@@ -672,7 +672,7 @@ TypeValue expresion() throws UnexpectedTypeException:
 }
 
 
-TypeValue lista_una_o_mas_relaciones_booleanas() throws UnexpectedTypeException:
+TypeValue lista_una_o_mas_relaciones_booleanas() throws Exception:
 {
 	TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
 	Token op = null;
@@ -699,7 +699,7 @@ TypeValue lista_una_o_mas_relaciones_booleanas() throws UnexpectedTypeException:
 	}
 }
 
-TypeValue relacion() throws UnexpectedTypeException:
+TypeValue relacion() throws Exception:
 {
 	TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;	
 	Token op = null;
@@ -737,7 +737,7 @@ TypeValue relacion() throws UnexpectedTypeException:
 	}
 }
 
-Token operador_relacional() throws UnexpectedTypeException:
+Token operador_relacional() throws Exception:
 {
 	Token t;
 }
@@ -745,7 +745,7 @@ Token operador_relacional() throws UnexpectedTypeException:
 	(t = <tEQ> | t = <tNE> | t = <tLT> | t = <tLE> | t = <tGT> | t = <tGE>) { return t; }
 }
 
-TypeValue expresion_simple() throws UnexpectedTypeException:
+TypeValue expresion_simple() throws Exception:
 {
 	TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
 	Token op = null, ops = null;
@@ -758,9 +758,9 @@ TypeValue expresion_simple() throws UnexpectedTypeException:
 		if (ops != null && term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
 		// Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
 		if (term.value != null) {
-			if (ops == null || ops.kind == tPLUS) term = new TypeValue(term.type, term.value);
+			if (ops == null || ops.kind == tPLUS) term = new TypeValue(term.type, term.value, term.isLiteral);
 			else term = new TypeValue(term.type, (int)term.value*-1);
-		} else term =  new TypeValue(term.type, null);
+		} else term =  new TypeValue(term.type, null, term.isLiteral);
 
 		if (term_resultante == null) return term;
 		if (term.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, term.type);
@@ -776,7 +776,7 @@ TypeValue expresion_simple() throws UnexpectedTypeException:
 	}
 }
 
-TypeValue una_o_mas_expresiones_simples() throws UnexpectedTypeException:
+TypeValue una_o_mas_expresiones_simples() throws Exception:
 {
 	TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = new TypeValue(Symbol.Types.UNDEFINED, null);
 	Token op = null, ops = null;
@@ -798,13 +798,63 @@ TypeValue una_o_mas_expresiones_simples() throws UnexpectedTypeException:
 	}
 }
 
-TypeValue termino() throws UnexpectedTypeException:
-{}
+TypeValue termino() throws Exception:
 {
-	factor() ( operador_multiplicativo() factor() )* { return new TypeValue(Symbol.Types.INT, null);} //! HAY QUE ACABARLO
+	TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = new TypeValue(Symbol.Types.UNDEFINED, null);
+	Token op = null;
+}
+{
+	fact = factor() ( op = operador_multiplicativo() fact_resultante = factor() )? {
+		if (fact_resultante != null) {
+			if (fact.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, fact.type);
+			if (fact_resultante.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, fact_resultante.type);
+			if (fact.value != null && fact_resultante.value != null) {
+				switch (op.kind) {
+					case tTIMES:
+						return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
+					case tDIV:
+						return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
+					case tMOD:
+						return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
+				}
+			} else {
+				return new TypeValue(Symbol.Types.INT, null);
+			}
+		} else {
+			return fact;
+		}
+	}
 }
 
-Token operador_multiplicativo() throws UnexpectedTypeException :
+TypeValue lista_una_o_mas_terminos() throws Exception:
+{
+	TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = new TypeValue(Symbol.Types.UNDEFINED, null);
+	Token op = null;
+}
+{
+	fact = factor() ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos())? {
+		if (fact_resultante != null) {
+			if (fact.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, fact.type);
+			if (fact_resultante.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, fact_resultante.type);
+			if (fact.value != null && fact_resultante.value != null) {
+				switch (op.kind) {
+					case tTIMES:
+						return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
+					case tDIV:
+						return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
+					case tMOD:
+						return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
+				}
+			} else {
+				return new TypeValue(Symbol.Types.INT, null);
+			}
+		} else {
+			return fact;
+		}
+	}
+}
+
+Token operador_multiplicativo() throws Exception :
 {
 	Token t;
 }
@@ -812,16 +862,26 @@ Token operador_multiplicativo() throws UnexpectedTypeException :
 	(t = <tTIMES> | t = <tDIV> | t = <tMOD>) { return t; }
 }
 
-void factor() throws UnexpectedTypeException:
-{}
+TypeValue factor() throws Exception:
 {
-	primario()
-	| <tNOT> primario()
+	TypeValue p = new TypeValue(Symbol.Types.UNDEFINED, null);
+}
+{
+	p = primario() {
+		return p;
+	}
+	| <tNOT> p = primario() {
+		if (p.type != Symbol.Types.BOOL) throw new UnexpectedTypeException(Symbol.Types.INT, p.type);
+		if (p.value != null) return new TypeValue(Symbol.Types.BOOL, !(boolean)p.value); 
+		return p; 
+	}
 }
 
-TypeValue primario() throws UnexpectedTypeException :
+TypeValue primario() throws Exception :
 {
 	TypeValue exp = null;
+	Token id = null;
+	ArrayList<TypeValue> exps = null;
 }
 {
     <tAPAR> exp = expresion() <tCPAR> { return exp; }
@@ -832,7 +892,7 @@ TypeValue primario() throws UnexpectedTypeException :
 		throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);
 	}
 }
-|	<tCHAR2INT> <tAPAR> expresion() <tCPAR> {
+|	<tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
 	if (exp.type == Symbol.Types.CHAR) {
 		return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
 	} else {
@@ -840,13 +900,67 @@ TypeValue primario() throws UnexpectedTypeException :
 	}
 }
 |	LOOKAHEAD(2)
-	//! ESTO ESTÁ MAL
-    <tID> <tAPAR> lista_una_o_mas_exps() <tCPAR> { return new TypeValue(Symbol.Types.INT, 0);}//invoc. func. o comp. array
-|	<tID>    { return new TypeValue(Symbol.Types.INT, 0);}          //var. o func. sin pars
-|	tipo_constante() { return new TypeValue(Symbol.Types.INT, 0);}
+    id = <tID> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
+		Symbol sid = null;
+		try {
+			sid = st.getSymbol(id.image);
+		} catch (SymbolNotFoundException e) {
+			System.err.println("SEMANTIC ERROR: " + e.getMessage());
+		}
+
+		if (sid.type == Symbol.Types.FUNCTION) {
+			SymbolFunction sfid = (SymbolFunction)sid;
+			if (sfid.parList == null) throw new BadInvocation(sfid.name, "Function or procedure has too few arguments");
+			for (int i=0; i<exps.size(); i++) {
+				if (sfid.parList.get(i).type != exps.get(i).type) throw new UnexpectedTypeException(sfid.parList.get(i).type, exps.get(i).type);
+				if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) throw new BadInvocation(sfid.parList.get(i).name, "Expected reference type, found literal");
+			}
+			return new TypeValue(sfid.returnType, null);
+		} else if (sid.type == Symbol.Types.PROCEDURE) {
+			SymbolProcedure spid = (SymbolProcedure)sid;
+			if (spid.parList == null) throw new BadInvocation(spid.name, "Function or procedure has too few arguments");
+			for (int i=0; i<exps.size(); i++) {
+				if (spid.parList.get(i).type != exps.get(i).type) throw new UnexpectedTypeException(spid.parList.get(i).type, exps.get(i).type);
+				if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) throw new BadInvocation(spid.parList.get(i).name, "Expected reference type, found literal");
+			}
+			return new TypeValue(Symbol.Types.VOID, null);
+		} else if (sid.type == Symbol.Types.ARRAY) {
+			SymbolArray said = (SymbolArray)sid;
+			exp = exps.get(0);
+			if (exp.type != Symbol.Types.INT) throw new UnexpectedTypeException(Symbol.Types.INT, exp.type);
+			if (exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) throw new BadInvocation(said.name, "Array index out of bounds");
+			return new TypeValue(Symbol.Types.VOID, null, false);
+		} else {
+			// Error, no hay ninguna invocación id(..) que no sea una función o un elemento de un array
+			ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
+			expectedTypes.add(Symbol.Types.FUNCTION);
+			expectedTypes.add(Symbol.Types.PROCEDURE);
+			expectedTypes.add(Symbol.Types.ARRAY);
+			throw new UnexpectedTypeException(expectedTypes, sid.type);
+		}
+	}
+|	id = <tID> /*var. o func. sin pars*/ {
+	Symbol sid = null;
+	try {
+			sid = st.getSymbol(id.image);
+		} catch (SymbolNotFoundException e) {
+			System.err.println("SEMANTIC ERROR: " + e.getMessage());
+		}
+	if (sid.type == Symbol.Types.FUNCTION ) {
+		SymbolFunction sfid = (SymbolFunction)sid;
+		if (sfid.parList != null) throw new BadInvocation(sfid.name, "Function or procedure has too many arguments");
+		return new TypeValue(sid.type, null);
+	} else if (sid.type == Symbol.Types.PROCEDURE) {
+		SymbolProcedure spid = (SymbolProcedure)sid;
+		if (spid.parList != null) throw new BadInvocation(spid.name, "Function or procedure has too many arguments");
+		return new TypeValue(sid.type, null);
+	}
+	return new TypeValue(sid.type, null, false);
+	}
+|	exp = tipo_constante() { return exp; } 
 }
 
-ArrayList<TypeValue> lista_una_o_mas_exps() throws UnexpectedTypeException :
+ArrayList<TypeValue> lista_una_o_mas_exps() throws Exception :
 {
 	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 	TypeValue exp;
@@ -858,7 +972,7 @@ ArrayList<TypeValue> lista_una_o_mas_exps() throws UnexpectedTypeException :
 	}
 }
 
-ArrayList<TypeValue> lista_exps_ll() throws UnexpectedTypeException :
+ArrayList<TypeValue> lista_exps_ll() throws Exception :
 {
 	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 	TypeValue exp;
