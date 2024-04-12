@@ -40,10 +40,12 @@ No se permite lógica booleana con operadores no booleanos (1 AND 0 no está per
 Para asegurarse de que las funciones devuelvan el tipo correcto, las instrucciones devolverán un tipo concreto (asignaciones void, returns el tipo que devuelvan) y 
 si al final el conjunto de elementos devueltos es {void, <tipo esperado>} correcto, si no error (con tipos incorrectos salta antes el error)
 Una función/procedimiento no devuelve referencias (mala praxis)
+cuando hay un error semántico en una expresión por error de tipos, acabas propagando el tipo esperado para no tener efectos colaterales en posteriores expresiones que pueden estar bien definidas
 
 Modificaciones TS:
 ---------------------------------------------
 Se ha añadido el tipo VOID
+Las consultas a la tabla de símbolos se transforman a minúsculas para hacer el lenguaje case insensitive
 
 TODOS
 - Funciones tienen que tener un return y que sea adecuado

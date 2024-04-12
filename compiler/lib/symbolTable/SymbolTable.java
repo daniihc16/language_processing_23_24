@@ -48,14 +48,14 @@ public class SymbolTable {
     }
     
     //Si un símbolo con el mismo nombre está, excepción. 
-    //Si no, se inserta
+    //Si no, se inserta con el nombre en minúsculas
     public void insertSymbol(Symbol s) throws AlreadyDefinedSymbolException {
         HashMap<String, Symbol> currentBlock = st.get(st.size()-1);
-        if (currentBlock.containsKey(s.name)) { // ya está
+        if (currentBlock.containsKey(s.name.toLowerCase())) { // ya está
             throw new AlreadyDefinedSymbolException();
         } else {
             s.nivel = level;
-            currentBlock.put(s.name, s);
+            currentBlock.put(s.name.toLowerCase(), s);
         }
     }
 
@@ -74,7 +74,8 @@ public class SymbolTable {
     }
     
     //para usar en "getSymbol" y "containsSymbol"
-    private Symbol findSymbol (String name) {
+    private Symbol findSymbol (String name_) {
+        String name = name_.toLowerCase();
     	for (int i=st.size()-1; i>=0; i--) {
             if (st.get(i).containsKey(name)) {
                 return st.get(i).get(name);

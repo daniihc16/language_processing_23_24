@@ -13,14 +13,7 @@ import java.util.*;
 import lib.symbolTable.Symbol;
 
 public class BadInvocation extends Exception {
-    String id, msg;
-	public BadInvocation(String id_, String msg_) {
-        this.id = id_;
-        this.msg = msg_;
-	}
-	
-
-	public String getMessage() {
-		return "Bad invocation error detected on: " + this.id + " -> " + this.msg;
+	public static void getMessage(String id, String msg) {
+		System.err.println("Bad invocation error detected on: " + id + " -> " + msg);
 	}
 }

@@ -13,19 +13,12 @@ import java.util.*;
 import lib.symbolTable.Symbol;
 
 public class UnexpectedTypeException extends Exception {
-    ArrayList<Symbol.Types> expected;
-    Symbol.Types found;
-	public UnexpectedTypeException(Symbol.Types expected_, Symbol.Types found_) {
-        this.expected = new ArrayList<Symbol.Types>();
-		this.expected.add(expected_);
-        this.found = found_;
-	}
-	public UnexpectedTypeException(ArrayList<Symbol.Types> expected_, Symbol.Types found_) {
-        this.expected = expected_;
-        this.found = found_;
+
+	static public void getMessage(Symbol.Types expected_, Symbol.Types found_) {
+		System.err.println("SEMANTIC ERROR: Found unexpected type in expresion: Expected " + expected_.toString() + ", found " + found_.toString());
 	}
 
-	public String getMessage() {
-		return "Found unexpected type in expresion: Expected " + this.expected.toString() + ", found " + this.found.toString();
+	static public void getMessage(ArrayList<Symbol.Types> expected_, Symbol.Types found_) {
+		System.err.println("SEMANTIC ERROR: Found unexpected type in expresion: Expected one of " + Arrays.toString(expected_.toArray()) + ", found " + found_.toString());
 	}
 }

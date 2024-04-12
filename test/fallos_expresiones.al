@@ -43,6 +43,7 @@ begin
 	var_boolean := -var_integer;
 	var_boolean := -var_char;
 	var_boolean := -var_array;
+	var_boolean := var_integer > 3 or a > 5;
 
 	var_boolean := 5 < 'a';
 	var_boolean := 5 <= 'a';
@@ -61,6 +62,29 @@ begin
 	var_boolean := 5 + var_array < 6 and 5 - var_array > 6;
 	var_boolean := 5 + var_boolean < 6 and 5 - var_boolean > 6;
 
+	var_char := 5 + 6;
+	var_char := 5 - 6;
+	var_char := 5 * 6;
+	var_char := 5 / 6;
+	var_char := 5 mod 6;
+	var_char := 5 div 6;
+	var_char := 5 and 6;
+	var_char := 5 or 6;
+	var_char := 5 < 6;
+	var_char := 5 <= 6;
+	var_char := 5 > 6;
+	var_char := 5 >= 6;
+	var_char := 5 = 6;
+	var_char := 5 /= 6;
+
+	var_char := 5 + 'a';
+	var_char := 5 - 'a';
+	var_char := 5 * 'a';
+	var_char := 5 / 'a';
+	var_char := 5 mod 'a';
+	var_char := 5 div 'a';
+	var_char := 5 and 'a';
+	
 	
 
 	// Probar a pasar por referencia +var_int y -var_int
