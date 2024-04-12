@@ -32,7 +32,7 @@ for f in fuentes_alike:
     try:
         print('\n====================================')
         res = os.system('java -jar ' + traductor + ' ' + os.path.join(path_fuentes,f))
-        print('\n========== ' + f + ' ==========')
+        print('\n========== ' + f + ' ==========', file=sys.stderr)
         res = input('\nReturn para continuar')
     except Exception as e:
         print(e)

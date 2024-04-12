@@ -18,6 +18,11 @@ public class TypeValue<T> {
     public T value;
     public Symbol.Types type;
     public boolean isLiteral;   // true si el tipo-valor no es el de una variable
+    
+    // Para arrays, indica los índices mínimo y máximo
+    public Symbol.Types baseType = Symbol.Types.UNDEFINED;
+    public int minInd;
+    public int maxInd;
 
     public TypeValue(Symbol.Types type_, T value_, boolean isLiteral_) {
         this.value = value_;
@@ -28,5 +33,14 @@ public class TypeValue<T> {
         this.value = value_;
         this.type = type_;
         this.isLiteral = true;
+    }
+
+    public TypeValue(Symbol.Types type_, T value_, int minInd_, int maxInd_, Symbol.Types baseType_) {
+        this.value = value_;
+        this.type = type_;
+        this.minInd = minInd_;
+        this.maxInd = maxInd_;
+        this.baseType = baseType_;
+        this.isLiteral = false;
     }
 }

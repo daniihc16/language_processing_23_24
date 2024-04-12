@@ -8,7 +8,7 @@
 options {
     IGNORE_CASE = true;    //No distinguir entre mayúsculas y minúsculas
     COMMON_TOKEN_ACTION = false; //Se generan acciones por defecto
-    DEBUG_PARSER = true; //Genera información de depuración
+    DEBUG_PARSER = false; //Genera información de depuración
 }
 
 PARSER_BEGIN(alike)
@@ -202,6 +202,7 @@ void Programa() :
    try {
 		proc_main = cabecera_procedimiento() {
 			SemanticFunctions.insertSymbol(st, proc_main);
+			st.setMainProc(proc_main.image);
 		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
@@ -544,6 +545,7 @@ void inst_while() :
 void inst_return() :
 {}
 {
+	// comprobar que si es un array, el rango tiene que ser el mismo además del tipo base
     <tRETURN> expresion()
 }
 
@@ -578,41 +580,7 @@ TypeValue relacion():
 {
 	exp1 = expresion_simple()
 	( op = operador_relacional() exp2 = expresion_simple() )? {
-		// Si hay un operador relacional y por tanto una exp2 el resultado es un booleano
-		if (exp2 != null) {
-			// Si hay un operador relacional y las expresiones no son del mismo tipo, lanzamos una excepción
-			if (exp1.type != exp2.type) UnexpectedTypeException.getMessage(exp1.type, exp2.type);
-			if (exp1.type != Symbol.Types.ARRAY && exp1.type != Symbol.Types.STRING && exp1.type == exp2.type && exp1.value != null && exp2.value != null) {
-				// Si ambas expresiones son constantes, evaluamos la relación
-				switch (op.kind) {
-					case tEQ:
-						return new TypeValue(Symbol.Types.BOOL, exp1.value == exp2.value);
-					case tNE:
-						return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);
-					case tLT:
-						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
-						return new TypeValue(Symbol.Types.BOOL, null);
-					case tLE:
-						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
-						return new TypeValue(Symbol.Types.BOOL, null);
-					case tGT:
-						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
-						return new TypeValue(Symbol.Types.BOOL, null);
-					case tGE:
-						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
-						return new TypeValue(Symbol.Types.BOOL, null);
-				}
-			} else {
-				// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
-				return new TypeValue(Symbol.Types.BOOL, null);
-			}
-		} else {
-			return exp1;
-		}
+		return SemanticFunctions.relacion(exp1, op, exp2, tEQ, tNE, tLT, tLE, tGT, tGE);
     }
 }
 
@@ -633,27 +601,7 @@ TypeValue expresion_simple():
 {
 	( ops = <tPLUS> | ops =    <tMINUS> )?
 	term = termino()  (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
-   	 // Si hay un operador + o - el término debe ser de tipo entero
-   	 if (ops != null && term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-   	 // Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
-   	 if (term.value != null) {
-   		 if (ops == null) term = new TypeValue(term.type, term.value, term.isLiteral);
-   		 else if (ops.kind == tPLUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, term.value, term.isLiteral);
-   		 else if (ops.kind == tMINUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, (int)term.value*-1);
-   		 else UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-   	 } else term =  new TypeValue(term.type, null, term.isLiteral);
-
-   	 if (term_resultante == null) return term;
-   	 if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-   	 if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
-   	 
-   	 if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
-   		 if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
-   		 else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
-   	 } else {
-   		 return new TypeValue(Symbol.Types.INT, null);
-   	 }
-   	 
+		return SemanticFunctions.expresion_simple(ops, term, op, term_resultante, tPLUS, tMINUS);
     }
 }
 
@@ -664,18 +612,7 @@ TypeValue una_o_mas_expresiones_simples():
 }
 {
     term = termino() (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
-   	 if (term_resultante != null) {
-   		 if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-   		 if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
-   		 if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
-   			 if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
-   			 else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
-   		 } else {
-   			 return new TypeValue(Symbol.Types.INT, null);
-   		 }
-   	 } else {
-   		 return term;
-   	 }
+   	 return SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_resultante, tPLUS, tMINUS);
     }
 }
 
@@ -685,25 +622,8 @@ TypeValue termino():
     Token op = null;
 }
 {
-    fact = factor() ( op = operador_multiplicativo() fact_resultante = factor() )? {
-   	 if (fact_resultante != null) {
-   		 if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
-   		 if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
-   		 if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
-   			 switch (op.kind) {
-   				 case tTIMES:
-   					 return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
-   				 case tDIV:
-   					 return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
-   				 case tMOD:
-   					 return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
-   			 }
-   		 } else {
-   			 return new TypeValue(Symbol.Types.INT, null);
-   		 }
-   	 } else {
-   		 return fact;
-   	 }
+    fact = factor() ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos() )? {
+		return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
     }
 }
 
@@ -714,24 +634,7 @@ TypeValue lista_una_o_mas_terminos():
 }
 {
     fact = factor() ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos())? {
-   	 if (fact_resultante != null) {
-   		 if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
-   		 if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
-   		 if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
-   			 switch (op.kind) {
-   				 case tTIMES:
-   					 return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
-   				 case tDIV:
-   					 return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
-   				 case tMOD:
-   					 return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
-   			 }
-   		 } else {
-   			 return new TypeValue(Symbol.Types.INT, null);
-   		 }
-   	 } else {
-   		 return fact;
-   	 }
+   	 	return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
     }
 }
 
@@ -752,12 +655,7 @@ TypeValue factor():
    	 return p;
     }
     | <tNOT> p = primario() {
-   	 if (p.type == Symbol.Types.BOOL) {
-   		 if (p.value != null) return new TypeValue(Symbol.Types.BOOL, !(boolean)p.value);
-   		 return new TypeValue(Symbol.Types.BOOL, null);
-   	 }
-   	 UnexpectedTypeException.getMessage(Symbol.Types.BOOL, p.type);
-   	 return p;
+		return SemanticFunctions.not_primario(p);
     }
 }
 
@@ -786,61 +684,10 @@ TypeValue primario() :
     }
 |    LOOKAHEAD(2)
 	id = <tID> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
-   	 Symbol sid = null;
-   	 try {
-   		 sid = st.getSymbol(id.image);
-   	 } catch (SymbolNotFoundException e) {
-   		 System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
-   	 }
-
-   	 if (sid.type == Symbol.Types.FUNCTION) {
-   		 SymbolFunction sfid = (SymbolFunction)sid;
-   		 if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments");
-   		 for (int i=0; i<exps.size(); i++) {
-   			 if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type);
-   			 if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal");
-   		 }
-   		 return new TypeValue(sfid.returnType, null);
-   	 } else if (sid.type == Symbol.Types.PROCEDURE) {
-   		 SymbolProcedure spid = (SymbolProcedure)sid;
-   		 if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments");
-   		 for (int i=0; i<exps.size(); i++) {
-   			 if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type);
-   			 if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal");
-   		 }
-   		 return new TypeValue(Symbol.Types.VOID, null);
-   	 } else if (sid.type == Symbol.Types.ARRAY) {
-   		 SymbolArray said = (SymbolArray)sid;
-   		 exp = exps.get(0);
-   		 if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
-   		 if (exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) BadInvocation.getMessage(said.name, "Array index out of bounds");
-   		 return new TypeValue(Symbol.Types.VOID, null, false);
-   	 } else {
-   		 // Error, no hay ninguna invocación id(..) que no sea una función o un elemento de un array
-   		 ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
-   		 expectedTypes.add(Symbol.Types.FUNCTION);
-   		 expectedTypes.add(Symbol.Types.PROCEDURE);
-   		 expectedTypes.add(Symbol.Types.ARRAY);
-   		 UnexpectedTypeException.getMessage(expectedTypes, sid.type);
-   	 }
+		return SemanticFunctions.invoc_func_o_comp_array(id, exps, st);
     }
 |    id = <tID> /*var. o func. sin pars*/ {
-    Symbol sid = null;
-    try {
-   		 sid = st.getSymbol(id.image);
-   	 } catch (SymbolNotFoundException e) {
-   		 System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
-   	 }
-    if (sid.type == Symbol.Types.FUNCTION ) {
-   	 SymbolFunction sfid = (SymbolFunction)sid;
-   	 if (sfid.parList != null) BadInvocation.getMessage(sfid.name, "Function or procedure has too many arguments");
-   	 return new TypeValue(sid.type, null);
-    } else if (sid.type == Symbol.Types.PROCEDURE) {
-   	 SymbolProcedure spid = (SymbolProcedure)sid;
-   	 if (spid.parList != null) BadInvocation.getMessage(spid.name, "Function or procedure has too many arguments");
-   	 return new TypeValue(sid.type, null);
-    }
-    return new TypeValue(sid.type, null, false);
+		return SemanticFunctions.var_o_func_sin_params(id, st);
     }
 |    exp = tipo_constante() { return exp; }
 }
@@ -852,8 +699,8 @@ ArrayList<TypeValue> lista_una_o_mas_exps() :
 }
 {
     exp = expresion() exps = lista_exps_ll()	{
-   	 exps.add(exp);
-   	 return exps;
+	exps.add(0, exp);
+	 return exps;
     }
 }
 
@@ -864,7 +711,7 @@ ArrayList<TypeValue> lista_exps_ll() :
 }
 {
     <tCOMA> exp = expresion() exps = lista_exps_ll() {
-   	 exps.add(exp);
+   	 exps.add(0, exp);
    	 return exps;
     }
     | {return exps;}

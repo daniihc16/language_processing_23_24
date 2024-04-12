@@ -26,6 +26,7 @@ public class SymbolTable {
 	private final int ST_SIZE = 16; //hasta 16 niveles
     private final int HASH_SIZE = 1023; //buckets
     private ArrayList<HashMap<String, Symbol>> st;
+    private String mainProc;
 
     public int level; //nivel actual
 
@@ -66,6 +67,14 @@ public class SymbolTable {
         	throw new SymbolNotFoundException();
         }
         return result; 
+    }
+
+    public String getMainProc() {
+        return mainProc;
+    }
+
+    public void setMainProc(String name) {
+        this.mainProc = name;
     }
     
     // comprueba si está el símbolo 

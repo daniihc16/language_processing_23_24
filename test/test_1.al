@@ -14,6 +14,6 @@ begin
         put_line("hola");
         put("Esto es un string"" compuesto por ""varias cadenas");
         if(23)then
-            print(aqui no deberia llegar);
+            print(aqui no deberia legar);
     end loop;
 end;
