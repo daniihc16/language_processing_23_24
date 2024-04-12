@@ -6,6 +6,7 @@ import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import java.util.*;
 import lib.tools.TypeValue;
+import lib.tools.SemanticFunctions;
 import lib.tools.exceptions.*;
 
 
@@ -13,30 +14,30 @@ public class alike implements alikeConstants {
    //...
    public static SymbolTable st = new SymbolTable();
    public static void main(String[] args) {
-           alike parser = null;
+        alike parser = null;
 
-           try {
-                   if(args.length == 0) {
-                           parser = new alike(System.in);
-                   }
-                   else {
-                           parser = new alike(new java.io.FileInputStream(args[0]));
-                   }
-                   //Programa es el símbolo inicial de la gramática
-                   parser.Programa();
-                   //...
-                   System.out.println("***** An\u00e1lisis terminado con \u00e9xito *****");
-           }
-           catch (java.io.FileNotFoundException e) {
-                   System.err.println ("Fichero " + args[0] + " no encontrado.");
-           }
-           catch (TokenMgrError e) {
-                   System.err.println("LEX_ERROR: " + e.getMessage());
-           }
-           catch (ParseException e) {
-                        System.err.println("PARSE_ERROR: " + e.getMessage());
-           }
-           //...
+        try {
+                if(args.length == 0) {
+                        parser = new alike(System.in);
+                }
+                else {
+                        parser = new alike(new java.io.FileInputStream(args[0]));
+                }
+                //Programa es el símbolo inicial de la gramática
+                parser.Programa();
+                //...
+                System.out.println("***** An\u00e1lisis terminado con \u00e9xito *****");
+        }
+        catch (java.io.FileNotFoundException e) {
+                System.err.println ("Fichero " + args[0] + " no encontrado.");
+        }
+        catch (TokenMgrError e) {
+                System.err.println("LEX_ERROR: " + e.getMessage());
+        }
+        catch (ParseException e) {
+                 System.err.println("PARSE_ERROR: " + e.getMessage());
+        }
+        //...
    }
 
   static final public Token boolconst() throws ParseException {
@@ -71,7 +72,7 @@ Token bool_const = null;
     trace_call("tipo_dato");
     try {
 ArrayList<Symbol> t;
-        Token neg1 = null, neg2 = null, min, max;
+    Token neg1 = null, neg2 = null, min, max;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tCHAR:
       case tBOOL:
@@ -107,17 +108,7 @@ ArrayList<Symbol> t;
         jj_consume_token(tCPAR);
         jj_consume_token(tOF);
         t = tipo_base(ids, isRef);
-//return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);
-                Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
-                int minInd = Integer.parseInt(min.image);
-                int maxInd = Integer.parseInt(max.image);
-                if (neg1 != null) minInd = minInd*(-1);
-                if (neg2 != null) maxInd = maxInd*(-1);
-                ArrayList<Symbol> ids_con_tipo = new ArrayList<Symbol>();
-                for (int i=0; i<ids.size(); i++) {
-                        ids_con_tipo.add(new SymbolArray(ids.get(i), minInd, maxInd, t.get(i).type, p_class));
-                }
-                {if ("" != null) return ids_con_tipo;}
+{if ("" != null) return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);}
         break;
         }
       default:
@@ -159,15 +150,7 @@ t = new SymbolInt("");
         jj_consume_token(-1);
         throw new ParseException();
       }
-ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
-                Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
-                for (String id : ids) {
-                        Symbol t_clone = t.clone();
-                        t_clone.name = id;
-                        t_clone.parClass = p_class;
-                        ids_symbols.add(t_clone);
-                }
-                {if ("" != null) return ids_symbols;}
+{if ("" != null) return SemanticFunctions.ids_simbolos_base(ids, isRef, t);}
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("tipo_base");
@@ -178,9 +161,9 @@ ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
     trace_call("tipo_constante");
     try {
 Token char_const = null;
-        Token int_const = null;
-        Token bool_const = null;
-        Token string_const = null;
+    Token int_const = null;
+    Token bool_const = null;
+    Token string_const = null;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tCHARCONST:{
         char_const = jj_consume_token(tCHARCONST);
@@ -219,16 +202,10 @@ Token char_const = null;
     trace_call("Programa");
     try {
 SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
-        ArrayList<Symbol> vars = null;
+    ArrayList<Symbol> vars = null;
       try {
         proc_main = cabecera_procedimiento();
-try {
-
-                                st.insertSymbol(proc_main);
-                                System.out.println("Nuevo s\u00edmbolo: " + st.toString());
-                        } catch (AlreadyDefinedSymbolException ads) {
-                                System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc_main) + ": Procedimiento ya declarado");
-                        }
+SemanticFunctions.insertSymbol(st, proc_main);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           vars = declaracion_variables();
@@ -239,17 +216,13 @@ try {
           ;
         }
 if (vars != null) {
-                                        for (Symbol var : vars) {
-                                                try{
-                                                        st.insertSymbol(var);
-                                                } catch (AlreadyDefinedSymbolException ads){
-                                                        System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc_main) + ": Par\u00e1metro ya declarado");
-                                                }
-                                        }
-                                } else {
-                                        vars = new ArrayList<Symbol>();
+                                for (Symbol var : vars) {
+                                        SemanticFunctions.insertSymbol(st, var);
                                 }
-                                System.out.println("Nuevo s\u00edmbolo: " + st.toString());
+                        } else {
+                                vars = new ArrayList<Symbol>();
+                        }
+                        System.out.println("Nuevo s\u00edmbolo: " + st.toString());
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tPROC:
         case tFUNC:{
@@ -311,7 +284,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     trace_call("declaracion_variables");
     try {
 ArrayList<Symbol> vars = new ArrayList<Symbol>();
-        ArrayList<Symbol> var_list = null;
+    ArrayList<Symbol> var_list = null;
       label_2:
       while (true) {
         var_list = declaracion_var();
@@ -337,9 +310,9 @@ for (Symbol var: var_list) vars.add(var);
     trace_call("declaracion_var");
     try {
 ArrayList<String> ids;
-        ArrayList<Symbol> vars;
+    ArrayList<Symbol> vars;
       try {
-        // tipo_dato devuelve el símbolo 
+        // tipo_dato devuelve el símbolo
                         ids = lista_ids();
         jj_consume_token(tDP);
         vars = tipo_dato(ids, false);
@@ -404,25 +377,10 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     trace_call("declaracion_proc");
     try {
 SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
-        ArrayList<Symbol> vars = null;
+    ArrayList<Symbol> vars = null;
       try {
         proc = cabecera_procedimiento();
-try {
-                                st.insertSymbol(proc);
-                        }
-                        catch (AlreadyDefinedSymbolException ads) {
-                                System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Procedimiento o par\u00e1metros ya declarados");
-                        }
-                        st.insertBlock();
-                        if (proc.parList != null) {
-                                for (Symbol param : proc.parList) {
-                                        try {
-                                                st.insertSymbol(param);
-                                        } catch (AlreadyDefinedSymbolException ads) {
-                                                System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Par\u00e1metro ya declarado");
-                                        }
-                                }
-                        }
+SemanticFunctions.newProcBlock(st, proc);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           vars = declaracion_variables();
@@ -433,14 +391,7 @@ try {
           ;
         }
 if (vars != null) {
-                                for (Symbol var : vars) {
-                                        try{
-                                                st.insertSymbol(var);
-                                        } catch (AlreadyDefinedSymbolException ads){
-                                                System.err.println("SEMANTIC_ERROR: Error definiendo nuevo variable" + ads.getMessage(proc) + ": Variable ya declarado");
-                                        }
-
-                                }
+                                for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
                         } else {
                                 vars = new ArrayList<Symbol>();
                         }
@@ -510,24 +461,10 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     trace_call("declaracion_func");
     try {
 ArrayList<Symbol> vars = new ArrayList<Symbol>();
-        SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
+    SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
       try {
         func = cabecera_funcion();
-try {
-                                st.insertSymbol(func);
-                        } catch (AlreadyDefinedSymbolException ads) {
-                                System.err.println("SEMANTIC_ERROR: Error definiendo nueva funci\u00f3n" + ads.getMessage(func) + ": Funci\u00f3n ya declarada");
-                        }
-                        st.insertBlock();
-                        if (func.parList != null){
-                                for (Symbol param : func.parList) {
-                                        try {
-                                                st.insertSymbol(param);
-                                        } catch (AlreadyDefinedSymbolException ads) {
-                                                System.err.println("SEMANTIC_ERROR: Error definiendo nueva funci\u00f3n" + ads.getMessage(func) + ": Par\u00e1metro ya declarado");
-                                        }
-                                }
-                        }
+SemanticFunctions.newFuncBlock(st, func);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tID:{
           vars = declaracion_variables();
@@ -537,16 +474,8 @@ try {
           jj_la1[15] = jj_gen;
           ;
         }
-if (vars != null) {
-                                for (Symbol var : vars) {
-                                        try{
-                                                st.insertSymbol(var);
-                                        } catch (AlreadyDefinedSymbolException ads){
-                                                System.err.println("SEMANTIC_ERROR: Error definiendo nueva funcion" + ads.getMessage(func) + ": Variable ya declarada");
-                                        }
-
-                                }
-                        }
+// perdón, era necesario
+                        if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
         jj_consume_token(tBEGIN);
         label_5:
         while (true) {
@@ -599,8 +528,8 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     trace_call("declaracion_param");
     try {
 ArrayList<String> ids;
-        ArrayList<Symbol> ids_con_tipo;
-        Token ref = null;
+    ArrayList<Symbol> ids_con_tipo;
+    Token ref = null;
       ids = lista_ids();
       jj_consume_token(tDP);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -625,8 +554,8 @@ ArrayList<String> ids;
     trace_call("lista_ids");
     try {
 ArrayList<String> ids = new ArrayList<String>();
-        ArrayList<String> resto_ids = null;
-        Token id;
+    ArrayList<String> resto_ids = null;
+    Token id;
       if (jj_2_1(2)) {
         id = jj_consume_token(tID);
         jj_consume_token(tCOMA);
@@ -659,7 +588,7 @@ ids.add(id.image);
     trace_call("cabecera_procedimiento");
     try {
 Token id_proc;
-        ArrayList<Symbol> proc_params = null;
+    ArrayList<Symbol> proc_params = null;
       jj_consume_token(tPROC);
       id_proc = jj_consume_token(tID);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -685,8 +614,8 @@ Token id_proc;
     trace_call("cabecera_funcion");
     try {
 Token id_func;
-        ArrayList<Symbol> func_params = null;
-        ArrayList<Symbol> returnType = null;
+    ArrayList<Symbol> func_params = null;
+    ArrayList<Symbol> returnType = null;
       jj_consume_token(tFUNC);
       id_func = jj_consume_token(tID);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -713,7 +642,7 @@ Token id_func;
     trace_call("parametros_formales");
     try {
 ArrayList<Symbol> params = new ArrayList<Symbol>();
-        ArrayList<Symbol> ps, resto_p;
+    ArrayList<Symbol> ps, resto_p;
       try {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tAPAR:{
@@ -754,7 +683,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     trace_call("lista_parametros_formales");
     try {
 ArrayList<Symbol> params = new ArrayList<Symbol>();
-        ArrayList<Symbol> ps, resto_p;
+    ArrayList<Symbol> ps, resto_p;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPC:{
         jj_consume_token(tPC);
@@ -868,14 +797,7 @@ ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
       jj_consume_token(tAPAR);
       exps = lista_una_o_mas_exps();
       jj_consume_token(tCPAR);
-// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
-                // han de convertirse con int2char()
-                for (TypeValue exp:exps) {
-                        if (exp.type != Symbol.Types.STRING &&
-                        exp.type != Symbol.Types.CHAR &&
-                        exp.type != Symbol.Types.INT &&
-                        exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.STRING, exp.type);
-                }
+SemanticFunctions.inst_escribir(exps);
                 System.out.println("Encontrada instrucci\u00f3n put correcta");
     } finally {
       trace_return("inst_escribir");
@@ -898,17 +820,8 @@ ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
         jj_la1[24] = jj_gen;
         ;
       }
-// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
-                // han de convertirse con int2char()
-                for (TypeValue exp:exps) {
-                        if (exp.type != Symbol.Types.STRING &&
-                                exp.type != Symbol.Types.CHAR &&
-                                exp.type != Symbol.Types.INT &&
-                                exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.STRING, exp.type);
-                }
-
+SemanticFunctions.inst_escribir(exps);
                 System.out.println("Encontrada instrucci\u00f3n put_line correcta");
-
                 // Añadir un salto de línea al final en la generación de código
 
     } finally {
@@ -1119,7 +1032,7 @@ ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
     trace_call("expresion");
     try {
 TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
-        Token op = null;
+    Token op = null;
       prel = relacion();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tAND:
@@ -1145,23 +1058,7 @@ TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
         jj_la1[33] = jj_gen;
         ;
       }
-if (rest_rel != null) {
-                        if (prel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, prel.type);
-                        if (rest_rel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, rest_rel.type);
-                        // evaluamos prematuramente las relaciones para determinar un posible valor constante
-                        if (prel.type == Symbol.Types.BOOL && rest_rel.type == Symbol.Types.BOOL && prel.value != null && rest_rel.value != null) {
-                                switch (op.kind) {
-                                        case tAND:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean)rest_rel.value);}
-                                        case tOR:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);}
-                                }
-                        } else {
-                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
-                        }
-                } else {
-                        {if ("" != null) return prel;}
-                }
+{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("expresion");
@@ -1172,7 +1069,7 @@ if (rest_rel != null) {
     trace_call("lista_una_o_mas_relaciones_booleanas");
     try {
 TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
-        Token op = null;
+    Token op = null;
       prel = relacion();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tAND:
@@ -1198,23 +1095,7 @@ TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
         jj_la1[35] = jj_gen;
         ;
       }
-if (rest_rel != null) {
-                        if (prel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, prel.type);
-                        if (rest_rel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, rest_rel.type);
-                        // evaluamos prematuramente las relaciones para determinar un posible valor constante
-                        if (prel.type == Symbol.Types.BOOL && rest_rel.type == Symbol.Types.BOOL && prel.value != null && rest_rel.value != null) {
-                                switch (op.kind) {
-                                        case tAND:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean) rest_rel.value);}
-                                        case tOR:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);}
-                                }
-                        } else {
-                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
-                        }
-                } else {
-                        {if ("" != null) return prel;}
-                }
+{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("lista_una_o_mas_relaciones_booleanas");
@@ -1225,7 +1106,7 @@ if (rest_rel != null) {
     trace_call("relacion");
     try {
 TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;
-        Token op = null;
+    Token op = null;
       exp1 = expresion_simple();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tLT:
@@ -1254,21 +1135,21 @@ TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;
                                         case tNE:
                                                 {if ("" != null) return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);}
                                         case tLT:
-                                                if (Symbol.Types.INT == exp1.value) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);}
-                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-                                                {if ("" != null) return new TypeValue();}
+                                                if (Symbol.Types.INT == exp1.type) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);}
+                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
                                         case tLE:
-                                                if (Symbol.Types.INT == exp1.value) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);}
-                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-                                                {if ("" != null) return new TypeValue();}
+                                                if (Symbol.Types.INT == exp1.type) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);}
+                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
                                         case tGT:
-                                                if (Symbol.Types.INT == exp1.value) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);}
-                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-                                                {if ("" != null) return new TypeValue();}
+                                                if (Symbol.Types.INT == exp1.type) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);}
+                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
                                         case tGE:
-                                                if (Symbol.Types.INT == exp1.value) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);}
-                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-                                                {if ("" != null) return new TypeValue();}
+                                                if (Symbol.Types.INT == exp1.type) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);}
+                                                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+                                                {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
                                 }
                         } else {
                                 // Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
@@ -1328,8 +1209,8 @@ Token t;
     trace_call("expresion_simple");
     try {
 TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
-        Token op = null, ops = null;
-        // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
+    Token op = null, ops = null;
+    // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
 
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPLUS:
@@ -1380,25 +1261,25 @@ TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = 
         ;
       }
 // Si hay un operador + o - el término debe ser de tipo entero
-                if (ops != null && term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-                // Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
-                if (term.value != null) {
-                        if (ops == null) term = new TypeValue(term.type, term.value, term.isLiteral);
-                        else if (ops.kind == tPLUS && term.type == Symbols.Types.INT) term = new TypeValue(term.type, term.value, term.isLiteral);
-                        else if (ops.kind == tMINUS && term.type == Symbols.Types.INT) term = new TypeValue(term.type, (int)term.value*-1);
-                        else UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-                } else term =  new TypeValue(term.type, null, term.isLiteral);
+         if (ops != null && term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+         // Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
+         if (term.value != null) {
+                 if (ops == null) term = new TypeValue(term.type, term.value, term.isLiteral);
+                 else if (ops.kind == tPLUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, term.value, term.isLiteral);
+                 else if (ops.kind == tMINUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, (int)term.value*-1);
+                 else UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+         } else term =  new TypeValue(term.type, null, term.isLiteral);
 
-                if (term_resultante == null) {if ("" != null) return term;}
-                if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-                if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
+         if (term_resultante == null) {if ("" != null) return term;}
+         if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+         if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
 
-                if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
-                        if (op.kind == tPLUS) {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);}
-                        else {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);}
-                } else {
-                        {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
-                }
+         if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
+                 if (op.kind == tPLUS) {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);}
+                 else {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);}
+         } else {
+                 {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
+         }
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("expresion_simple");
@@ -1409,7 +1290,7 @@ TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = 
     trace_call("una_o_mas_expresiones_simples");
     try {
 TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
-        Token op = null, ops = null;
+    Token op = null, ops = null;
       term = termino();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPLUS:
@@ -1436,17 +1317,17 @@ TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = 
         ;
       }
 if (term_resultante != null) {
-                        if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-                        if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
-                        if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
-                                if (op.kind == tPLUS) {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);}
-                                else {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);}
-                        } else {
-                                {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
-                        }
-                } else {
-                        {if ("" != null) return term;}
-                }
+                 if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+                 if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
+                 if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
+                         if (op.kind == tPLUS) {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);}
+                         else {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);}
+                 } else {
+                         {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
+                 }
+         } else {
+                 {if ("" != null) return term;}
+         }
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("una_o_mas_expresiones_simples");
@@ -1457,7 +1338,7 @@ if (term_resultante != null) {
     trace_call("termino");
     try {
 TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
-        Token op = null;
+    Token op = null;
       fact = factor();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tTIMES:
@@ -1472,23 +1353,23 @@ TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = 
         ;
       }
 if (fact_resultante != null) {
-                        if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
-                        if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
-                        if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
-                                switch (op.kind) {
-                                        case tTIMES:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);}
-                                        case tDIV:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);}
-                                        case tMOD:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);}
-                                }
-                        } else {
-                                {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
-                        }
-                } else {
-                        {if ("" != null) return fact;}
-                }
+                 if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
+                 if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
+                 if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
+                         switch (op.kind) {
+                                 case tTIMES:
+                                         {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);}
+                                 case tDIV:
+                                         {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);}
+                                 case tMOD:
+                                         {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);}
+                         }
+                 } else {
+                         {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
+                 }
+         } else {
+                 {if ("" != null) return fact;}
+         }
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("termino");
@@ -1499,7 +1380,7 @@ if (fact_resultante != null) {
     trace_call("lista_una_o_mas_terminos");
     try {
 TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
-        Token op = null;
+    Token op = null;
       fact = factor();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tTIMES:
@@ -1514,23 +1395,23 @@ TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = 
         ;
       }
 if (fact_resultante != null) {
-                        if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
-                        if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
-                        if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
-                                switch (op.kind) {
-                                        case tTIMES:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);}
-                                        case tDIV:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);}
-                                        case tMOD:
-                                                {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);}
-                                }
-                        } else {
-                                {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
-                        }
-                } else {
-                        {if ("" != null) return fact;}
-                }
+                 if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
+                 if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
+                 if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
+                         switch (op.kind) {
+                                 case tTIMES:
+                                         {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);}
+                                 case tDIV:
+                                         {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);}
+                                 case tMOD:
+                                         {if ("" != null) return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);}
+                         }
+                 } else {
+                         {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
+                 }
+         } else {
+                 {if ("" != null) return fact;}
+         }
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("lista_una_o_mas_terminos");
@@ -1588,11 +1469,11 @@ TypeValue p = new TypeValue(Symbol.Types.UNDEFINED, null);
         jj_consume_token(tNOT);
         p = primario();
 if (p.type == Symbol.Types.BOOL) {
-                        if (p.value != null) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, !(boolean)p.value);}
-                        {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
-                }
-                UnexpectedTypeException.getMessage(Symbol.Types.BOOL, p.type);
-                {if ("" != null) return p;}
+                 if (p.value != null) {if ("" != null) return new TypeValue(Symbol.Types.BOOL, !(boolean)p.value);}
+                 {if ("" != null) return new TypeValue(Symbol.Types.BOOL, null);}
+         }
+         UnexpectedTypeException.getMessage(Symbol.Types.BOOL, p.type);
+         {if ("" != null) return p;}
         break;
         }
       default:
@@ -1610,8 +1491,8 @@ if (p.type == Symbol.Types.BOOL) {
     trace_call("primario");
     try {
 TypeValue exp = null;
-        Token id = null;
-        ArrayList<TypeValue> exps = null;
+    Token id = null;
+    ArrayList<TypeValue> exps = null;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tAPAR:{
         jj_consume_token(tAPAR);
@@ -1626,11 +1507,11 @@ TypeValue exp = null;
         exp = expresion();
         jj_consume_token(tCPAR);
 System.out.println(exp.value);
-        if (exp.type == Symbol.Types.INT) {
-                {if ("" != null) return new TypeValue(Symbol.Types.CHAR, exp.value);}
-        } else {
-                UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
-        }
+    if (exp.type == Symbol.Types.INT) {
+         {if ("" != null) return new TypeValue(Symbol.Types.CHAR, exp.value);}
+    } else {
+         UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+    }
         break;
         }
       case tCHAR2INT:{
@@ -1639,10 +1520,10 @@ System.out.println(exp.value);
         exp = expresion();
         jj_consume_token(tCPAR);
 if (exp.type == Symbol.Types.CHAR) {
-                        {if ("" != null) return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));}
-                } else {
-                        UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
-                }
+                 {if ("" != null) return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));}
+         } else {
+                 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+         }
         break;
         }
       default:
@@ -1653,62 +1534,63 @@ if (exp.type == Symbol.Types.CHAR) {
           exps = lista_una_o_mas_exps();
           jj_consume_token(tCPAR);
 Symbol sid = null;
-                try {
-                        sid = st.getSymbol(id.image);
-                } catch (SymbolNotFoundException e) {
-                        System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
-                }
+         try {
+                 sid = st.getSymbol(id.image);
+         } catch (SymbolNotFoundException e) {
+                 System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
+         }
 
-                if (sid.type == Symbol.Types.FUNCTION) {
-                        SymbolFunction sfid = (SymbolFunction)sid;
-                        if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments");
-                        for (int i=0; i<exps.size(); i++) {
-                                if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type);
-                                if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal");
-                        }
-                        {if ("" != null) return new TypeValue(sfid.returnType, null);}
-                } else if (sid.type == Symbol.Types.PROCEDURE) {
-                        SymbolProcedure spid = (SymbolProcedure)sid;
-                        if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments");
-                        for (int i=0; i<exps.size(); i++) {
-                                if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type);
-                                if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal");
-                        }
-                        {if ("" != null) return new TypeValue(Symbol.Types.VOID, null);}
-                } else if (sid.type == Symbol.Types.ARRAY) {
-                        SymbolArray said = (SymbolArray)sid;
-                        exp = exps.get(0);
-                        if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
-                        if (exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) BadInvocation.getMessage(said.name, "Array index out of bounds");
-                        {if ("" != null) return new TypeValue(Symbol.Types.VOID, null, false);}
-                } else {
-                        // Error, no hay ninguna invocación id(..) que no sea una función o un elemento de un array
-                        ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
-                        expectedTypes.add(Symbol.Types.FUNCTION);
-                        expectedTypes.add(Symbol.Types.PROCEDURE);
-                        expectedTypes.add(Symbol.Types.ARRAY);
-                        UnexpectedTypeException.getMessage(expectedTypes, sid.type);
-                }
+         if (sid.type == Symbol.Types.FUNCTION) {
+                 SymbolFunction sfid = (SymbolFunction)sid;
+                 if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments");
+                 for (int i=0; i<exps.size(); i++) {
+                         if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type);
+                         if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal");
+                 }
+                 {if ("" != null) return new TypeValue(sfid.returnType, null);}
+         } else if (sid.type == Symbol.Types.PROCEDURE) {
+                 SymbolProcedure spid = (SymbolProcedure)sid;
+                 if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments");
+                 for (int i=0; i<exps.size(); i++) {
+                         if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type);
+                         if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal");
+                 }
+                 System.out.println("proc done");
+                 {if ("" != null) return new TypeValue(Symbol.Types.VOID, null);}
+         } else if (sid.type == Symbol.Types.ARRAY) {
+                 SymbolArray said = (SymbolArray)sid;
+                 exp = exps.get(0);
+                 if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+                 if (exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) BadInvocation.getMessage(said.name, "Array index out of bounds");
+                 {if ("" != null) return new TypeValue(Symbol.Types.VOID, null, false);}
+         } else {
+                 // Error, no hay ninguna invocación id(..) que no sea una función o un elemento de un array
+                 ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
+                 expectedTypes.add(Symbol.Types.FUNCTION);
+                 expectedTypes.add(Symbol.Types.PROCEDURE);
+                 expectedTypes.add(Symbol.Types.ARRAY);
+                 UnexpectedTypeException.getMessage(expectedTypes, sid.type);
+         }
         } else {
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tID:{
             id = jj_consume_token(tID);
 Symbol sid = null;
-        try {
-                        sid = st.getSymbol(id.image);
-                } catch (SymbolNotFoundException e) {
-                        System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
-                }
-        if (sid.type == Symbol.Types.FUNCTION ) {
-                SymbolFunction sfid = (SymbolFunction)sid;
-                if (sfid.parList != null) BadInvocation.getMessage(sfid.name, "Function or procedure has too many arguments");
-                {if ("" != null) return new TypeValue(sid.type, null);}
-        } else if (sid.type == Symbol.Types.PROCEDURE) {
-                SymbolProcedure spid = (SymbolProcedure)sid;
-                if (spid.parList != null) BadInvocation.getMessage(spid.name, "Function or procedure has too many arguments");
-                {if ("" != null) return new TypeValue(sid.type, null);}
-        }
-        {if ("" != null) return new TypeValue(sid.type, null, false);}
+    try {
+                 sid = st.getSymbol(id.image);
+         } catch (SymbolNotFoundException e) {
+                 System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
+         }
+    if (sid.type == Symbol.Types.FUNCTION ) {
+         SymbolFunction sfid = (SymbolFunction)sid;
+         if (sfid.parList != null) BadInvocation.getMessage(sfid.name, "Function or procedure has too many arguments");
+         {if ("" != null) return new TypeValue(sid.type, null);}
+    } else if (sid.type == Symbol.Types.PROCEDURE) {
+         SymbolProcedure spid = (SymbolProcedure)sid;
+         if (spid.parList != null) BadInvocation.getMessage(spid.name, "Function or procedure has too many arguments");
+         {if ("" != null) return new TypeValue(sid.type, null);}
+    }
+    {if ("" != null) return new TypeValue(sid.type, null, false);}
             break;
             }
           case tCHARCONST:
@@ -1737,11 +1619,11 @@ Symbol sid = null;
     trace_call("lista_una_o_mas_exps");
     try {
 ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-        TypeValue exp;
+    TypeValue exp;
       exp = expresion();
       exps = lista_exps_ll();
 exps.add(exp);
-                {if ("" != null) return exps;}
+         {if ("" != null) return exps;}
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("lista_una_o_mas_exps");
@@ -1752,14 +1634,14 @@ exps.add(exp);
     trace_call("lista_exps_ll");
     try {
 ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-        TypeValue exp;
+    TypeValue exp;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tCOMA:{
         jj_consume_token(tCOMA);
         exp = expresion();
         exps = lista_exps_ll();
 exps.add(exp);
-                {if ("" != null) return exps;}
+         {if ("" != null) return exps;}
         break;
         }
       default:
@@ -1788,17 +1670,17 @@ exps.add(exp);
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_2()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tAPAR)) return true;
-    return false;
-  }
-
   static private boolean jj_3_1()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tCOMA)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tAPAR)) return true;
     return false;
   }
 

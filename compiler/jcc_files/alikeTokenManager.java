@@ -5,16 +5,17 @@ import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import java.util.*;
 import lib.tools.TypeValue;
+import lib.tools.SemanticFunctions;
 import lib.tools.exceptions.*;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")
 public class alikeTokenManager implements alikeConstants {
-        static void CommonTokenAction(Token token) {
-                if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
-                System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
-                System.out.println();
-        }
+    static void CommonTokenAction(Token token) {
+         if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
+         System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
+         System.out.println();
+    }
 
   /** Debug output. */
   public static  java.io.PrintStream debugStream = System.out;
@@ -959,8 +960,8 @@ static void TokenLexicalActions(Token matchedToken)
    {
       case 27 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-        // quitamos la doble "" por "
-        matchedToken.image = image.toString().replaceAll("\"\"", "\"");
+    // quitamos la doble "" por "
+    matchedToken.image = image.toString().replaceAll("\"\"", "\"");
          break;
       default :
          break;

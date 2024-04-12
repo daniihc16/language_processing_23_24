@@ -6,9 +6,9 @@
 //*****************************************************************
 
 options {
-	IGNORE_CASE = true;	//No distinguir entre mayúsculas y minúsculas
-	COMMON_TOKEN_ACTION = false; //Se generan acciones por defecto
-	DEBUG_PARSER = true; //Genera información de depuración
+    IGNORE_CASE = true;    //No distinguir entre mayúsculas y minúsculas
+    COMMON_TOKEN_ACTION = false; //Se generan acciones por defecto
+    DEBUG_PARSER = true; //Genera información de depuración
 }
 
 PARSER_BEGIN(alike)
@@ -19,6 +19,7 @@ import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import java.util.*;
 import lib.tools.TypeValue;
+import lib.tools.SemanticFunctions;
 import lib.tools.exceptions.*;
 
 
@@ -26,119 +27,119 @@ public class alike {
    //...
    public static SymbolTable st = new SymbolTable();
    public static void main(String[] args) {
-	   alike parser = null;
-	   
-	   try {
-		   if(args.length == 0) {
-			   parser = new alike(System.in);
-		   }
-		   else {
-			   parser = new alike(new java.io.FileInputStream(args[0]));
-		   }
-		   //Programa es el símbolo inicial de la gramática
-		   parser.Programa();
-		   //...
-		   System.out.println("***** Análisis terminado con éxito *****");
-	   }
-	   catch (java.io.FileNotFoundException e) {
-		   System.err.println ("Fichero " + args[0] + " no encontrado.");
-	   }
-	   catch (TokenMgrError e) {
-		   System.err.println("LEX_ERROR: " + e.getMessage());
-	   }
-	   catch (ParseException e) {
-			System.err.println("PARSE_ERROR: " + e.getMessage());
-	   }
-	   //...
+   	alike parser = null;
+       
+   	try {
+   		if(args.length == 0) {
+   			parser = new alike(System.in);
+   		}
+   		else {
+   			parser = new alike(new java.io.FileInputStream(args[0]));
+   		}
+   		//Programa es el símbolo inicial de la gramática
+   		parser.Programa();
+   		//...
+   		System.out.println("***** Análisis terminado con éxito *****");
+   	}
+   	catch (java.io.FileNotFoundException e) {
+   		System.err.println ("Fichero " + args[0] + " no encontrado.");
+   	}
+   	catch (TokenMgrError e) {
+   		System.err.println("LEX_ERROR: " + e.getMessage());
+   	}
+   	catch (ParseException e) {
+   		 System.err.println("PARSE_ERROR: " + e.getMessage());
+   	}
+   	//...
    }
 }
 PARSER_END(alike)
 <COMILLAS> SKIP: { "\"" : DEFAULT }
-SKIP : { <tCOMMENT :"--" (~["\n"])* "\n"> | " " |  "\n" |  "\t"|  "\r" } 
+SKIP : { <tCOMMENT :"--" (~["\n"])* "\n"> | " " |  "\n" |  "\t"|  "\r" }
 
 TOKEN : {
-	< #LETTER: (["a"-"z","A"-"Z"]) >
-|	< #DIGIT: ["0"-"9"] >
+    < #LETTER: (["a"-"z","A"-"Z"]) >
+|    < #DIGIT: ["0"-"9"] >
 
 }
 
 TOKEN : {
-	//Propios del programa
-	< tBEGIN: "begin" >
-|	< tEND: "end" >
-|	< tASIGN: ":=" >
-|	< tREF: "ref" >
-|	< tIS: "is" >
-|	< tOF: "of" >
-|	< tPROC: "procedure" >
-|	< tFUNC: "function" >
-|	< tNULL: "null" >
-|	< tARRAY: "array" >
-|	< tRETURN: "return" >
+    //Propios del programa
+    < tBEGIN: "begin" >
+|    < tEND: "end" >
+|    < tASIGN: ":=" >
+|    < tREF: "ref" >
+|    < tIS: "is" >
+|    < tOF: "of" >
+|    < tPROC: "procedure" >
+|    < tFUNC: "function" >
+|    < tNULL: "null" >
+|    < tARRAY: "array" >
+|    < tRETURN: "return" >
 
 
-	//Tipos de datos
-|	< tCHAR: "character" >
-|	< tBOOL: "boolean" >
-|	< tINT: "integer" >
-|	< tCHARCONST: "\'" ~["\n"] "\'" >
-|	< tINTCONST: (<DIGIT>)+ >
-|	< tTRUE: "true" >
-|	< tFALSE: "false" >
+    //Tipos de datos
+|    < tCHAR: "character" >
+|    < tBOOL: "boolean" >
+|    < tINT: "integer" >
+|    < tCHARCONST: "\'" ~["\n"] "\'" >
+|    < tINTCONST: (<DIGIT>)+ >
+|    < tTRUE: "true" >
+|    < tFALSE: "false" >
 |   < tSTRING: "\"" ((~["\n", "\""])* ("\"\"")? )* "\""  > {
-	// quitamos la doble "" por "
-	matchedToken.image = image.toString().replaceAll("\"\"", "\"");
+    // quitamos la doble "" por "
+    matchedToken.image = image.toString().replaceAll("\"\"", "\"");
 }
 
-	//Operadores
-|	<tAND: "and" >
-|	<tOR: "or" >
-|	<tNOT: "not" >
-|	< tPLUS: "+" >
-|	< tMINUS: "-" >
-|	< tTIMES: "*" >
-|	< tDIV: "/" >
+    //Operadores
+|    <tAND: "and" >
+|    <tOR: "or" >
+|    <tNOT: "not" >
+|    < tPLUS: "+" >
+|    < tMINUS: "-" >
+|    < tTIMES: "*" >
+|    < tDIV: "/" >
 |   < tLT: "<" >
 |   < tGT: ">" >
 |   < tEQ: "=" >
-|	< tNE: "/=" >
-|	< tLE: "<=" >
-|	< tGE: ">=" >
-|	< tMOD: "mod" >
-|	< tAPAR: "(" >
-|	< tCPAR: ")" >
-|	< tPC: ";" >
-|	< tDP: ":" >
-|	< tCOMA: "," >
-|	< tRANGE: ".." >
+|    < tNE: "/=" >
+|    < tLE: "<=" >
+|    < tGE: ">=" >
+|    < tMOD: "mod" >
+|    < tAPAR: "(" >
+|    < tCPAR: ")" >
+|    < tPC: ";" >
+|    < tDP: ":" >
+|    < tCOMA: "," >
+|    < tRANGE: ".." >
 // Built in functions
-|	< tSKIPLINE: "skip_line" >
-|	< tGET: "get" >
-|	< tPUTLINE: "put_line" >
-|	< tPUT: "put" >
+|    < tSKIPLINE: "skip_line" >
+|    < tGET: "get" >
+|    < tPUTLINE: "put_line" >
+|    < tPUT: "put" >
 |   < tINT2CHAR: "int2char" >
 |   < tCHAR2INT: "char2int" >
 
 //Condicionales
-|	< tIF: "if" >
-|	< tELSE: "else" >
+|    < tIF: "if" >
+|    < tELSE: "else" >
 |   < tELSIF: "elsif" >
 |   < tTHEN: "then" >
-|	< tWHILE: "while" >
-| 	< tLOOP: "loop" >
+|    < tWHILE: "while" >
+|     < tLOOP: "loop" >
 
 //Identificadores
 |   < tID: ( <LETTER> |"_") (<LETTER> | <DIGIT> | "_")* >
-|	< tRESTO: ~[] >
+|    < tRESTO: ~[] >
    
 }
 
 Token boolconst():
 {
-	Token bool_const = null;
+    Token bool_const = null;
 }
 {
-	( bool_const = <tTRUE> | bool_const = <tFALSE>) { return bool_const; }
+    ( bool_const = <tTRUE> | bool_const = <tFALSE>) { return bool_const; }
 }
 
 // Devuelve el array con los símbolos de los identificadores con su tipo
@@ -146,24 +147,14 @@ Token boolconst():
 // @param ref: token que indica si el tipo es por referencia
 ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef):
 {
-	ArrayList<Symbol> t;
-	Token neg1 = null, neg2 = null, min, max;
+    ArrayList<Symbol> t;
+    Token neg1 = null, neg2 = null, min, max;
 }
 {
-	t = tipo_base(ids, isRef) { return t; }
-	| <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, isRef) {
-		//return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);
-		Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
-		int minInd = Integer.parseInt(min.image);
-		int maxInd = Integer.parseInt(max.image);
-		if (neg1 != null) minInd = minInd*(-1);
-		if (neg2 != null) maxInd = maxInd*(-1);
-		ArrayList<Symbol> ids_con_tipo = new ArrayList<Symbol>();
-		for (int i=0; i<ids.size(); i++) {
-			ids_con_tipo.add(new SymbolArray(ids.get(i), minInd, maxInd, t.get(i).type, p_class));
-		}
-		return ids_con_tipo;
-	}
+    t = tipo_base(ids, isRef) { return t; }
+    | <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, isRef) {
+   	 return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);
+    }
 }
 
 
@@ -172,81 +163,63 @@ ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef):
 // @param isRef: indica si el tipo es por referencia
 ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef):
 {
-	Symbol t;
+    Symbol t;
 }
 {
-	(<tCHAR> {t = new SymbolChar("");} | <tBOOL> {t = new SymbolBool("");} | <tINT>{t = new SymbolInt("");} ) {
-		ArrayList<Symbol> ids_symbols = new ArrayList<Symbol>();
-		Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
-		for (String id : ids) {
-			Symbol t_clone = t.clone();
-			t_clone.name = id;
-			t_clone.parClass = p_class;
-			ids_symbols.add(t_clone);
-		}
-		return ids_symbols;
-	}
+    (<tCHAR> {t = new SymbolChar("");} | <tBOOL> {t = new SymbolBool("");} | <tINT>{t = new SymbolInt("");} ) {
+   	 return SemanticFunctions.ids_simbolos_base(ids, isRef, t);
+    }
 }
 
 
 TypeValue tipo_constante():
 {
-	Token char_const = null;
-	Token int_const = null;
-	Token bool_const = null;
-	Token string_const = null;
+    Token char_const = null;
+    Token int_const = null;
+    Token bool_const = null;
+    Token string_const = null;
 }
 {
-	char_const = <tCHARCONST> {
-		return new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));
-	} | int_const = <tINTCONST> {
-		return new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
-	} | bool_const = boolconst() {
-		return new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
-	} | string_const = <tSTRING> {
-		return new TypeValue(Symbol.Types.STRING, string_const.image);
-	}
+    char_const = <tCHARCONST> {
+   	 	return new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));
+    } | int_const = <tINTCONST> {
+   	 	return new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
+    } | bool_const = boolconst() {
+   	 	return new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
+    } | string_const = <tSTRING> {
+   	 	return new TypeValue(Symbol.Types.STRING, string_const.image);
+    }
 }
 
 
 //------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
-void Programa() : 
+void Programa() :
 {
-	SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
-	ArrayList<Symbol> vars = null;
+    SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+    ArrayList<Symbol> vars = null;
 }
 {
    try {
 		proc_main = cabecera_procedimiento() {
-			try {
-
-				st.insertSymbol(proc_main);
-				System.out.println("Nuevo símbolo: " + st.toString());
-			} catch (AlreadyDefinedSymbolException ads) {
-				System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc_main) + ": Procedimiento ya declarado");
-			}
+			SemanticFunctions.insertSymbol(st, proc_main);
 		}
 		( vars = declaracion_variables() )? {
-				if (vars != null) {
-					for (Symbol var : vars) {
-						try{
-							st.insertSymbol(var);
-						} catch (AlreadyDefinedSymbolException ads){
-							System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc_main) + ": Parámetro ya declarado");
-						}
-					}
-				} else {
-					vars = new ArrayList<Symbol>();
+			if (vars != null) {
+				for (Symbol var : vars) {
+					SemanticFunctions.insertSymbol(st, var);
 				}
-				System.out.println("Nuevo símbolo: " + st.toString());
+			} else {
+				vars = new ArrayList<Symbol>();
 			}
+			System.out.println("Nuevo símbolo: " + st.toString());
+		}
 		( declaracion_procs_funcs() )?
 		<tBEGIN>
 		(instruccion())*
 		<tEND>
 		<tPC>
 		< EOF >
-	} catch (ParseException e) {
+    } catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
@@ -254,36 +227,36 @@ void Programa() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	}
+    }
 
 }
 
 ArrayList<Symbol> declaracion_variables() :
 {
-	ArrayList<Symbol> vars = new ArrayList<Symbol>();
-	ArrayList<Symbol> var_list = null;
+    ArrayList<Symbol> vars = new ArrayList<Symbol>();
+    ArrayList<Symbol> var_list = null;
 }
 {
-	( var_list = declaracion_var() {
-		for (Symbol var: var_list) vars.add(var);
-	} )+ {
-		return vars;
-	}
+    ( var_list = declaracion_var() {
+   	 	for (Symbol var: var_list) vars.add(var);
+    } )+ {
+   	 	return vars;
+    }
 }
-	
+    
 
 ArrayList<Symbol> declaracion_var() :
 {
-	ArrayList<String> ids;
-	ArrayList<Symbol> vars;
+    ArrayList<String> ids;
+    ArrayList<Symbol> vars;
 }
-{ 
-	try {
-		// tipo_dato devuelve el símbolo 
+{
+    try {
+		// tipo_dato devuelve el símbolo
 		ids = lista_ids() <tDP> vars = tipo_dato(ids, false) <tPC> {
 			return vars;
 		}
-	} catch (ParseException e) {
+    } catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
@@ -291,16 +264,16 @@ ArrayList<Symbol> declaracion_var() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	}
+    }
 }
 
 
-void declaracion_procs_funcs() : 
+void declaracion_procs_funcs() :
 {
 
 }
 {
-	( declaracion_proc() | declaracion_func() )+
+    ( declaracion_proc() | declaracion_func() )+
 }
 
 // Reconoce la declaración de un procedimiento
@@ -309,40 +282,17 @@ void declaracion_procs_funcs() :
 // Inserta los parámetros y variables en la tabla de símbolos
 void declaracion_proc():
 {
-	SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
-	ArrayList<Symbol> vars = null;
+    SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+    ArrayList<Symbol> vars = null;
 }
 {
-	try {
+    try {
 		proc = cabecera_procedimiento() {
-			try {
-				st.insertSymbol(proc);
-			}	
-			catch (AlreadyDefinedSymbolException ads) {
-				System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Procedimiento o parámetros ya declarados");
-			}
-			st.insertBlock();
-			if (proc.parList != null) {
-				for (Symbol param : proc.parList) {
-					try {
-						st.insertSymbol(param);
-					} catch (AlreadyDefinedSymbolException ads) {
-						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo procedimiento" + ads.getMessage(proc) + ": Parámetro ya declarado");
-					}
-				}
-			}
-			
+			SemanticFunctions.newProcBlock(st, proc);
 		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
-				for (Symbol var : vars) {
-					try{
-						st.insertSymbol(var);
-					} catch (AlreadyDefinedSymbolException ads){
-						System.err.println("SEMANTIC_ERROR: Error definiendo nuevo variable" + ads.getMessage(proc) + ": Variable ya declarado");
-					}
-					
-				}
+				for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 			} else {
 				vars = new ArrayList<Symbol>();
 			}
@@ -356,7 +306,7 @@ void declaracion_proc():
 			System.out.println("Procedimiento reconocido: " + st.toString());
 			st.removeBlock();
 		}
-	} catch (ParseException e) {
+    } catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
@@ -364,7 +314,7 @@ void declaracion_proc():
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	}
+    }
 }
 
 
@@ -374,41 +324,18 @@ void declaracion_proc():
 // Inserta los parámetros y variables en la tabla de símbolos
 void declaracion_func():
 {
-	ArrayList<Symbol> vars = new ArrayList<Symbol>();
-	SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
+    ArrayList<Symbol> vars = new ArrayList<Symbol>();
+    SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
 }
 {
-	
-	try {
+    
+    try {
 		func = cabecera_funcion() {
-			try {
-				st.insertSymbol(func);
-			} catch (AlreadyDefinedSymbolException ads) {
-				System.err.println("SEMANTIC_ERROR: Error definiendo nueva función" + ads.getMessage(func) + ": Función ya declarada");
-			}
-			st.insertBlock();
-			if (func.parList != null){
-				for (Symbol param : func.parList) {
-					try {
-						st.insertSymbol(param);
-					} catch (AlreadyDefinedSymbolException ads) {
-						System.err.println("SEMANTIC_ERROR: Error definiendo nueva función" + ads.getMessage(func) + ": Parámetro ya declarado");
-					}
-				}
-			}
+			SemanticFunctions.newFuncBlock(st, func);
 		}
 		( vars = declaracion_variables() )? {
-			
-			if (vars != null) {
-				for (Symbol var : vars) {
-					try{
-						st.insertSymbol(var);
-					} catch (AlreadyDefinedSymbolException ads){
-						System.err.println("SEMANTIC_ERROR: Error definiendo nueva funcion" + ads.getMessage(func) + ": Variable ya declarada");
-					}
-					
-				}
-			}
+			// perdón, era necesario
+			if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 		}
 		<tBEGIN>
 		(instruccion())+
@@ -418,7 +345,7 @@ void declaracion_func():
 			System.out.println("Función reconocida: " + st.toString());
 			st.removeBlock();
 		}
-	} catch (ParseException e) {
+    } catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
@@ -426,86 +353,85 @@ void declaracion_func():
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	}
+    }
 }
 
 ArrayList<Symbol> declaracion_param() :
 {
-	ArrayList<String> ids;
-	ArrayList<Symbol> ids_con_tipo;
-	Token ref = null;
+    ArrayList<String> ids;
+    ArrayList<Symbol> ids_con_tipo;
+    Token ref = null;
 }
 {
-	ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref != null)
-	{
-		return ids_con_tipo;
-	}
+    ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref != null)
+    {
+   	 	return ids_con_tipo;
+    }
 }
 
 // Devuelve la lista de identificadores reconocidos
 ArrayList<String> lista_ids() :
 {
-	ArrayList<String> ids = new ArrayList<String>();
-	ArrayList<String> resto_ids = null;
-	Token id;
+    ArrayList<String> ids = new ArrayList<String>();
+    ArrayList<String> resto_ids = null;
+    Token id;
 }
 {
-	( LOOKAHEAD(2) id = <tID> <tCOMA> resto_ids = lista_ids()
-|	id = <tID>) {
+    ( LOOKAHEAD(2) id = <tID> <tCOMA> resto_ids = lista_ids()
+|    id = <tID>) {
 		ids.add(id.image);
 		if (resto_ids != null) {
 			for (String sid : resto_ids) ids.add(sid);
 		}
 		return ids;
-	}
+    }
 }
 
 // Devuelve el símbolo del procedimiento con los parámetros
 SymbolProcedure cabecera_procedimiento():
 {
-	Token id_proc;
-	ArrayList<Symbol> proc_params = null;
+    Token id_proc;
+    ArrayList<Symbol> proc_params = null;
 }
 {
-	<tPROC> id_proc = <tID> ( proc_params = parametros_formales() )? <tIS>
-	{
-		return new SymbolProcedure(id_proc.image, proc_params);
-	}
+    <tPROC> id_proc = <tID> ( proc_params = parametros_formales() )? <tIS>
+    {
+   	 	return new SymbolProcedure(id_proc.image, proc_params);
+    }
 }
 
 
 // Devuelve el símbolo de la función con los parámetros
 SymbolFunction cabecera_funcion():
 {
-	Token id_func;
-	ArrayList<Symbol> func_params = null;
-	ArrayList<Symbol> returnType = null;
-	
+    Token id_func;
+    ArrayList<Symbol> func_params = null;
+    ArrayList<Symbol> returnType = null;
+    
 }
 {
-	<tFUNC> id_func = <tID> ( func_params = parametros_formales() )? <tRETURN> returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false) <tIS> {
-		return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);
-	}
+    <tFUNC> id_func = <tID> ( func_params = parametros_formales() )? <tRETURN> returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false) <tIS> {
+   	 	return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);
+    }
 }
 
 
 ArrayList<Symbol> parametros_formales():
 {
-	ArrayList<Symbol> params = new ArrayList<Symbol>();
-	ArrayList<Symbol> ps, resto_p;
+    ArrayList<Symbol> params = new ArrayList<Symbol>();
+    ArrayList<Symbol> ps, resto_p;
 }
 {
-	try {
-		( <tAPAR>	ps = declaracion_param() 
-			{
+    try {
+		( <tAPAR>    ps = declaracion_param() {
 				for (Symbol p :  ps) params.add(p);
 			}
 		
-		resto_p = lista_parametros_formales() {
-			for (Symbol p :  resto_p) params.add(p);
-		} <tCPAR> // con parámetros 
+			resto_p = lista_parametros_formales() {
+				for (Symbol p :  resto_p) params.add(p);
+			} <tCPAR> // con parámetros
 		| "" ) // sin parámetros (épsilon)
-	} catch (ParseException e) {
+    } catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
@@ -513,25 +439,24 @@ ArrayList<Symbol> parametros_formales():
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	}
-	{ return params; } 
+    }
+    { return params; }
 }
 
 ArrayList<Symbol> lista_parametros_formales():
 {
-	ArrayList<Symbol> params = new ArrayList<Symbol>();
-	ArrayList<Symbol> ps, resto_p;
+    ArrayList<Symbol> params = new ArrayList<Symbol>();
+    ArrayList<Symbol> ps, resto_p;
 }
 {
-	 (<tPC> ps = declaracion_param() 
-			{
-				for (Symbol p :  ps) params.add(p);
-			}
-		resto_p = lista_parametros_formales() {
-			for (Symbol p :  resto_p) params.add(p);
-		}
-	 ) { return params; }
-	| { return params; }
+    (<tPC> ps = declaracion_param(){
+		for (Symbol p :  ps) params.add(p);
+	}
+   	resto_p = lista_parametros_formales() {
+   		for (Symbol p :  resto_p) params.add(p);
+   	}
+    ) { return params; }
+    | { return params; }
 }
 
 
@@ -539,17 +464,17 @@ ArrayList<Symbol> lista_parametros_formales():
 void instruccion() :
 {}
 {
-	try {
+    try {
 		(inst_leer()
 		|   <tSKIPLINE>
-		|	inst_escribir()
+		|    inst_escribir()
 		|   inst_escribir_linea()
 		|   inst_invocacion_o_asignacion()
 		|   inst_if()
 		|   inst_while()
 		|   inst_return()
 		|   <tNULL>) <tPC>
-	} catch (ParseException e) {
+    } catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
@@ -557,150 +482,102 @@ void instruccion() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
-	}
+    }
 
 }
 
 // la dejamos pq puede haber indexaciones a arrays y eso hay que pensarlo donde poner el sintáctico de las indexaciones
 void inst_leer() :
 {
-	ArrayList<String> ids = null;
+    ArrayList<String> ids = null;
 }
 {
-	<tGET> <tAPAR> ids = lista_ids() <tCPAR> {
-	}
+    <tGET> <tAPAR> ids = lista_ids() <tCPAR> {
+    }
 }
 
 void inst_escribir() :
 {
-	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+    ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 }
 {
-	<tPUT> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
-		// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
-		// han de convertirse con int2char()
-		for (TypeValue exp:exps) {
-			if (exp.type != Symbol.Types.STRING && 
-			exp.type != Symbol.Types.CHAR &&
-			exp.type != Symbol.Types.INT &&
-			exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.STRING, exp.type);
-		}
+    <tPUT> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
+		SemanticFunctions.inst_escribir(exps);
 		System.out.println("Encontrada instrucción put correcta");
-	}
+    }
 }
 
 void inst_escribir_linea() :
 {
-	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+    ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 }
 {
-	<tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps()	<tCPAR>)? {
-		// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
-		// han de convertirse con int2char()
-		for (TypeValue exp:exps) {
-			if (exp.type != Symbol.Types.STRING && 
-				exp.type != Symbol.Types.CHAR &&
-				exp.type != Symbol.Types.INT &&
-				exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.STRING, exp.type);
-		}
-		
+    <tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps()    <tCPAR>)? {
+		SemanticFunctions.inst_escribir(exps);
 		System.out.println("Encontrada instrucción put_line correcta");
-
 		// Añadir un salto de línea al final en la generación de código
-	}
+    }
 }
 
 void inst_invocacion_o_asignacion() :
 {}
 {
-	primario() ( <tASIGN> expresion())?
+    primario() ( <tASIGN> expresion())?
 }
 
 void inst_if() :
 {}
 {
-	// debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
-	<tIF> expresion() <tTHEN> (instruccion())+
-	(<tELSIF> expresion() <tTHEN> (instruccion())+)*
-	(<tELSE> (instruccion())+)?
-	<tEND> <tIF>
+    // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
+    <tIF> expresion() <tTHEN> (instruccion())+
+    (<tELSIF> expresion() <tTHEN> (instruccion())+)*
+    (<tELSE> (instruccion())+)?
+    <tEND> <tIF>
 }
 
 void inst_while() :
 {}
 {
-	<tWHILE> expresion() <tLOOP> (instruccion())+ <tEND> <tLOOP>
+    <tWHILE> expresion() <tLOOP> (instruccion())+ <tEND> <tLOOP>
 }
 
 void inst_return() :
 {}
 {
-	<tRETURN> expresion()
+    <tRETURN> expresion()
 }
 
-TypeValue expresion(): 
+TypeValue expresion():
 {
-	TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
-	Token op = null;
+    TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+    Token op = null;
 }
 {
-    prel = relacion() ( (op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
-		if (rest_rel != null) {
-			if (prel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, prel.type);
-			if (rest_rel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, rest_rel.type);
-			// evaluamos prematuramente las relaciones para determinar un posible valor constante
-			if (prel.type == Symbol.Types.BOOL && rest_rel.type == Symbol.Types.BOOL && prel.value != null && rest_rel.value != null) {
-				switch (op.kind) {
-					case tAND:
-						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean)rest_rel.value);
-					case tOR:
-						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);
-				}
-			} else {
-				return new TypeValue(Symbol.Types.BOOL, null);
-			}
-		} else {
-			return prel;
-		}
-	}
+	prel = relacion() ( (op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
+	 	return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);
+    }
 }
 
 
 TypeValue lista_una_o_mas_relaciones_booleanas():
 {
-	TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
-	Token op = null;
+    TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+    Token op = null;
 }
 {
-	prel = relacion() ((op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
-		if (rest_rel != null) {
-			if (prel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, prel.type);
-			if (rest_rel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, rest_rel.type);
-			// evaluamos prematuramente las relaciones para determinar un posible valor constante
-			if (prel.type == Symbol.Types.BOOL && rest_rel.type == Symbol.Types.BOOL && prel.value != null && rest_rel.value != null) {
-				switch (op.kind) {
-					case tAND:
-						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value && (boolean) rest_rel.value);
-					case tOR:
-						return new TypeValue(Symbol.Types.BOOL, (boolean)prel.value || (boolean)rest_rel.value);
-				}
-			} else {
-				return new TypeValue(Symbol.Types.BOOL, null);
-			}
-		} else {
-			return prel;
-		}
-	}
+    prel = relacion() ((op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
+   	 return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);
+    }
 }
 
 TypeValue relacion():
 {
-	TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;	
-	Token op = null;
+    TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;    
+    Token op = null;
 }
 {
-    exp1 = expresion_simple()
- 	( op = operador_relacional() exp2 = expresion_simple() )? {
+	exp1 = expresion_simple()
+	( op = operador_relacional() exp2 = expresion_simple() )? {
 		// Si hay un operador relacional y por tanto una exp2 el resultado es un booleano
 		if (exp2 != null) {
 			// Si hay un operador relacional y las expresiones no son del mismo tipo, lanzamos una excepción
@@ -713,21 +590,21 @@ TypeValue relacion():
 					case tNE:
 						return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);
 					case tLT:
-						if (Symbol.Types.INT == exp1.value) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-						return new TypeValue();
+						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);
+						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+						return new TypeValue(Symbol.Types.BOOL, null);
 					case tLE:
-						if (Symbol.Types.INT == exp1.value) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-						return new TypeValue();
+						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);
+						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+						return new TypeValue(Symbol.Types.BOOL, null);
 					case tGT:
-						if (Symbol.Types.INT == exp1.value) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-						return new TypeValue();
+						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);
+						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+						return new TypeValue(Symbol.Types.BOOL, null);
 					case tGE:
-						if (Symbol.Types.INT == exp1.value) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);
-						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.value);
-						return new TypeValue();
+						if (Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);
+						UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type);
+						return new TypeValue(Symbol.Types.BOOL, null);
 				}
 			} else {
 				// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
@@ -736,269 +613,271 @@ TypeValue relacion():
 		} else {
 			return exp1;
 		}
-	}
+    }
 }
 
 Token operador_relacional():
 {
-	Token t;
+    Token t;
 }
 {
-	(t = <tEQ> | t = <tNE> | t = <tLT> | t = <tLE> | t = <tGT> | t = <tGE>) { return t; }
+    (t = <tEQ> | t = <tNE> | t = <tLT> | t = <tLE> | t = <tGT> | t = <tGE>) { return t; }
 }
 
 TypeValue expresion_simple():
 {
-	TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
-	Token op = null, ops = null;
-	// HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
+    TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
+    Token op = null, ops = null;
+    // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
 }
 {
-    ( ops = <tPLUS> | ops =	<tMINUS> )? 
-    term = termino()  (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
-		// Si hay un operador + o - el término debe ser de tipo entero
-		if (ops != null && term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-		// Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
-		if (term.value != null) {
-			if (ops == null) term = new TypeValue(term.type, term.value, term.isLiteral);
-			else if (ops.kind == tPLUS && term.type == Symbols.Types.INT) term = new TypeValue(term.type, term.value, term.isLiteral);
-			else if (ops.kind == tMINUS && term.type == Symbols.Types.INT) term = new TypeValue(term.type, (int)term.value*-1);
-			else UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-		} else term =  new TypeValue(term.type, null, term.isLiteral);
+	( ops = <tPLUS> | ops =    <tMINUS> )?
+	term = termino()  (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
+   	 // Si hay un operador + o - el término debe ser de tipo entero
+   	 if (ops != null && term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+   	 // Si el término es constante, lo evaluamos antes de mirar las expresiones resultantes
+   	 if (term.value != null) {
+   		 if (ops == null) term = new TypeValue(term.type, term.value, term.isLiteral);
+   		 else if (ops.kind == tPLUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, term.value, term.isLiteral);
+   		 else if (ops.kind == tMINUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, (int)term.value*-1);
+   		 else UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+   	 } else term =  new TypeValue(term.type, null, term.isLiteral);
 
-		if (term_resultante == null) return term;
-		if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-		if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
-		
-		if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
-			if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
-			else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
-		} else { 
-			return new TypeValue(Symbol.Types.INT, null);
-		}
-		
-	}
+   	 if (term_resultante == null) return term;
+   	 if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+   	 if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
+   	 
+   	 if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
+   		 if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
+   		 else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
+   	 } else {
+   		 return new TypeValue(Symbol.Types.INT, null);
+   	 }
+   	 
+    }
 }
 
 TypeValue una_o_mas_expresiones_simples():
 {
-	TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
-	Token op = null, ops = null;
+    TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
+    Token op = null, ops = null;
 }
 {
-	term = termino() (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
-		if (term_resultante != null) {
-			if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
-			if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
-			if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
-				if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
-				else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
-			} else { 
-				return new TypeValue(Symbol.Types.INT, null);
-			}
-		} else {
-			return term;
-		}
-	}
+    term = termino() (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
+   	 if (term_resultante != null) {
+   		 if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type);
+   		 if (term_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term_resultante.type);
+   		 if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante != null) {
+   			 if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
+   			 else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
+   		 } else {
+   			 return new TypeValue(Symbol.Types.INT, null);
+   		 }
+   	 } else {
+   		 return term;
+   	 }
+    }
 }
 
 TypeValue termino():
 {
-	TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
-	Token op = null;
+    TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
+    Token op = null;
 }
 {
-	fact = factor() ( op = operador_multiplicativo() fact_resultante = factor() )? {
-		if (fact_resultante != null) {
-			if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
-			if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
-			if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
-				switch (op.kind) {
-					case tTIMES:
-						return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
-					case tDIV:
-						return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
-					case tMOD:
-						return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
-				}
-			} else {
-				return new TypeValue(Symbol.Types.INT, null);
-			}
-		} else {
-			return fact;
-		}
-	}
+    fact = factor() ( op = operador_multiplicativo() fact_resultante = factor() )? {
+   	 if (fact_resultante != null) {
+   		 if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
+   		 if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
+   		 if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
+   			 switch (op.kind) {
+   				 case tTIMES:
+   					 return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
+   				 case tDIV:
+   					 return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
+   				 case tMOD:
+   					 return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
+   			 }
+   		 } else {
+   			 return new TypeValue(Symbol.Types.INT, null);
+   		 }
+   	 } else {
+   		 return fact;
+   	 }
+    }
 }
 
 TypeValue lista_una_o_mas_terminos():
 {
-	TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
-	Token op = null;
+    TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
+    Token op = null;
 }
 {
-	fact = factor() ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos())? {
-		if (fact_resultante != null) {
-			if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
-			if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
-			if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
-				switch (op.kind) {
-					case tTIMES:
-						return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
-					case tDIV:
-						return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
-					case tMOD:
-						return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
-				}
-			} else {
-				return new TypeValue(Symbol.Types.INT, null);
-			}
-		} else {
-			return fact;
-		}
-	}
+    fact = factor() ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos())? {
+   	 if (fact_resultante != null) {
+   		 if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type);
+   		 if (fact_resultante.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact_resultante.type);
+   		 if (fact.type == Symbol.Types.INT && fact_resultante.type == Symbol.Types.INT && fact.value != null && fact_resultante.value != null) {
+   			 switch (op.kind) {
+   				 case tTIMES:
+   					 return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
+   				 case tDIV:
+   					 return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
+   				 case tMOD:
+   					 return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
+   			 }
+   		 } else {
+   			 return new TypeValue(Symbol.Types.INT, null);
+   		 }
+   	 } else {
+   		 return fact;
+   	 }
+    }
 }
 
 Token operador_multiplicativo() :
 {
-	Token t;
+    Token t;
 }
 {
-	(t = <tTIMES> | t = <tDIV> | t = <tMOD>) { return t; }
+    (t = <tTIMES> | t = <tDIV> | t = <tMOD>) { return t; }
 }
 
 TypeValue factor():
 {
-	TypeValue p = new TypeValue(Symbol.Types.UNDEFINED, null);
+    TypeValue p = new TypeValue(Symbol.Types.UNDEFINED, null);
 }
 {
-	p = primario() {
-		return p;
-	}
-	| <tNOT> p = primario() {
-		if (p.type == Symbol.Types.BOOL) {
-			if (p.value != null) return new TypeValue(Symbol.Types.BOOL, !(boolean)p.value);
-			return new TypeValue(Symbol.Types.BOOL, null);
-		}
-		UnexpectedTypeException.getMessage(Symbol.Types.BOOL, p.type);
-		return p;
-	}
+    p = primario() {
+   	 return p;
+    }
+    | <tNOT> p = primario() {
+   	 if (p.type == Symbol.Types.BOOL) {
+   		 if (p.value != null) return new TypeValue(Symbol.Types.BOOL, !(boolean)p.value);
+   		 return new TypeValue(Symbol.Types.BOOL, null);
+   	 }
+   	 UnexpectedTypeException.getMessage(Symbol.Types.BOOL, p.type);
+   	 return p;
+    }
 }
 
 TypeValue primario() :
 {
-	TypeValue exp = null;
-	Token id = null;
-	ArrayList<TypeValue> exps = null;
+    TypeValue exp = null;
+    Token id = null;
+    ArrayList<TypeValue> exps = null;
 }
 {
-    <tAPAR> exp = expresion() <tCPAR> { return exp; }
-|	<tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
-	System.out.println(exp.value);
-	if (exp.type == Symbol.Types.INT) {
-		return new TypeValue(Symbol.Types.CHAR, exp.value);
-	} else {
-		UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
-	}
+	<tAPAR> exp = expresion() <tCPAR> { return exp; }
+|    <tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
+    System.out.println(exp.value);
+    if (exp.type == Symbol.Types.INT) {
+   	 return new TypeValue(Symbol.Types.CHAR, exp.value);
+    } else {
+   	 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+    }
 }
-|	<tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
-		if (exp.type == Symbol.Types.CHAR) {
-			return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
-		} else {
-			UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
-		}
-	}
-|	LOOKAHEAD(2)
-    id = <tID> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
-		Symbol sid = null;
-		try {
-			sid = st.getSymbol(id.image);
-		} catch (SymbolNotFoundException e) {
-			System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
-		}
+|    <tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
+   	 if (exp.type == Symbol.Types.CHAR) {
+   		 return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
+   	 } else {
+   		 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+   	 }
+    }
+|    LOOKAHEAD(2)
+	id = <tID> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
+   	 Symbol sid = null;
+   	 try {
+   		 sid = st.getSymbol(id.image);
+   	 } catch (SymbolNotFoundException e) {
+   		 System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
+   	 }
 
-		if (sid.type == Symbol.Types.FUNCTION) {
-			SymbolFunction sfid = (SymbolFunction)sid;
-			if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments");
-			for (int i=0; i<exps.size(); i++) {
-				if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type);
-				if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal");
-			}
-			return new TypeValue(sfid.returnType, null);
-		} else if (sid.type == Symbol.Types.PROCEDURE) {
-			SymbolProcedure spid = (SymbolProcedure)sid;
-			if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments");
-			for (int i=0; i<exps.size(); i++) {
-				if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type);
-				if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal");
-			}
-			return new TypeValue(Symbol.Types.VOID, null);
-		} else if (sid.type == Symbol.Types.ARRAY) {
-			SymbolArray said = (SymbolArray)sid;
-			exp = exps.get(0);
-			if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
-			if (exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) BadInvocation.getMessage(said.name, "Array index out of bounds");
-			return new TypeValue(Symbol.Types.VOID, null, false);
-		} else {
-			// Error, no hay ninguna invocación id(..) que no sea una función o un elemento de un array
-			ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
-			expectedTypes.add(Symbol.Types.FUNCTION);
-			expectedTypes.add(Symbol.Types.PROCEDURE);
-			expectedTypes.add(Symbol.Types.ARRAY);
-			UnexpectedTypeException.getMessage(expectedTypes, sid.type);
-		}
-	}
-|	id = <tID> /*var. o func. sin pars*/ {
-	Symbol sid = null;
-	try {
-			sid = st.getSymbol(id.image);
-		} catch (SymbolNotFoundException e) {
-			System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
-		}
-	if (sid.type == Symbol.Types.FUNCTION ) {
-		SymbolFunction sfid = (SymbolFunction)sid;
-		if (sfid.parList != null) BadInvocation.getMessage(sfid.name, "Function or procedure has too many arguments");
-		return new TypeValue(sid.type, null);
-	} else if (sid.type == Symbol.Types.PROCEDURE) {
-		SymbolProcedure spid = (SymbolProcedure)sid;
-		if (spid.parList != null) BadInvocation.getMessage(spid.name, "Function or procedure has too many arguments");
-		return new TypeValue(sid.type, null);
-	}
-	return new TypeValue(sid.type, null, false);
-	}
-|	exp = tipo_constante() { return exp; } 
+   	 if (sid.type == Symbol.Types.FUNCTION) {
+   		 SymbolFunction sfid = (SymbolFunction)sid;
+   		 if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments");
+   		 for (int i=0; i<exps.size(); i++) {
+   			 if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type);
+   			 if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal");
+   		 }
+   		 return new TypeValue(sfid.returnType, null);
+   	 } else if (sid.type == Symbol.Types.PROCEDURE) {
+   		 SymbolProcedure spid = (SymbolProcedure)sid;
+   		 if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments");
+   		 for (int i=0; i<exps.size(); i++) {
+   			 if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type);
+   			 if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal");
+   		 }
+   		 return new TypeValue(Symbol.Types.VOID, null);
+   	 } else if (sid.type == Symbol.Types.ARRAY) {
+   		 SymbolArray said = (SymbolArray)sid;
+   		 exp = exps.get(0);
+   		 if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+   		 if (exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) BadInvocation.getMessage(said.name, "Array index out of bounds");
+   		 return new TypeValue(Symbol.Types.VOID, null, false);
+   	 } else {
+   		 // Error, no hay ninguna invocación id(..) que no sea una función o un elemento de un array
+   		 ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
+   		 expectedTypes.add(Symbol.Types.FUNCTION);
+   		 expectedTypes.add(Symbol.Types.PROCEDURE);
+   		 expectedTypes.add(Symbol.Types.ARRAY);
+   		 UnexpectedTypeException.getMessage(expectedTypes, sid.type);
+   	 }
+    }
+|    id = <tID> /*var. o func. sin pars*/ {
+    Symbol sid = null;
+    try {
+   		 sid = st.getSymbol(id.image);
+   	 } catch (SymbolNotFoundException e) {
+   		 System.err.println("SEMANTIC ERROR: Symbol not found: " + id.image);
+   	 }
+    if (sid.type == Symbol.Types.FUNCTION ) {
+   	 SymbolFunction sfid = (SymbolFunction)sid;
+   	 if (sfid.parList != null) BadInvocation.getMessage(sfid.name, "Function or procedure has too many arguments");
+   	 return new TypeValue(sid.type, null);
+    } else if (sid.type == Symbol.Types.PROCEDURE) {
+   	 SymbolProcedure spid = (SymbolProcedure)sid;
+   	 if (spid.parList != null) BadInvocation.getMessage(spid.name, "Function or procedure has too many arguments");
+   	 return new TypeValue(sid.type, null);
+    }
+    return new TypeValue(sid.type, null, false);
+    }
+|    exp = tipo_constante() { return exp; }
 }
 
 ArrayList<TypeValue> lista_una_o_mas_exps() :
 {
-	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-	TypeValue exp;
+    ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+    TypeValue exp;
 }
 {
-	exp = expresion() exps = lista_exps_ll()    {
-		exps.add(exp);
-		return exps;
-	}
+    exp = expresion() exps = lista_exps_ll()	{
+   	 exps.add(exp);
+   	 return exps;
+    }
 }
 
 ArrayList<TypeValue> lista_exps_ll() :
 {
-	ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-	TypeValue exp;
+    ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+    TypeValue exp;
 }
 {
-	<tCOMA> exp = expresion() exps = lista_exps_ll() {
-		exps.add(exp);
-		return exps;
-	}
-	| {return exps;}
+    <tCOMA> exp = expresion() exps = lista_exps_ll() {
+   	 exps.add(exp);
+   	 return exps;
+    }
+    | {return exps;}
 }
 
 
 TOKEN_MGR_DECLS : {
-	static void CommonTokenAction(Token token) {
-		if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
-		System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
-		System.out.println();
-	}
-	
+    static void CommonTokenAction(Token token) {
+   	 if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
+   	 System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
+   	 System.out.println();
+    }
+    
 }
+
+

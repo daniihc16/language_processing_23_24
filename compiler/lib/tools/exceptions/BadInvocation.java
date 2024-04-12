@@ -14,6 +14,6 @@ import lib.symbolTable.Symbol;
 
 public class BadInvocation extends Exception {
 	public static void getMessage(String id, String msg) {
-		System.err.println("Bad invocation error detected on: " + id + " -> " + msg);
+		System.err.println("SEMANTIC ERROR: Bad invocation error detected on: " + id + " -> " + msg);
 	}
 }
