@@ -676,7 +676,7 @@ TypeValue primario() :
    	 return new TypeValue(Symbol.Types.CHAR, exp.value);
     } else {
    	 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
-    }
+    } 
 }
 |    fnToken = <tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
    	 if (exp.type == Symbol.Types.CHAR) {
