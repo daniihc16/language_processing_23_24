@@ -202,7 +202,7 @@ void Programa() :
    try {
 		proc_main = cabecera_procedimiento() {
 			SemanticFunctions.insertSymbol(st, proc_main);
-			st.setMainProc(proc_main.image);
+			st.setMainProc(proc_main.name);
 		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
@@ -500,10 +500,11 @@ void inst_leer() :
 void inst_escribir() :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+	Token put = null;
 }
 {
-    <tPUT> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
-		SemanticFunctions.inst_escribir(exps);
+    put = <tPUT> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
+		SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
 		System.out.println("Encontrada instrucción put correcta");
     }
 }
@@ -511,10 +512,11 @@ void inst_escribir() :
 void inst_escribir_linea() :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+	Token put = null;
 }
 {
-    <tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps()    <tCPAR>)? {
-		SemanticFunctions.inst_escribir(exps);
+    put = <tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps()    <tCPAR>)? {
+		SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
 		System.out.println("Encontrada instrucción put_line correcta");
 		// Añadir un salto de línea al final en la generación de código
     }
@@ -649,37 +651,38 @@ Token operador_multiplicativo() :
 TypeValue factor():
 {
     TypeValue p = new TypeValue(Symbol.Types.UNDEFINED, null);
+	Token not = null;
 }
 {
     p = primario() {
    	 return p;
     }
-    | <tNOT> p = primario() {
-		return SemanticFunctions.not_primario(p);
+    | not = <tNOT> p = primario() {
+		return SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);
     }
 }
 
 TypeValue primario() :
 {
     TypeValue exp = null;
-    Token id = null;
+    Token id = null, fnToken = null;
     ArrayList<TypeValue> exps = null;
 }
 {
 	<tAPAR> exp = expresion() <tCPAR> { return exp; }
-|    <tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
+|    fnToken = <tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
     System.out.println(exp.value);
     if (exp.type == Symbol.Types.INT) {
    	 return new TypeValue(Symbol.Types.CHAR, exp.value);
     } else {
-   	 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+   	 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
     }
 }
-|    <tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
+|    fnToken = <tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
    	 if (exp.type == Symbol.Types.CHAR) {
    		 return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
    	 } else {
-   		 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+   		 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
    	 }
     }
 |    LOOKAHEAD(2)

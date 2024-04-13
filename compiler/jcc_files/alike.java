@@ -179,6 +179,7 @@ t = new SymbolInt("");
     try {
       proc_main = cabecera_procedimiento();
 SemanticFunctions.insertSymbol(st, proc_main);
+                        st.setMainProc(proc_main.name);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tID:{
         vars = declaracion_variables();
@@ -682,16 +683,18 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
 }
 
   static final public void inst_escribir() throws ParseException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-    jj_consume_token(tPUT);
+        Token put = null;
+    put = jj_consume_token(tPUT);
     jj_consume_token(tAPAR);
     exps = lista_una_o_mas_exps();
     jj_consume_token(tCPAR);
-SemanticFunctions.inst_escribir(exps);
+SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
                 System.out.println("Encontrada instrucci\u00f3n put correcta");
 }
 
   static final public void inst_escribir_linea() throws ParseException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-    jj_consume_token(tPUTLINE);
+        Token put = null;
+    put = jj_consume_token(tPUTLINE);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAPAR:{
       jj_consume_token(tAPAR);
@@ -703,7 +706,7 @@ SemanticFunctions.inst_escribir(exps);
       jj_la1[24] = jj_gen;
       ;
     }
-SemanticFunctions.inst_escribir(exps);
+SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
                 System.out.println("Encontrada instrucci\u00f3n put_line correcta");
                 // Añadir un salto de línea al final en la generación de código
 
@@ -1152,6 +1155,7 @@ SemanticFunctions.inst_escribir(exps);
 }
 
   static final public TypeValue factor() throws ParseException {TypeValue p = new TypeValue(Symbol.Types.UNDEFINED, null);
+        Token not = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tCHARCONST:
     case tINTCONST:
@@ -1167,9 +1171,9 @@ SemanticFunctions.inst_escribir(exps);
       break;
       }
     case tNOT:{
-      jj_consume_token(tNOT);
+      not = jj_consume_token(tNOT);
       p = primario();
-{if ("" != null) return SemanticFunctions.not_primario(p);}
+{if ("" != null) return SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);}
       break;
       }
     default:
@@ -1181,7 +1185,7 @@ SemanticFunctions.inst_escribir(exps);
 }
 
   static final public TypeValue primario() throws ParseException {TypeValue exp = null;
-    Token id = null;
+    Token id = null, fnToken = null;
     ArrayList<TypeValue> exps = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAPAR:{
@@ -1192,7 +1196,7 @@ SemanticFunctions.inst_escribir(exps);
       break;
       }
     case tINT2CHAR:{
-      jj_consume_token(tINT2CHAR);
+      fnToken = jj_consume_token(tINT2CHAR);
       jj_consume_token(tAPAR);
       exp = expresion();
       jj_consume_token(tCPAR);
@@ -1200,19 +1204,19 @@ System.out.println(exp.value);
     if (exp.type == Symbol.Types.INT) {
          {if ("" != null) return new TypeValue(Symbol.Types.CHAR, exp.value);}
     } else {
-         UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+         UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
     }
       break;
       }
     case tCHAR2INT:{
-      jj_consume_token(tCHAR2INT);
+      fnToken = jj_consume_token(tCHAR2INT);
       jj_consume_token(tAPAR);
       exp = expresion();
       jj_consume_token(tCPAR);
 if (exp.type == Symbol.Types.CHAR) {
                  {if ("" != null) return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));}
          } else {
-                 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type);
+                 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
          }
       break;
       }
@@ -1293,17 +1297,17 @@ exps.add(0, exp);
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_2()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tAPAR)) return true;
-    return false;
-  }
-
   static private boolean jj_3_1()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tCOMA)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tAPAR)) return true;
     return false;
   }
 
