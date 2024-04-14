@@ -216,7 +216,7 @@ void Programa() :
 		}
 		( declaracion_procs_funcs() )?
 		<tBEGIN>
-		(instruccion())*
+		(instruccion(proc_main))*
 		<tEND>
 		<tPC>
 		< EOF >
@@ -300,7 +300,7 @@ void declaracion_proc():
 		}
 		( declaracion_procs_funcs() )?
 		<tBEGIN>
-		(instruccion())+
+		(instruccion(proc))+
 		<tEND>
 		<tPC>
 		{
@@ -339,7 +339,7 @@ void declaracion_func():
 			if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 		}
 		<tBEGIN>
-		(instruccion())+
+		(instruccion(func))+ // Pasamos el símbolo de la función para que se pueda comprobar el return
 		<tEND>
 		<tPC>
 		{
@@ -412,6 +412,13 @@ SymbolFunction cabecera_funcion():
 }
 {
     <tFUNC> id_func = <tID> ( func_params = parametros_formales() )? <tRETURN> returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false) <tIS> {
+		if (returnType.get(0).type != Symbol.Types.INT || returnType.get(0).type != Symbol.Types.BOOL || returnType.get(0).type != Symbol.Types.CHAR) {
+			ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
+			expectedTypes.add(Symbol.Types.INT);
+			expectedTypes.add(Symbol.Types.CHAR);
+			expectedTypes.add(Symbol.Types.BOOL);
+			UnexpectedTypeException.getMessage(expectedTypes, returnType.get(0).type, id_func.beginLine, id_func.beginColumn);
+		}
    	 	return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);
     }
 }
@@ -461,8 +468,9 @@ ArrayList<Symbol> lista_parametros_formales():
 }
 
 
-
-void instruccion() :
+//where es el símbolo de la función o el procedimiento en la que se encuentra la instrucción
+//Usado para comprobar que el return tiene el tipo correcto y no hay return en procedimientos
+void instruccion(Symbol where) :
 {}
 {
     try {
@@ -471,9 +479,9 @@ void instruccion() :
 		|    inst_escribir()
 		|   inst_escribir_linea()
 		|   inst_invocacion_o_asignacion()
-		|   inst_if()
-		|   inst_while()
-		|   inst_return()
+		|   inst_if(where)
+		|   inst_while(where)
+		|   inst_return(where)
 		|   <tNULL>) <tPC>
     } catch (ParseException e) {
 		System.err.println("PARSE_ERROR: " + e.getMessage());
@@ -487,13 +495,15 @@ void instruccion() :
 
 }
 
-// la dejamos pq puede haber indexaciones a arrays y eso hay que pensarlo donde poner el sintáctico de las indexaciones
 void inst_leer() :
 {
-    ArrayList<String> ids = null;
+    ArrayList<TypeValue> exps = null;
+	Token get = null;	// Token usado para que en caso de error se pueda mostrar la línea y columna
 }
 {
-    <tGET> <tAPAR> ids = lista_ids() <tCPAR> {
+    get = <tGET> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
+		SemanticFunctions.inst_leer(exps, get);
+		System.out.println("Encontrada instrucción get correcta");
     }
 }
 
@@ -523,32 +533,52 @@ void inst_escribir_linea() :
 }
 
 void inst_invocacion_o_asignacion() :
-{}
 {
-    primario() ( <tASIGN> expresion())?
+	TypeValue p = null, exp = null;
+	Token asign = null;
+}
+{
+    p = primario() ( asign = <tASIGN> exp = expresion())? {
+		SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
+	}
 }
 
-void inst_if() :
-{}
+void inst_if(Symbol sf) :
+{
+	TypeValue expif = null, expelsif = null;
+	Token tif = null, elsif = null;
+}
 {
     // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
-    <tIF> expresion() <tTHEN> (instruccion())+
-    (<tELSIF> expresion() <tTHEN> (instruccion())+)*
-    (<tELSE> (instruccion())+)?
-    <tEND> <tIF>
+    tif = <tIF> expif = expresion() <tTHEN> (instruccion(sf))+
+    (elsif = <tELSIF> expelsif = expresion() <tTHEN> (instruccion(sf))+)*
+    (<tELSE> (instruccion(sf))+)?
+    <tEND> <tIF> {
+		SemanticFunctions.inst_if(expif, expelsif, tif, elsif);
+	}
 }
 
-void inst_while() :
-{}
+void inst_while(Symbol sf) :
 {
-    <tWHILE> expresion() <tLOOP> (instruccion())+ <tEND> <tLOOP>
+	TypeValue exp = null;
+	Token twhile = null;
+}
+{
+    twhile = <tWHILE> exp = expresion() <tLOOP> (instruccion(sf))+ <tEND> <tLOOP> {
+		SemanticFunctions.inst_while(exp, twhile);
+	}
 }
 
-void inst_return() :
-{}
+
+void inst_return(Symbol sf) :
 {
-	// comprobar que si es un array, el rango tiene que ser el mismo además del tipo base
-    <tRETURN> expresion()
+	TypeValue exp = null;
+	Token treturn = null;
+}
+{
+	treturn = <tRETURN> exp = expresion() {
+		SemanticFunctions.inst_return(exp, sf, treturn);
+	}
 }
 
 TypeValue expresion():

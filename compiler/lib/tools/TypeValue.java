@@ -21,8 +21,8 @@ public class TypeValue<T> {
     
     // Para arrays, indica los índices mínimo y máximo
     public Symbol.Types baseType = Symbol.Types.UNDEFINED;
-    public int minInd;
-    public int maxInd;
+    public int minInd = 1;
+    public int maxInd = 0;
 
     public TypeValue(Symbol.Types type_, T value_, boolean isLiteral_) {
         this.value = value_;

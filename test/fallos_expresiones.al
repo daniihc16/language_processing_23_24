@@ -1,8 +1,5 @@
 --Fichero que prueba el reconocimiento semántico de expresiones
--- Probar (-true) o en general '-' <tipo no entero> da error
--- Probar a pasar por referencia un '+x' y '+1' (el primero ok, el segundo no ok)
--- probar a devolver y pasar un array con tipo distinto base y rangos
--- invocar al main proc (y ver que falla)
+
 procedure fallos_expresiones is
 	var_integer: integer;
 	var_char: character;
@@ -88,4 +85,11 @@ begin
 	
 
 	-- Probar a pasar por referencia +var_int y -var_int
+	-- Probar (-true) o en general '-' <tipo no entero> da error
+	-- Probar a pasar por referencia un '+x' y '+1' (el primero ok, el segundo no ok)
+	-- probar a devolver y pasar un array con tipo distinto base y rangos
+	-- invocar al main proc (y ver que falla)
+	-- probar a pasar un array de tamaño distinto
+	-- probar a pasar un array de tipo distinto
+	-- probar a asignar un valor a un array
 end;

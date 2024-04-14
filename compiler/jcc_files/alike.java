@@ -262,7 +262,7 @@ if (vars != null) {
             jj_la1[8] = jj_gen;
             break label_1;
           }
-          instruccion();
+          instruccion(proc_main);
         }
         jj_consume_token(tEND);
         jj_consume_token(tPC);
@@ -409,7 +409,7 @@ if (vars != null) {
         jj_consume_token(tBEGIN);
         label_4:
         while (true) {
-          instruccion();
+          instruccion(proc);
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tNULL:
           case tRETURN:
@@ -480,7 +480,7 @@ SemanticFunctions.newFuncBlock(st, func);
         jj_consume_token(tBEGIN);
         label_5:
         while (true) {
-          instruccion();
+          instruccion(func);
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tNULL:
           case tRETURN:
@@ -632,7 +632,14 @@ Token id_func;
       jj_consume_token(tRETURN);
       returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false);
       jj_consume_token(tIS);
-{if ("" != null) return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);}
+if (returnType.get(0).type != Symbol.Types.INT || returnType.get(0).type != Symbol.Types.BOOL || returnType.get(0).type != Symbol.Types.CHAR) {
+                        ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
+                        expectedTypes.add(Symbol.Types.INT);
+                        expectedTypes.add(Symbol.Types.CHAR);
+                        expectedTypes.add(Symbol.Types.BOOL);
+                        UnexpectedTypeException.getMessage(expectedTypes, returnType.get(0).type, id_func.beginLine, id_func.beginColumn);
+                }
+                {if ("" != null) return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);}
     throw new Error("Missing return statement in function");
     } finally {
       trace_return("cabecera_funcion");
@@ -705,7 +712,9 @@ for (Symbol p :  resto_p) params.add(p);
     }
 }
 
-  static final public void instruccion() throws ParseException {
+//where es el símbolo de la función o el procedimiento en la que se encuentra la instrucción
+//Usado para comprobar que el return tiene el tipo correcto y no hay return en procedimientos
+  static final public void instruccion(Symbol where) throws ParseException {
     trace_call("instruccion");
     try {
 
@@ -740,15 +749,15 @@ for (Symbol p :  resto_p) params.add(p);
           break;
           }
         case tIF:{
-          inst_if();
+          inst_if(where);
           break;
           }
         case tWHILE:{
-          inst_while();
+          inst_while(where);
           break;
           }
         case tRETURN:{
-          inst_return();
+          inst_return(where);
           break;
           }
         case tNULL:{
@@ -775,16 +784,18 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
     }
 }
 
-// la dejamos pq puede haber indexaciones a arrays y eso hay que pensarlo donde poner el sintáctico de las indexaciones
   static final public void inst_leer() throws ParseException {
     trace_call("inst_leer");
     try {
-ArrayList<String> ids = null;
-      jj_consume_token(tGET);
-      jj_consume_token(tAPAR);
-      ids = lista_ids();
-      jj_consume_token(tCPAR);
+ArrayList<TypeValue> exps = null;
+        Token get = null;       // Token usado para que en caso de error se pueda mostrar la línea y columna
 
+      get = jj_consume_token(tGET);
+      jj_consume_token(tAPAR);
+      exps = lista_una_o_mas_exps();
+      jj_consume_token(tCPAR);
+SemanticFunctions.inst_leer(exps, get);
+                System.out.println("Encontrada instrucci\u00f3n get correcta");
     } finally {
       trace_return("inst_leer");
     }
@@ -835,33 +846,37 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
   static final public void inst_invocacion_o_asignacion() throws ParseException {
     trace_call("inst_invocacion_o_asignacion");
     try {
-
-      primario();
+TypeValue p = null, exp = null;
+        Token asign = null;
+      p = primario();
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tASIGN:{
-        jj_consume_token(tASIGN);
-        expresion();
+        asign = jj_consume_token(tASIGN);
+        exp = expresion();
         break;
         }
       default:
         jj_la1[25] = jj_gen;
         ;
       }
+SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
     } finally {
       trace_return("inst_invocacion_o_asignacion");
     }
 }
 
-  static final public void inst_if() throws ParseException {
+  static final public void inst_if(Symbol sf) throws ParseException {
     trace_call("inst_if");
     try {
-
-      jj_consume_token(tIF);
-      expresion();
+TypeValue expif = null, expelsif = null;
+        Token tif = null, elsif = null;
+      // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
+          tif = jj_consume_token(tIF);
+      expif = expresion();
       jj_consume_token(tTHEN);
       label_6:
       while (true) {
-        instruccion();
+        instruccion(sf);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
@@ -899,12 +914,12 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
           jj_la1[27] = jj_gen;
           break label_7;
         }
-        jj_consume_token(tELSIF);
-        expresion();
+        elsif = jj_consume_token(tELSIF);
+        expelsif = expresion();
         jj_consume_token(tTHEN);
         label_8:
         while (true) {
-          instruccion();
+          instruccion(sf);
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tNULL:
           case tRETURN:
@@ -937,7 +952,7 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
         jj_consume_token(tELSE);
         label_9:
         while (true) {
-          instruccion();
+          instruccion(sf);
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tNULL:
           case tRETURN:
@@ -972,21 +987,23 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
       }
       jj_consume_token(tEND);
       jj_consume_token(tIF);
+SemanticFunctions.inst_if(expif, expelsif, tif, elsif);
     } finally {
       trace_return("inst_if");
     }
 }
 
-  static final public void inst_while() throws ParseException {
+  static final public void inst_while(Symbol sf) throws ParseException {
     trace_call("inst_while");
     try {
-
-      jj_consume_token(tWHILE);
-      expresion();
+TypeValue exp = null;
+        Token twhile = null;
+      twhile = jj_consume_token(tWHILE);
+      exp = expresion();
       jj_consume_token(tLOOP);
       label_10:
       while (true) {
-        instruccion();
+        instruccion(sf);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
@@ -1015,17 +1032,20 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
       }
       jj_consume_token(tEND);
       jj_consume_token(tLOOP);
+SemanticFunctions.inst_while(exp, twhile);
     } finally {
       trace_return("inst_while");
     }
 }
 
-  static final public void inst_return() throws ParseException {
+  static final public void inst_return(Symbol sf) throws ParseException {
     trace_call("inst_return");
     try {
-
-      jj_consume_token(tRETURN);
-      expresion();
+TypeValue exp = null;
+        Token treturn = null;
+      treturn = jj_consume_token(tRETURN);
+      exp = expresion();
+SemanticFunctions.inst_return(exp, sf, treturn);
     } finally {
       trace_return("inst_return");
     }
@@ -1519,17 +1539,17 @@ exps.add(0, exp);
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_1()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tCOMA)) return true;
-    return false;
-  }
-
   static private boolean jj_3_2()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tAPAR)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tCOMA)) return true;
     return false;
   }
 

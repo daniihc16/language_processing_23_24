@@ -12,6 +12,9 @@ package lib.tools;
 
 
 import java.util.*;
+
+import javax.sound.sampled.AudioFileFormat.Type;
+
 import traductor.Token;
 import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
@@ -124,21 +127,7 @@ public class SemanticFunctions {
 		}
    	}
 
-	/*
-	 * Comprueba que el tipo de las expresiones de una instrucción de escribir sea correcto
-	 * @param exp Expresión a comprobar
-	 * @param expected Tipo esperado
-	 */
-	static public void inst_escribir(ArrayList<TypeValue> exps, int line, int column) {
-		// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
-		// han de convertirse con int2char()
-		for (TypeValue exp:exps) {
-			if (exp.type != Symbol.Types.STRING &&
-			exp.type != Symbol.Types.CHAR &&
-			exp.type != Symbol.Types.INT &&
-			exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.STRING, exp.type, line, column);
-		}
-	}
+	
 
 	/*
 	 * Comprueba que el tipo de las componentes de una expresión booleana sea correcto y evalua su valor
@@ -394,8 +383,87 @@ public class SemanticFunctions {
 		expectedTypes.add(Symbol.Types.FUNCTION);
 		expectedTypes.add(Symbol.Types.PROCEDURE);
 		expectedTypes.add(Symbol.Types.ARRAY);
-		UnexpectedTypeException.getMessage(expectedTypes, sid.type);
+		UnexpectedTypeException.getMessage(expectedTypes, sid.type, id.beginLine, id.beginColumn);
 		return new TypeValue(Symbol.Types.UNDEFINED, null);
+	}
+
+	/*
+	 * Comprueba que el tipo de las componentes que se leen son INT, CHAR o un array de INT
+	 * o CHAR
+	 * @param exps Lista de expresiones a leer
+	 * @param get Token con la instrucción de lectura
+	 * @throws UnexpectedTypeException Si el tipo de las expresiones no es correcto
+	 */
+	static public void inst_leer(ArrayList<TypeValue> exps, Token get) {
+		ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
+		expectedTypes.add(Symbol.Types.INT);
+		expectedTypes.add(Symbol.Types.CHAR);
+		
+		for (TypeValue exp:exps) {
+			if ((exp.type != Symbol.Types.INT && exp.type != Symbol.Types.CHAR)
+				|| (exp.type == Symbol.Types.ARRAY && exp.baseType != Symbol.Types.INT && exp.baseType != Symbol.Types.CHAR)) {
+				UnexpectedTypeException.getMessage(expectedTypes, exp.type, get.beginLine, get.beginColumn);
+			}
+		}
+	}
+
+	/*
+	 * Comprueba que el tipo de las expresiones de una instrucción de escribir sea correcto
+	 * @param exp Expresión a comprobar
+	 * @param expected Tipo esperado
+	 */
+	static public void inst_escribir(ArrayList<TypeValue> exps, int line, int column) {
+		// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
+		// han de convertirse con int2char()
+		for (TypeValue exp:exps) {
+			if (exp.type != Symbol.Types.STRING &&
+			exp.type != Symbol.Types.CHAR &&
+			exp.type != Symbol.Types.INT &&
+			exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.STRING, exp.type, line, column);
+		}
+	}
+
+
+	/*
+	 * Comprueba que el tipo de la asignación sea el correcto
+	 * @param id Identificador al que se asigna
+	 * @param exp Expresión que se asigna
+	 * @param pos Token con la posición de la asignación
+	 */
+	static public void inst_invocacion_o_asignacion(TypeValue id, TypeValue exp, Token pos) {
+		if (pos != null) /* asignación */ {
+			if (id.type == Symbol.Types.FUNCTION || id.type == Symbol.Types.PROCEDURE) BadInvocation.getMessage("Asignación", "Left side of assignment is a function or procedure");
+			if (id.type != exp.type) UnexpectedTypeException.getMessage(id.type, exp.type, pos.beginLine, pos.beginColumn);
+			if (id.type == Symbol.Types.ARRAY) {
+				// Los vectores no son asignables directamente pero sus componentes sí
+				// este rango vacío indica que no se ha generado un TypeValue de identificador de array
+				// por tanto es tipo array pero no el identificador solo, por lo que es un acceso a una componente
+				if (id.minInd == 1 || id.maxInd == 0) UnexpectedTypeException.getMessage(id.baseType, id.type, pos.beginLine, pos.beginColumn);
+				if (id.baseType != exp.type) UnexpectedTypeException.getMessage(id.baseType, exp.type, pos.beginLine, pos.beginColumn);
+			}
+		} else /* invocación */ {
+			// si se invoca a una función, no se captura el valor devuelto
+			// se puede no generar el código de llamada a la función si no se captura el resultado
+			if (id.type == Symbol.Types.FUNCTION) System.err.println("WARNING: Unhandled function return type");
+		}
+		
+	}
+
+	static public void inst_if(TypeValue expif, TypeValue expelsif, Token tif, Token elsif) {
+		if (expif.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, expif.type, tif.beginLine, tif.beginColumn);
+		if (expelsif != null && expelsif.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, expelsif.type, elsif.beginLine, elsif.beginColumn);
+	}
+
+	static public void inst_while(TypeValue exp, Token twhile) {
+		if (exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, exp.type, twhile.beginLine, twhile.beginColumn);
+	}
+
+	static public void inst_return(TypeValue exp, Symbol sf_, Token treturn) {
+		if (sf_.type != Symbol.Types.FUNCTION) BadInvocation.getMessage(sf_.name, "Return statement inside of a procedure >:(");
+		else {
+			SymbolFunction sf = (SymbolFunction)sf_;
+			if (sf.returnType != exp.type) UnexpectedTypeException.getMessage(sf.returnType, exp.type, treturn.beginLine, treturn.beginColumn);
+		}
 	}
 
 }
