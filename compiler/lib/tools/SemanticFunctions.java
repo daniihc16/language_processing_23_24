@@ -27,6 +27,17 @@ public class SemanticFunctions {
    }
 
 
+   /*
+	* Devuelve una lista de símbolos con los nombres de los identificadores y el tipo de los mismos
+	* @param ids Lista de identificadores
+	* @param isRef Indica si los identificadores son referencias
+	* @param t Tipo de los identificadores
+	* @param min Token con el valor mínimo del rango
+	* @param max Token con el valor máximo del rango
+	* @param neg1 Token con el signo negativo del valor mínimo del rango
+	* @param neg2 Token con el signo negativo del valor máximo del rango
+	* @return ArrayList<Symbol> con los símbolos de los identificadores
+    */
    static public ArrayList<Symbol> simbolos_con_tipo(ArrayList<String> ids, boolean isRef, ArrayList<Symbol> t, Token min, Token max, Token neg1, Token neg2) {
        Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
        int minInd = Integer.parseInt(min.image);
@@ -182,15 +193,27 @@ public class SemanticFunctions {
 				else if(op.kind == tGE  && Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);
 				UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type, op.beginLine, op.beginColumn);
 				return new TypeValue(Symbol.Types.BOOL, null);
-			} else {
-				// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
-				return new TypeValue(Symbol.Types.BOOL, null);
-			}
-		} else {
-			return exp1;
+			} 
+			// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
+			return new TypeValue(Symbol.Types.BOOL, null);
 		}
+		return exp1;
 	}
 
+	/*
+	 * Comprueba que el tipo de las componentes de una expresión aritmética sea correcto y evalua su valor
+	 * si es posible. En caso de que solo haya una componenete de la expresión, term_resultante = null, devuelve
+	 * el valor de la expresión
+	 * @param ops Operador de la expresión
+	 * @param term Componente izquierda de la expresión
+	 * @param op Operador de la expresión
+	 * @param term_resultante Componente derecha de la expresión
+	 * @param tPLUS Token del operador +
+	 * @param tMINUS Token del operador -
+	 * @return TypeValue con el resultado de la expresión
+	 * @throws UnexpectedTypeException Si el tipo de las expresiones no es correcto
+	 * @throws BadInvocation Si la invocación a una función o procedimiento no es correcta
+	 */
 	static public TypeValue expresion_simple(Token ops, TypeValue term, Token op, TypeValue term_resultante, int tPLUS, int tMINUS) {
 		// Si hay un operador + o - el término debe ser de tipo entero
 		if (ops != null && term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type, ops.beginLine, ops.beginColumn);
@@ -200,7 +223,7 @@ public class SemanticFunctions {
 			else if (ops.kind == tPLUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, term.value, term.isLiteral);
 			else if (ops.kind == tMINUS && term.type == Symbol.Types.INT) term = new TypeValue(term.type, (int)term.value*-1);
 			else UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type, ops.beginLine, ops.beginColumn);
-		} else term =  new TypeValue(term.type, null, term.isLiteral);
+		}
 
 		if (term_resultante == null) return term;
 		if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type, op.beginLine, op.beginColumn);
@@ -209,11 +232,22 @@ public class SemanticFunctions {
 		if (term.type == Symbol.Types.INT && term_resultante.type == Symbol.Types.INT && term.value != null && term_resultante.value != null) {
 			if (op.kind == tPLUS) return new TypeValue(Symbol.Types.INT, (int)term.value + (int)term_resultante.value);
 			else return new TypeValue(Symbol.Types.INT, (int)term.value - (int)term_resultante.value);
-		} else {
-			return new TypeValue(Symbol.Types.INT, null);
-		}
+		} 
+		return new TypeValue(Symbol.Types.INT, null);
 	}
 
+	/*
+	 * Comprueba que el tipo de las componentes de una expresión aritmética sea correcto y evalua su valor
+	 * si es posible. En caso de que solo haya una componenete de la expresión, term_resultante = null, devuelve
+	 * el valor de la expresión
+	 * @param term Componente izquierda de la expresión
+	 * @param op Operador de la expresión
+	 * @param term_resultante Componente derecha de la expresión
+	 * @param tPLUS Token del operador +
+	 * @param tMINUS Token del operador -
+	 * @return TypeValue con el resultado de la expresión
+	 * @throws UnexpectedTypeException Si el tipo de las expresiones no es correcto
+	 */
 	static public TypeValue una_o_mas_expresiones_simples(TypeValue term, Token op, TypeValue term_resultante, int tPLUS, int tMINUS) {
 		if (term_resultante != null) {
 			if (term.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, term.type, op.beginLine, op.beginColumn);
@@ -228,6 +262,19 @@ public class SemanticFunctions {
 		return term;
 	}
 
+	/*
+	 * Comprueba que el tipo de las componentes de una expresión aritmética sea correcto y evalua su valor
+	 * si es posible. En caso de que solo haya una componenete de la expresión, fact_resultante = null, devuelve
+	 * el valor de la expresión
+	 * @param fact Componente izquierda de la expresión
+	 * @param op Operador de la expresión
+	 * @param fact_resultante Componente derecha de la expresión
+	 * @param tTIMES Token del operador *
+	 * @param tDIV Token del operador /
+	 * @param tMOD Token del operador %
+	 * @return TypeValue con el resultado de la expresión
+	 * @throws UnexpectedTypeException Si el tipo de las expresiones no es correcto
+	 */
 	static public TypeValue termino(TypeValue fact, Token op, TypeValue fact_resultante, int tTIMES, int tDIV, int tMOD) {
 		if (fact_resultante != null) {
 			if (fact.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, fact.type, op.beginLine, op.beginColumn);
@@ -246,6 +293,12 @@ public class SemanticFunctions {
 		return fact;
 	}
 
+	/*
+	 * Comprueba que el tipo de una expresión con un not delante sea booleano y evalua su valor si es posible
+	 * @param p Componente de la expresión
+	 * @return TypeValue con el resultado de la expresión
+	 * @throws UnexpectedTypeException Si el tipo de la expresión no es correcto
+	 */
 	static public TypeValue not_primario(TypeValue p, int line, int column) {
 		if (p.type == Symbol.Types.BOOL) {
 			if (p.value != null) return new TypeValue(Symbol.Types.BOOL, !(boolean)p.value);
@@ -255,6 +308,15 @@ public class SemanticFunctions {
 		return p;
 	}
 
+	/*
+	 * Comprueba que el id proporcionado se corresponde con una función o un procedimiento sin parámetros
+	 * o al de un array. Devuelve un TypeValue con el tipo correspondiente y el valor en caso del array
+	 * @param id Token con el id de la invocación
+	 * @param st Tabla de símbolos
+	 * @return TypeValue con el tipo de la invocación
+	 * @throws BadInvocation Si la invocación no es correcta (se han pasado parámetros a un procedimiento o función sin parámetros)
+	 * @throws UnexpectedTypeException Si el tipo de la invocación no es correcto
+	 */
 	static public TypeValue var_o_func_sin_params(Token id, SymbolTable st) {
 		Symbol sid = SemanticFunctions.getSymbol(st, id.image);
 		if (sid == null) return new TypeValue(Symbol.Types.UNDEFINED, null);
@@ -287,6 +349,7 @@ public class SemanticFunctions {
 	 */
 	static public TypeValue invoc_func_o_comp_array(Token id, ArrayList<TypeValue> exps, SymbolTable st) {
 		Symbol sid = SemanticFunctions.getSymbol(st, id.image);
+		
 		if (sid == null) return new TypeValue(Symbol.Types.UNDEFINED, null);
 		if (sid.type == Symbol.Types.FUNCTION) {
 			SymbolFunction sfid = (SymbolFunction)sid;

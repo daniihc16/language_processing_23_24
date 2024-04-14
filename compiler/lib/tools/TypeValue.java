@@ -43,4 +43,8 @@ public class TypeValue<T> {
         this.baseType = baseType_;
         this.isLiteral = false;
     }
+
+    // public String toString() {
+    //     return "(" + baseType.toString() + "," + type.toString() + ")";
+    // }
 }

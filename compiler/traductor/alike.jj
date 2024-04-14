@@ -8,7 +8,7 @@
 options {
     IGNORE_CASE = true;    //No distinguir entre mayúsculas y minúsculas
     COMMON_TOKEN_ACTION = false; //Se generan acciones por defecto
-    DEBUG_PARSER = false; //Genera información de depuración
+    DEBUG_PARSER = true; //Genera información de depuración
 }
 
 PARSER_BEGIN(alike)
@@ -553,7 +553,7 @@ void inst_return() :
 
 TypeValue expresion():
 {
-    TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+    TypeValue prel = null, rest_rel = null;
     Token op = null;
 }
 {
@@ -565,7 +565,7 @@ TypeValue expresion():
 
 TypeValue lista_una_o_mas_relaciones_booleanas():
 {
-    TypeValue prel = new TypeValue(Symbol.Types.UNDEFINED, null), rest_rel = null;
+    TypeValue prel = null, rest_rel = null;
     Token op = null;
 }
 {
@@ -576,7 +576,7 @@ TypeValue lista_una_o_mas_relaciones_booleanas():
 
 TypeValue relacion():
 {
-    TypeValue exp1 = new TypeValue(Symbol.Types.UNDEFINED, null), exp2 = null;    
+    TypeValue exp1 = null, exp2 = null;    
     Token op = null;
 }
 {
@@ -596,7 +596,7 @@ Token operador_relacional():
 
 TypeValue expresion_simple():
 {
-    TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
+    TypeValue term = null, term_resultante = null;
     Token op = null, ops = null;
     // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
 }
@@ -609,7 +609,7 @@ TypeValue expresion_simple():
 
 TypeValue una_o_mas_expresiones_simples():
 {
-    TypeValue term = new TypeValue(Symbol.Types.UNDEFINED, null), term_resultante = null;
+    TypeValue term = null, term_resultante = null;
     Token op = null, ops = null;
 }
 {
@@ -620,7 +620,7 @@ TypeValue una_o_mas_expresiones_simples():
 
 TypeValue termino():
 {
-    TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
+    TypeValue fact = null, fact_resultante = null;
     Token op = null;
 }
 {
@@ -631,7 +631,7 @@ TypeValue termino():
 
 TypeValue lista_una_o_mas_terminos():
 {
-    TypeValue fact = new TypeValue(Symbol.Types.UNDEFINED, null), fact_resultante = null;
+    TypeValue fact = null, fact_resultante = null;
     Token op = null;
 }
 {
@@ -650,7 +650,7 @@ Token operador_multiplicativo() :
 
 TypeValue factor():
 {
-    TypeValue p = new TypeValue(Symbol.Types.UNDEFINED, null);
+    TypeValue p = null;
 	Token not = null;
 }
 {
@@ -671,7 +671,7 @@ TypeValue primario() :
 {
 	<tAPAR> exp = expresion() <tCPAR> { return exp; }
 |    fnToken = <tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
-    System.out.println(exp.value);
+    // System.out.println(exp.value);
     if (exp.type == Symbol.Types.INT) {
    	 return new TypeValue(Symbol.Types.CHAR, exp.value);
     } else {

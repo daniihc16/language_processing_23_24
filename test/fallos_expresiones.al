@@ -40,7 +40,6 @@ begin
 	var_boolean := not var_char;
 	var_boolean := not var_array;
 	var_boolean := not (5 + 6);
-	var_boolean := not (5.0 + 6.0);
 	var_boolean := -true;
 	var_boolean := -var_integer;
 	var_boolean := -var_char;
@@ -55,9 +54,8 @@ begin
 	var_boolean := 5 /= 'a';
 
 	var_boolean := 5 + 'a' < 6 and 5 - 'a' > 6;
-	var_boolean := 5 + 6.0 < 6 and 5 - 6.0 > 6;
-	var_boolean := 5.0 + 6 < 6 and 5.0 - 6 > 6;
-	var_boolean := 5.0 + 6.0 < 6 and 5.0 - 6.0 > 6;
+	var_boolean := 5 + 6 < 6 and 5 - 6 > 6;
+
 
 	var_boolean := 5 + var_char < 6 and 5 - var_char > 6;
 	var_boolean := 5 + var_integer < 6 and 5 - var_integer > 6;
@@ -89,5 +87,5 @@ begin
 	
 	
 
-	// Probar a pasar por referencia +var_int y -var_int
+	-- Probar a pasar por referencia +var_int y -var_int
 end;
