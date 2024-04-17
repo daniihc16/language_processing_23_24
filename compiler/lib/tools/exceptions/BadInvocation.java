@@ -13,7 +13,7 @@ import java.util.*;
 import lib.symbolTable.Symbol;
 
 public class BadInvocation extends Exception {
-	public static void getMessage(String id, String msg) {
-		System.err.println("SEMANTIC ERROR: Bad invocation error detected on: " + id + " -> " + msg);
+	public static void getMessage(String id, String msg, int line, int col) {
+		System.err.println("SEMANTIC ERROR (" + line + ", " + col + ") : Bad invocation error detected on: " + id + " -> " + msg);
 	}
 }

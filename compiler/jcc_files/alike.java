@@ -40,182 +40,155 @@ public class alike implements alikeConstants {
         //...
    }
 
-  static final public Token boolconst() throws ParseException {
-    trace_call("boolconst");
-    try {
-Token bool_const = null;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tTRUE:{
-        bool_const = jj_consume_token(tTRUE);
-        break;
-        }
-      case tFALSE:{
-        bool_const = jj_consume_token(tFALSE);
-        break;
-        }
-      default:
-        jj_la1[0] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+  static final public Token boolconst() throws ParseException {Token bool_const = null;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tTRUE:{
+      bool_const = jj_consume_token(tTRUE);
+      break;
       }
+    case tFALSE:{
+      bool_const = jj_consume_token(tFALSE);
+      break;
+      }
+    default:
+      jj_la1[0] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
 {if ("" != null) return bool_const;}
     throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("boolconst");
-    }
 }
 
 // Devuelve el array con los símbolos de los identificadores con su tipo
 // @param ids: lista de identificadores a los que se les va a asignar un tipo
 // @param ref: token que indica si el tipo es por referencia
-  static final public ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef) throws ParseException {
-    trace_call("tipo_dato");
-    try {
-ArrayList<Symbol> t;
+  static final public ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef) throws ParseException {ArrayList<Symbol> t;
     Token neg1 = null, neg2 = null, min, max;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tCHAR:
-      case tBOOL:
-      case tINT:{
-        t = tipo_base(ids, isRef);
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tCHAR:
+    case tBOOL:
+    case tINT:{
+      t = tipo_base(ids, isRef);
 {if ("" != null) return t;}
-        break;
-        }
-      case tARRAY:{
-        jj_consume_token(tARRAY);
-        jj_consume_token(tAPAR);
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tMINUS:{
-          neg1 = jj_consume_token(tMINUS);
-          break;
-          }
-        default:
-          jj_la1[1] = jj_gen;
-          ;
-        }
-        min = jj_consume_token(tINTCONST);
-        jj_consume_token(tRANGE);
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tMINUS:{
-          neg2 = jj_consume_token(tMINUS);
-          break;
-          }
-        default:
-          jj_la1[2] = jj_gen;
-          ;
-        }
-        max = jj_consume_token(tINTCONST);
-        jj_consume_token(tCPAR);
-        jj_consume_token(tOF);
-        t = tipo_base(ids, isRef);
-{if ("" != null) return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);}
+      break;
+      }
+    case tARRAY:{
+      jj_consume_token(tARRAY);
+      jj_consume_token(tAPAR);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tMINUS:{
+        neg1 = jj_consume_token(tMINUS);
         break;
         }
       default:
-        jj_la1[3] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+        jj_la1[1] = jj_gen;
+        ;
       }
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("tipo_dato");
+      min = jj_consume_token(tINTCONST);
+      jj_consume_token(tRANGE);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tMINUS:{
+        neg2 = jj_consume_token(tMINUS);
+        break;
+        }
+      default:
+        jj_la1[2] = jj_gen;
+        ;
+      }
+      max = jj_consume_token(tINTCONST);
+      jj_consume_token(tCPAR);
+      jj_consume_token(tOF);
+      t = tipo_base(ids, isRef);
+{if ("" != null) return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);}
+      break;
+      }
+    default:
+      jj_la1[3] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
 }
 
 // Devuelve el array con los símbolos de los identificadores con su tipo
 // @param ids: lista de identificadores a los que se les va a asignar un tipo
 // @param isRef: indica si el tipo es por referencia
-  static final public ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef) throws ParseException {
-    trace_call("tipo_base");
-    try {
-Symbol t;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tCHAR:{
-        jj_consume_token(tCHAR);
+  static final public ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef) throws ParseException {Symbol t;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tCHAR:{
+      jj_consume_token(tCHAR);
 t = new SymbolChar("");
-        break;
-        }
-      case tBOOL:{
-        jj_consume_token(tBOOL);
-t = new SymbolBool("");
-        break;
-        }
-      case tINT:{
-        jj_consume_token(tINT);
-t = new SymbolInt("");
-        break;
-        }
-      default:
-        jj_la1[4] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+      break;
       }
+    case tBOOL:{
+      jj_consume_token(tBOOL);
+t = new SymbolBool("");
+      break;
+      }
+    case tINT:{
+      jj_consume_token(tINT);
+t = new SymbolInt("");
+      break;
+      }
+    default:
+      jj_la1[4] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
 {if ("" != null) return SemanticFunctions.ids_simbolos_base(ids, isRef, t);}
     throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("tipo_base");
-    }
 }
 
-  static final public TypeValue tipo_constante() throws ParseException {
-    trace_call("tipo_constante");
-    try {
-Token char_const = null;
+  static final public TypeValue tipo_constante() throws ParseException {Token char_const = null;
     Token int_const = null;
     Token bool_const = null;
     Token string_const = null;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tCHARCONST:{
-        char_const = jj_consume_token(tCHARCONST);
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tCHARCONST:{
+      char_const = jj_consume_token(tCHARCONST);
 {if ("" != null) return new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));}
-        break;
-        }
-      case tINTCONST:{
-        int_const = jj_consume_token(tINTCONST);
-{if ("" != null) return new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));}
-        break;
-        }
-      case tTRUE:
-      case tFALSE:{
-        bool_const = boolconst();
-{if ("" != null) return new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));}
-        break;
-        }
-      case tSTRING:{
-        string_const = jj_consume_token(tSTRING);
-{if ("" != null) return new TypeValue(Symbol.Types.STRING, string_const.image);}
-        break;
-        }
-      default:
-        jj_la1[5] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+      break;
       }
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("tipo_constante");
+    case tINTCONST:{
+      int_const = jj_consume_token(tINTCONST);
+{if ("" != null) return new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));}
+      break;
+      }
+    case tTRUE:
+    case tFALSE:{
+      bool_const = boolconst();
+{if ("" != null) return new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));}
+      break;
+      }
+    case tSTRING:{
+      string_const = jj_consume_token(tSTRING);
+{if ("" != null) return new TypeValue(Symbol.Types.STRING, string_const.image);}
+      break;
+      }
+    default:
+      jj_la1[5] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
 }
 
 //------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
-  static final public void Programa() throws ParseException {
-    trace_call("Programa");
-    try {
-SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+  static final public void Programa() throws ParseException {SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
     ArrayList<Symbol> vars = null;
-      try {
-        proc_main = cabecera_procedimiento();
+    try {
+      proc_main = cabecera_procedimiento();
 SemanticFunctions.insertSymbol(st, proc_main);
                         st.setMainProc(proc_main.name);
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tID:{
-          vars = declaracion_variables();
-          break;
-          }
-        default:
-          jj_la1[6] = jj_gen;
-          ;
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tID:{
+        vars = declaracion_variables();
+        break;
         }
+      default:
+        jj_la1[6] = jj_gen;
+        ;
+      }
 if (vars != null) {
                                 for (Symbol var : vars) {
                                         SemanticFunctions.insertSymbol(st, var);
@@ -224,102 +197,50 @@ if (vars != null) {
                                 vars = new ArrayList<Symbol>();
                         }
                         System.out.println("Nuevo s\u00edmbolo: " + st.toString());
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tPROC:
-        case tFUNC:{
-          declaracion_procs_funcs();
-          break;
-          }
-        default:
-          jj_la1[7] = jj_gen;
-          ;
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPROC:
+      case tFUNC:{
+        declaracion_procs_funcs();
+        break;
         }
-        jj_consume_token(tBEGIN);
-        label_1:
-        while (true) {
-          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case tNULL:
-          case tRETURN:
-          case tCHARCONST:
-          case tINTCONST:
-          case tTRUE:
-          case tFALSE:
-          case tSTRING:
-          case tAPAR:
-          case tSKIPLINE:
-          case tGET:
-          case tPUTLINE:
-          case tPUT:
-          case tINT2CHAR:
-          case tCHAR2INT:
-          case tIF:
-          case tWHILE:
-          case tID:{
-            ;
-            break;
-            }
-          default:
-            jj_la1[8] = jj_gen;
-            break label_1;
-          }
-          instruccion(proc_main);
-        }
-        jj_consume_token(tEND);
-        jj_consume_token(tPC);
-        jj_consume_token(0);
-      } catch (ParseException e) {
-System.err.println("PARSE_ERROR: " + e.getMessage());
-
-                // Reconocer hasta el token <tPC>
-                while (true) {
-                        Token t = getNextToken();
-                        if (t.kind == tPC) break;
-                }
+      default:
+        jj_la1[7] = jj_gen;
+        ;
       }
-    } finally {
-      trace_return("Programa");
-    }
-}
-
-  static final public ArrayList<Symbol> declaracion_variables() throws ParseException {
-    trace_call("declaracion_variables");
-    try {
-ArrayList<Symbol> vars = new ArrayList<Symbol>();
-    ArrayList<Symbol> var_list = null;
-      label_2:
+      jj_consume_token(tBEGIN);
+      label_1:
       while (true) {
-        var_list = declaracion_var();
-for (Symbol var: var_list) vars.add(var);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case tNULL:
+        case tRETURN:
+        case tCHARCONST:
+        case tINTCONST:
+        case tTRUE:
+        case tFALSE:
+        case tSTRING:
+        case tAPAR:
+        case tSKIPLINE:
+        case tGET:
+        case tPUTLINE:
+        case tPUT:
+        case tINT2CHAR:
+        case tCHAR2INT:
+        case tIF:
+        case tWHILE:
         case tID:{
           ;
           break;
           }
         default:
-          jj_la1[9] = jj_gen;
-          break label_2;
+          jj_la1[8] = jj_gen;
+          break label_1;
         }
+        instruccion(proc_main);
       }
-{if ("" != null) return vars;}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("declaracion_variables");
-    }
-}
-
-  static final public ArrayList<Symbol> declaracion_var() throws ParseException {
-    trace_call("declaracion_var");
-    try {
-ArrayList<String> ids;
-    ArrayList<Symbol> vars;
-      try {
-        // tipo_dato devuelve el símbolo
-                        ids = lista_ids();
-        jj_consume_token(tDP);
-        vars = tipo_dato(ids, false);
-        jj_consume_token(tPC);
-{if ("" != null) return vars;}
-      } catch (ParseException e) {
+      jj_consume_token(tEND);
+      jj_consume_token(tPC);
+      jj_consume_token(0);
+    } catch (ParseException e) {
 System.err.println("PARSE_ERROR: " + e.getMessage());
 
                 // Reconocer hasta el token <tPC>
@@ -327,46 +248,78 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
-      }
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("declaracion_var");
     }
 }
 
-  static final public void declaracion_procs_funcs() throws ParseException {
-    trace_call("declaracion_procs_funcs");
-    try {
-
-      label_3:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tPROC:{
-          declaracion_proc();
-          break;
-          }
-        case tFUNC:{
-          declaracion_func();
-          break;
-          }
-        default:
-          jj_la1[10] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+  static final public ArrayList<Symbol> declaracion_variables() throws ParseException {ArrayList<Symbol> vars = new ArrayList<Symbol>();
+    ArrayList<Symbol> var_list = null;
+    label_2:
+    while (true) {
+      var_list = declaracion_var();
+for (Symbol var: var_list) vars.add(var);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tID:{
+        ;
+        break;
         }
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tPROC:
-        case tFUNC:{
-          ;
-          break;
-          }
-        default:
-          jj_la1[11] = jj_gen;
-          break label_3;
-        }
+      default:
+        jj_la1[9] = jj_gen;
+        break label_2;
       }
-    } finally {
-      trace_return("declaracion_procs_funcs");
+    }
+{if ("" != null) return vars;}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public ArrayList<Symbol> declaracion_var() throws ParseException {ArrayList<String> ids;
+    ArrayList<Symbol> vars;
+    try {
+      // tipo_dato devuelve el símbolo
+                      ids = lista_ids();
+      jj_consume_token(tDP);
+      vars = tipo_dato(ids, false);
+      jj_consume_token(tPC);
+{if ("" != null) return vars;}
+    } catch (ParseException e) {
+System.err.println("PARSE_ERROR: " + e.getMessage());
+
+                // Reconocer hasta el token <tPC>
+                while (true) {
+                        Token t = getNextToken();
+                        if (t.kind == tPC) break;
+                }
+                {if ("" != null) return new ArrayList<Symbol>();}
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  static final public void declaracion_procs_funcs() throws ParseException {
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPROC:{
+        declaracion_proc();
+        break;
+        }
+      case tFUNC:{
+        declaracion_func();
+        break;
+        }
+      default:
+        jj_la1[10] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPROC:
+      case tFUNC:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[11] = jj_gen;
+        break label_3;
+      }
     }
 }
 
@@ -374,73 +327,70 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
 // Inserta el símbolo del procedimiento en la tabla de símbolos
 // Inserta bloque en la tabla de símbolos
 // Inserta los parámetros y variables en la tabla de símbolos
-  static final public void declaracion_proc() throws ParseException {
-    trace_call("declaracion_proc");
-    try {
-SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+  static final public void declaracion_proc() throws ParseException {SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
     ArrayList<Symbol> vars = null;
-      try {
-        proc = cabecera_procedimiento();
+    try {
+      proc = cabecera_procedimiento();
 SemanticFunctions.newProcBlock(st, proc);
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tID:{
-          vars = declaracion_variables();
-          break;
-          }
-        default:
-          jj_la1[12] = jj_gen;
-          ;
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tID:{
+        vars = declaracion_variables();
+        break;
         }
+      default:
+        jj_la1[12] = jj_gen;
+        ;
+      }
 if (vars != null) {
                                 for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
                         } else {
                                 vars = new ArrayList<Symbol>();
                         }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPROC:
+      case tFUNC:{
+        declaracion_procs_funcs();
+        break;
+        }
+      default:
+        jj_la1[13] = jj_gen;
+        ;
+      }
+      jj_consume_token(tBEGIN);
+      label_4:
+      while (true) {
+        instruccion(proc);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tPROC:
-        case tFUNC:{
-          declaracion_procs_funcs();
+        case tNULL:
+        case tRETURN:
+        case tCHARCONST:
+        case tINTCONST:
+        case tTRUE:
+        case tFALSE:
+        case tSTRING:
+        case tAPAR:
+        case tSKIPLINE:
+        case tGET:
+        case tPUTLINE:
+        case tPUT:
+        case tINT2CHAR:
+        case tCHAR2INT:
+        case tIF:
+        case tWHILE:
+        case tID:{
+          ;
           break;
           }
         default:
-          jj_la1[13] = jj_gen;
-          ;
+          jj_la1[14] = jj_gen;
+          break label_4;
         }
-        jj_consume_token(tBEGIN);
-        label_4:
-        while (true) {
-          instruccion(proc);
-          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case tNULL:
-          case tRETURN:
-          case tCHARCONST:
-          case tINTCONST:
-          case tTRUE:
-          case tFALSE:
-          case tSTRING:
-          case tAPAR:
-          case tSKIPLINE:
-          case tGET:
-          case tPUTLINE:
-          case tPUT:
-          case tINT2CHAR:
-          case tCHAR2INT:
-          case tIF:
-          case tWHILE:
-          case tID:{
-            ;
-            break;
-            }
-          default:
-            jj_la1[14] = jj_gen;
-            break label_4;
-          }
-        }
-        jj_consume_token(tEND);
-        jj_consume_token(tPC);
+      }
+      jj_consume_token(tEND);
+      jj_consume_token(tPC);
 System.out.println("Procedimiento reconocido: " + st.toString());
                         st.removeBlock();
-      } catch (ParseException e) {
+    } catch (ParseException e) {
 System.err.println("PARSE_ERROR: " + e.getMessage());
 
                 // Reconocer hasta el token <tPC>
@@ -448,9 +398,6 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
-      }
-    } finally {
-      trace_return("declaracion_proc");
     }
 }
 
@@ -458,60 +405,56 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
 // Inserta el símbolo de la función en la tabla de símbolos
 // Inserta bloque en la tabla de símbolos
 // Inserta los parámetros y variables en la tabla de símbolos
-  static final public void declaracion_func() throws ParseException {
-    trace_call("declaracion_func");
-    try {
-ArrayList<Symbol> vars = new ArrayList<Symbol>();
+  static final public void declaracion_func() throws ParseException {ArrayList<Symbol> vars = new ArrayList<Symbol>();
     SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
-      try {
-        func = cabecera_funcion();
+    try {
+      func = cabecera_funcion();
 SemanticFunctions.newFuncBlock(st, func);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tID:{
+        vars = declaracion_variables();
+        break;
+        }
+      default:
+        jj_la1[15] = jj_gen;
+        ;
+      }
+if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
+      jj_consume_token(tBEGIN);
+      label_5:
+      while (true) {
+        instruccion(func);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case tNULL:
+        case tRETURN:
+        case tCHARCONST:
+        case tINTCONST:
+        case tTRUE:
+        case tFALSE:
+        case tSTRING:
+        case tAPAR:
+        case tSKIPLINE:
+        case tGET:
+        case tPUTLINE:
+        case tPUT:
+        case tINT2CHAR:
+        case tCHAR2INT:
+        case tIF:
+        case tWHILE:
         case tID:{
-          vars = declaracion_variables();
+          ;
           break;
           }
         default:
-          jj_la1[15] = jj_gen;
-          ;
+          jj_la1[16] = jj_gen;
+          break label_5;
         }
-// perdón, era necesario
-                        if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
-        jj_consume_token(tBEGIN);
-        label_5:
-        while (true) {
-          instruccion(func);
-          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case tNULL:
-          case tRETURN:
-          case tCHARCONST:
-          case tINTCONST:
-          case tTRUE:
-          case tFALSE:
-          case tSTRING:
-          case tAPAR:
-          case tSKIPLINE:
-          case tGET:
-          case tPUTLINE:
-          case tPUT:
-          case tINT2CHAR:
-          case tCHAR2INT:
-          case tIF:
-          case tWHILE:
-          case tID:{
-            ;
-            break;
-            }
-          default:
-            jj_la1[16] = jj_gen;
-            break label_5;
-          }
-        }
-        jj_consume_token(tEND);
-        jj_consume_token(tPC);
+      }
+      jj_consume_token(tEND);
+      jj_consume_token(tPC);
 System.out.println("Funci\u00f3n reconocida: " + st.toString());
                         st.removeBlock();
-      } catch (ParseException e) {
+    } catch (ParseException e) {
 System.err.println("PARSE_ERROR: " + e.getMessage());
 
                 // Reconocer hasta el token <tPC>
@@ -519,120 +462,96 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
-      }
-    } finally {
-      trace_return("declaracion_func");
     }
 }
 
-  static final public ArrayList<Symbol> declaracion_param() throws ParseException {
-    trace_call("declaracion_param");
-    try {
-ArrayList<String> ids;
+  static final public ArrayList<Symbol> declaracion_param() throws ParseException {ArrayList<String> ids;
     ArrayList<Symbol> ids_con_tipo;
     Token ref = null;
-      ids = lista_ids();
-      jj_consume_token(tDP);
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tREF:{
-        ref = jj_consume_token(tREF);
-        break;
-        }
-      default:
-        jj_la1[17] = jj_gen;
-        ;
+    ids = lista_ids();
+    jj_consume_token(tDP);
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tREF:{
+      ref = jj_consume_token(tREF);
+      break;
       }
-      ids_con_tipo = tipo_dato(ids, ref != null);
+    default:
+      jj_la1[17] = jj_gen;
+      ;
+    }
+    ids_con_tipo = tipo_dato(ids, ref != null);
 {if ("" != null) return ids_con_tipo;}
     throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("declaracion_param");
-    }
 }
 
 // Devuelve la lista de identificadores reconocidos
-  static final public ArrayList<String> lista_ids() throws ParseException {
-    trace_call("lista_ids");
-    try {
-ArrayList<String> ids = new ArrayList<String>();
+  static final public ArrayList<String> lista_ids() throws ParseException {ArrayList<String> ids = new ArrayList<String>();
     ArrayList<String> resto_ids = null;
     Token id;
-      if (jj_2_1(2)) {
+    if (jj_2_1(2)) {
+      id = jj_consume_token(tID);
+      jj_consume_token(tCOMA);
+      resto_ids = lista_ids();
+    } else {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tID:{
         id = jj_consume_token(tID);
-        jj_consume_token(tCOMA);
-        resto_ids = lista_ids();
-      } else {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tID:{
-          id = jj_consume_token(tID);
-          break;
-          }
-        default:
-          jj_la1[18] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+        break;
         }
+      default:
+        jj_la1[18] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
+    }
 ids.add(id.image);
                 if (resto_ids != null) {
                         for (String sid : resto_ids) ids.add(sid);
                 }
                 {if ("" != null) return ids;}
     throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("lista_ids");
-    }
 }
 
 // Devuelve el símbolo del procedimiento con los parámetros
-  static final public SymbolProcedure cabecera_procedimiento() throws ParseException {
-    trace_call("cabecera_procedimiento");
-    try {
-Token id_proc;
+  static final public SymbolProcedure cabecera_procedimiento() throws ParseException {Token id_proc;
     ArrayList<Symbol> proc_params = null;
-      jj_consume_token(tPROC);
-      id_proc = jj_consume_token(tID);
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAPAR:
-      case 62:{
-        proc_params = parametros_formales();
-        break;
-        }
-      default:
-        jj_la1[19] = jj_gen;
-        ;
+    jj_consume_token(tPROC);
+    id_proc = jj_consume_token(tID);
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAPAR:
+    case 62:{
+      proc_params = parametros_formales();
+      break;
       }
-      jj_consume_token(tIS);
+    default:
+      jj_la1[19] = jj_gen;
+      ;
+    }
+    jj_consume_token(tIS);
 {if ("" != null) return new SymbolProcedure(id_proc.image, proc_params);}
     throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("cabecera_procedimiento");
-    }
 }
 
 // Devuelve el símbolo de la función con los parámetros
-  static final public SymbolFunction cabecera_funcion() throws ParseException {
-    trace_call("cabecera_funcion");
-    try {
-Token id_func;
+  static final public SymbolFunction cabecera_funcion() throws ParseException {Token id_func;
     ArrayList<Symbol> func_params = null;
     ArrayList<Symbol> returnType = null;
-      jj_consume_token(tFUNC);
-      id_func = jj_consume_token(tID);
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAPAR:
-      case 62:{
-        func_params = parametros_formales();
-        break;
-        }
-      default:
-        jj_la1[20] = jj_gen;
-        ;
+    jj_consume_token(tFUNC);
+    id_func = jj_consume_token(tID);
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAPAR:
+    case 62:{
+      func_params = parametros_formales();
+      break;
       }
-      jj_consume_token(tRETURN);
-      returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false);
-      jj_consume_token(tIS);
-if (returnType.get(0).type != Symbol.Types.INT || returnType.get(0).type != Symbol.Types.BOOL || returnType.get(0).type != Symbol.Types.CHAR) {
+    default:
+      jj_la1[20] = jj_gen;
+      ;
+    }
+    jj_consume_token(tRETURN);
+    returnType = tipo_base(new ArrayList<String>(Arrays.asList("returnType")), false);
+    jj_consume_token(tIS);
+if (returnType.get(0).type != Symbol.Types.INT && returnType.get(0).type != Symbol.Types.BOOL && returnType.get(0).type != Symbol.Types.CHAR) {
                         ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
                         expectedTypes.add(Symbol.Types.INT);
                         expectedTypes.add(Symbol.Types.CHAR);
@@ -641,37 +560,31 @@ if (returnType.get(0).type != Symbol.Types.INT || returnType.get(0).type != Symb
                 }
                 {if ("" != null) return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);}
     throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("cabecera_funcion");
-    }
 }
 
-  static final public ArrayList<Symbol> parametros_formales() throws ParseException {
-    trace_call("parametros_formales");
-    try {
-ArrayList<Symbol> params = new ArrayList<Symbol>();
+  static final public ArrayList<Symbol> parametros_formales() throws ParseException {ArrayList<Symbol> params = new ArrayList<Symbol>();
     ArrayList<Symbol> ps, resto_p;
-      try {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tAPAR:{
-          jj_consume_token(tAPAR);
-          ps = declaracion_param();
+    try {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tAPAR:{
+        jj_consume_token(tAPAR);
+        ps = declaracion_param();
 for (Symbol p :  ps) params.add(p);
-          resto_p = lista_parametros_formales();
+        resto_p = lista_parametros_formales();
 for (Symbol p :  resto_p) params.add(p);
-          jj_consume_token(tCPAR);
-          break;
-          }
-        case 62:{
-          jj_consume_token(62);
-          break;
-          }
-        default:
-          jj_la1[21] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+        jj_consume_token(tCPAR);
+        break;
         }
-      } catch (ParseException e) {
+      case 62:{
+        jj_consume_token(62);
+        break;
+        }
+      default:
+        jj_la1[21] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } catch (ParseException e) {
 System.err.println("PARSE_ERROR: " + e.getMessage());
 
                 // Reconocer hasta el token <tPC>
@@ -679,705 +592,51 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
-      }
+    }
 {if ("" != null) return params;}
     throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("parametros_formales");
-    }
 }
 
-  static final public ArrayList<Symbol> lista_parametros_formales() throws ParseException {
-    trace_call("lista_parametros_formales");
-    try {
-ArrayList<Symbol> params = new ArrayList<Symbol>();
+  static final public ArrayList<Symbol> lista_parametros_formales() throws ParseException {ArrayList<Symbol> params = new ArrayList<Symbol>();
     ArrayList<Symbol> ps, resto_p;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tPC:{
-        jj_consume_token(tPC);
-        ps = declaracion_param();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tPC:{
+      jj_consume_token(tPC);
+      ps = declaracion_param();
 for (Symbol p :  ps) params.add(p);
-        resto_p = lista_parametros_formales();
+      resto_p = lista_parametros_formales();
 for (Symbol p :  resto_p) params.add(p);
 {if ("" != null) return params;}
-        break;
-        }
-      default:
-        jj_la1[22] = jj_gen;
-{if ("" != null) return params;}
+      break;
       }
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("lista_parametros_formales");
+    default:
+      jj_la1[22] = jj_gen;
+{if ("" != null) return params;}
     }
+    throw new Error("Missing return statement in function");
 }
 
 //where es el símbolo de la función o el procedimiento en la que se encuentra la instrucción
 //Usado para comprobar que el return tiene el tipo correcto y no hay return en procedimientos
   static final public void instruccion(Symbol where) throws ParseException {
-    trace_call("instruccion");
     try {
-
-      try {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tGET:{
-          inst_leer();
-          break;
-          }
-        case tSKIPLINE:{
-          jj_consume_token(tSKIPLINE);
-          break;
-          }
-        case tPUT:{
-          inst_escribir();
-          break;
-          }
-        case tPUTLINE:{
-          inst_escribir_linea();
-          break;
-          }
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
-        case tINT2CHAR:
-        case tCHAR2INT:
-        case tID:{
-          inst_invocacion_o_asignacion();
-          break;
-          }
-        case tIF:{
-          inst_if(where);
-          break;
-          }
-        case tWHILE:{
-          inst_while(where);
-          break;
-          }
-        case tRETURN:{
-          inst_return(where);
-          break;
-          }
-        case tNULL:{
-          jj_consume_token(tNULL);
-          break;
-          }
-        default:
-          jj_la1[23] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        jj_consume_token(tPC);
-      } catch (ParseException e) {
-System.err.println("PARSE_ERROR: " + e.getMessage());
-
-                // Reconocer hasta el token <tPC>
-                while (true) {
-                        Token t = getNextToken();
-                        if (t.kind == tPC) break;
-                }
-      }
-    } finally {
-      trace_return("instruccion");
-    }
-}
-
-  static final public void inst_leer() throws ParseException {
-    trace_call("inst_leer");
-    try {
-ArrayList<TypeValue> exps = null;
-        Token get = null;       // Token usado para que en caso de error se pueda mostrar la línea y columna
-
-      get = jj_consume_token(tGET);
-      jj_consume_token(tAPAR);
-      exps = lista_una_o_mas_exps();
-      jj_consume_token(tCPAR);
-SemanticFunctions.inst_leer(exps, get);
-                System.out.println("Encontrada instrucci\u00f3n get correcta");
-    } finally {
-      trace_return("inst_leer");
-    }
-}
-
-  static final public void inst_escribir() throws ParseException {
-    trace_call("inst_escribir");
-    try {
-ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-        Token put = null;
-      put = jj_consume_token(tPUT);
-      jj_consume_token(tAPAR);
-      exps = lista_una_o_mas_exps();
-      jj_consume_token(tCPAR);
-SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
-                System.out.println("Encontrada instrucci\u00f3n put correcta");
-    } finally {
-      trace_return("inst_escribir");
-    }
-}
-
-  static final public void inst_escribir_linea() throws ParseException {
-    trace_call("inst_escribir_linea");
-    try {
-ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-        Token put = null;
-      put = jj_consume_token(tPUTLINE);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAPAR:{
-        jj_consume_token(tAPAR);
-        exps = lista_una_o_mas_exps();
-        jj_consume_token(tCPAR);
+      case tGET:{
+        inst_leer();
         break;
         }
-      default:
-        jj_la1[24] = jj_gen;
-        ;
-      }
-SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
-                System.out.println("Encontrada instrucci\u00f3n put_line correcta");
-                // Añadir un salto de línea al final en la generación de código
-
-    } finally {
-      trace_return("inst_escribir_linea");
-    }
-}
-
-  static final public void inst_invocacion_o_asignacion() throws ParseException {
-    trace_call("inst_invocacion_o_asignacion");
-    try {
-TypeValue p = null, exp = null;
-        Token asign = null;
-      p = primario();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tASIGN:{
-        asign = jj_consume_token(tASIGN);
-        exp = expresion();
+      case tSKIPLINE:{
+        jj_consume_token(tSKIPLINE);
         break;
         }
-      default:
-        jj_la1[25] = jj_gen;
-        ;
-      }
-SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
-    } finally {
-      trace_return("inst_invocacion_o_asignacion");
-    }
-}
-
-  static final public void inst_if(Symbol sf) throws ParseException {
-    trace_call("inst_if");
-    try {
-TypeValue expif = null, expelsif = null;
-        Token tif = null, elsif = null;
-      // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
-          tif = jj_consume_token(tIF);
-      expif = expresion();
-      jj_consume_token(tTHEN);
-      label_6:
-      while (true) {
-        instruccion(sf);
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tNULL:
-        case tRETURN:
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
-        case tSKIPLINE:
-        case tGET:
-        case tPUTLINE:
-        case tPUT:
-        case tINT2CHAR:
-        case tCHAR2INT:
-        case tIF:
-        case tWHILE:
-        case tID:{
-          ;
-          break;
-          }
-        default:
-          jj_la1[26] = jj_gen;
-          break label_6;
-        }
-      }
-      label_7:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tELSIF:{
-          ;
-          break;
-          }
-        default:
-          jj_la1[27] = jj_gen;
-          break label_7;
-        }
-        elsif = jj_consume_token(tELSIF);
-        expelsif = expresion();
-        jj_consume_token(tTHEN);
-        label_8:
-        while (true) {
-          instruccion(sf);
-          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case tNULL:
-          case tRETURN:
-          case tCHARCONST:
-          case tINTCONST:
-          case tTRUE:
-          case tFALSE:
-          case tSTRING:
-          case tAPAR:
-          case tSKIPLINE:
-          case tGET:
-          case tPUTLINE:
-          case tPUT:
-          case tINT2CHAR:
-          case tCHAR2INT:
-          case tIF:
-          case tWHILE:
-          case tID:{
-            ;
-            break;
-            }
-          default:
-            jj_la1[28] = jj_gen;
-            break label_8;
-          }
-        }
-      }
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tELSE:{
-        jj_consume_token(tELSE);
-        label_9:
-        while (true) {
-          instruccion(sf);
-          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case tNULL:
-          case tRETURN:
-          case tCHARCONST:
-          case tINTCONST:
-          case tTRUE:
-          case tFALSE:
-          case tSTRING:
-          case tAPAR:
-          case tSKIPLINE:
-          case tGET:
-          case tPUTLINE:
-          case tPUT:
-          case tINT2CHAR:
-          case tCHAR2INT:
-          case tIF:
-          case tWHILE:
-          case tID:{
-            ;
-            break;
-            }
-          default:
-            jj_la1[29] = jj_gen;
-            break label_9;
-          }
-        }
+      case tPUT:{
+        inst_escribir();
         break;
         }
-      default:
-        jj_la1[30] = jj_gen;
-        ;
-      }
-      jj_consume_token(tEND);
-      jj_consume_token(tIF);
-SemanticFunctions.inst_if(expif, expelsif, tif, elsif);
-    } finally {
-      trace_return("inst_if");
-    }
-}
-
-  static final public void inst_while(Symbol sf) throws ParseException {
-    trace_call("inst_while");
-    try {
-TypeValue exp = null;
-        Token twhile = null;
-      twhile = jj_consume_token(tWHILE);
-      exp = expresion();
-      jj_consume_token(tLOOP);
-      label_10:
-      while (true) {
-        instruccion(sf);
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tNULL:
-        case tRETURN:
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
-        case tSKIPLINE:
-        case tGET:
-        case tPUTLINE:
-        case tPUT:
-        case tINT2CHAR:
-        case tCHAR2INT:
-        case tIF:
-        case tWHILE:
-        case tID:{
-          ;
-          break;
-          }
-        default:
-          jj_la1[31] = jj_gen;
-          break label_10;
-        }
-      }
-      jj_consume_token(tEND);
-      jj_consume_token(tLOOP);
-SemanticFunctions.inst_while(exp, twhile);
-    } finally {
-      trace_return("inst_while");
-    }
-}
-
-  static final public void inst_return(Symbol sf) throws ParseException {
-    trace_call("inst_return");
-    try {
-TypeValue exp = null;
-        Token treturn = null;
-      treturn = jj_consume_token(tRETURN);
-      exp = expresion();
-SemanticFunctions.inst_return(exp, sf, treturn);
-    } finally {
-      trace_return("inst_return");
-    }
-}
-
-  static final public TypeValue expresion() throws ParseException {
-    trace_call("expresion");
-    try {
-TypeValue prel = null, rest_rel = null;
-    Token op = null;
-      prel = relacion();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAND:
-      case tOR:{
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tAND:{
-          op = jj_consume_token(tAND);
-          break;
-          }
-        case tOR:{
-          op = jj_consume_token(tOR);
-          break;
-          }
-        default:
-          jj_la1[32] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        rest_rel = lista_una_o_mas_relaciones_booleanas();
+      case tPUTLINE:{
+        inst_escribir_linea();
         break;
         }
-      default:
-        jj_la1[33] = jj_gen;
-        ;
-      }
-{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("expresion");
-    }
-}
-
-  static final public TypeValue lista_una_o_mas_relaciones_booleanas() throws ParseException {
-    trace_call("lista_una_o_mas_relaciones_booleanas");
-    try {
-TypeValue prel = null, rest_rel = null;
-    Token op = null;
-      prel = relacion();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAND:
-      case tOR:{
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tAND:{
-          op = jj_consume_token(tAND);
-          break;
-          }
-        case tOR:{
-          op = jj_consume_token(tOR);
-          break;
-          }
-        default:
-          jj_la1[34] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        rest_rel = lista_una_o_mas_relaciones_booleanas();
-        break;
-        }
-      default:
-        jj_la1[35] = jj_gen;
-        ;
-      }
-{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("lista_una_o_mas_relaciones_booleanas");
-    }
-}
-
-  static final public TypeValue relacion() throws ParseException {
-    trace_call("relacion");
-    try {
-TypeValue exp1 = null, exp2 = null;
-    Token op = null;
-      exp1 = expresion_simple();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tLT:
-      case tGT:
-      case tEQ:
-      case tNE:
-      case tLE:
-      case tGE:{
-        op = operador_relacional();
-        exp2 = expresion_simple();
-        break;
-        }
-      default:
-        jj_la1[36] = jj_gen;
-        ;
-      }
-{if ("" != null) return SemanticFunctions.relacion(exp1, op, exp2, tEQ, tNE, tLT, tLE, tGT, tGE);}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("relacion");
-    }
-}
-
-  static final public Token operador_relacional() throws ParseException {
-    trace_call("operador_relacional");
-    try {
-Token t;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tEQ:{
-        t = jj_consume_token(tEQ);
-        break;
-        }
-      case tNE:{
-        t = jj_consume_token(tNE);
-        break;
-        }
-      case tLT:{
-        t = jj_consume_token(tLT);
-        break;
-        }
-      case tLE:{
-        t = jj_consume_token(tLE);
-        break;
-        }
-      case tGT:{
-        t = jj_consume_token(tGT);
-        break;
-        }
-      case tGE:{
-        t = jj_consume_token(tGE);
-        break;
-        }
-      default:
-        jj_la1[37] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-{if ("" != null) return t;}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("operador_relacional");
-    }
-}
-
-  static final public TypeValue expresion_simple() throws ParseException {
-    trace_call("expresion_simple");
-    try {
-TypeValue term = null, term_resultante = null;
-    Token op = null, ops = null;
-    // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
-
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tPLUS:
-      case tMINUS:{
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tPLUS:{
-          ops = jj_consume_token(tPLUS);
-          break;
-          }
-        case tMINUS:{
-          ops = jj_consume_token(tMINUS);
-          break;
-          }
-        default:
-          jj_la1[38] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        break;
-        }
-      default:
-        jj_la1[39] = jj_gen;
-        ;
-      }
-      term = termino();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tPLUS:
-      case tMINUS:{
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tPLUS:{
-          op = jj_consume_token(tPLUS);
-          break;
-          }
-        case tMINUS:{
-          op = jj_consume_token(tMINUS);
-          break;
-          }
-        default:
-          jj_la1[40] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        term_resultante = una_o_mas_expresiones_simples();
-        break;
-        }
-      default:
-        jj_la1[41] = jj_gen;
-        ;
-      }
-{if ("" != null) return SemanticFunctions.expresion_simple(ops, term, op, term_resultante, tPLUS, tMINUS);}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("expresion_simple");
-    }
-}
-
-  static final public TypeValue una_o_mas_expresiones_simples() throws ParseException {
-    trace_call("una_o_mas_expresiones_simples");
-    try {
-TypeValue term = null, term_resultante = null;
-    Token op = null, ops = null;
-      term = termino();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tPLUS:
-      case tMINUS:{
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tPLUS:{
-          op = jj_consume_token(tPLUS);
-          break;
-          }
-        case tMINUS:{
-          op = jj_consume_token(tMINUS);
-          break;
-          }
-        default:
-          jj_la1[42] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        term_resultante = una_o_mas_expresiones_simples();
-        break;
-        }
-      default:
-        jj_la1[43] = jj_gen;
-        ;
-      }
-{if ("" != null) return SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_resultante, tPLUS, tMINUS);}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("una_o_mas_expresiones_simples");
-    }
-}
-
-  static final public TypeValue termino() throws ParseException {
-    trace_call("termino");
-    try {
-TypeValue fact = null, fact_resultante = null;
-    Token op = null;
-      fact = factor();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tTIMES:
-      case tDIV:
-      case tMOD:{
-        op = operador_multiplicativo();
-        fact_resultante = lista_una_o_mas_terminos();
-        break;
-        }
-      default:
-        jj_la1[44] = jj_gen;
-        ;
-      }
-{if ("" != null) return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("termino");
-    }
-}
-
-  static final public TypeValue lista_una_o_mas_terminos() throws ParseException {
-    trace_call("lista_una_o_mas_terminos");
-    try {
-TypeValue fact = null, fact_resultante = null;
-    Token op = null;
-      fact = factor();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tTIMES:
-      case tDIV:
-      case tMOD:{
-        op = operador_multiplicativo();
-        fact_resultante = lista_una_o_mas_terminos();
-        break;
-        }
-      default:
-        jj_la1[45] = jj_gen;
-        ;
-      }
-{if ("" != null) return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("lista_una_o_mas_terminos");
-    }
-}
-
-  static final public Token operador_multiplicativo() throws ParseException {
-    trace_call("operador_multiplicativo");
-    try {
-Token t;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tTIMES:{
-        t = jj_consume_token(tTIMES);
-        break;
-        }
-      case tDIV:{
-        t = jj_consume_token(tDIV);
-        break;
-        }
-      case tMOD:{
-        t = jj_consume_token(tMOD);
-        break;
-        }
-      default:
-        jj_la1[46] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-{if ("" != null) return t;}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("operador_multiplicativo");
-    }
-}
-
-  static final public TypeValue factor() throws ParseException {
-    trace_call("factor");
-    try {
-TypeValue p = null;
-        Token not = null;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tCHARCONST:
       case tINTCONST:
       case tTRUE:
@@ -1387,140 +646,665 @@ TypeValue p = null;
       case tINT2CHAR:
       case tCHAR2INT:
       case tID:{
-        p = primario();
-{if ("" != null) return p;}
+        inst_invocacion_o_asignacion();
         break;
         }
-      case tNOT:{
-        not = jj_consume_token(tNOT);
-        p = primario();
-{if ("" != null) return SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);}
+      case tIF:{
+        inst_if(where);
+        break;
+        }
+      case tWHILE:{
+        inst_while(where);
+        break;
+        }
+      case tRETURN:{
+        inst_return(where);
+        break;
+        }
+      case tNULL:{
+        jj_consume_token(tNULL);
         break;
         }
       default:
-        jj_la1[47] = jj_gen;
+        jj_la1[23] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("factor");
+      jj_consume_token(tPC);
+    } catch (ParseException e) {
+System.err.println("PARSE_ERROR: " + e.getMessage());
+
+                // Reconocer hasta el token <tPC>
+                while (true) {
+                        Token t = getNextToken();
+                        if (t.kind == tPC) break;
+                }
     }
 }
 
-  static final public TypeValue primario() throws ParseException {
-    trace_call("primario");
-    try {
-TypeValue exp = null;
-    Token id = null, fnToken = null;
-    ArrayList<TypeValue> exps = null;
+  static final public void inst_leer() throws ParseException {ArrayList<TypeValue> exps = null;
+        Token get = null;       // Token usado para que en caso de error se pueda mostrar la línea y columna
+
+    get = jj_consume_token(tGET);
+    jj_consume_token(tAPAR);
+    exps = lista_una_o_mas_exps();
+    jj_consume_token(tCPAR);
+SemanticFunctions.inst_leer(exps, get);
+                System.out.println("Encontrada instrucci\u00f3n get correcta");
+}
+
+  static final public void inst_escribir() throws ParseException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+        Token put = null;
+    put = jj_consume_token(tPUT);
+    jj_consume_token(tAPAR);
+    exps = lista_una_o_mas_exps();
+    jj_consume_token(tCPAR);
+SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
+                System.out.println("Encontrada instrucci\u00f3n put correcta");
+}
+
+  static final public void inst_escribir_linea() throws ParseException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+        Token put = null;
+    put = jj_consume_token(tPUTLINE);
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAPAR:{
+      jj_consume_token(tAPAR);
+      exps = lista_una_o_mas_exps();
+      jj_consume_token(tCPAR);
+      break;
+      }
+    default:
+      jj_la1[24] = jj_gen;
+      ;
+    }
+SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
+                System.out.println("Encontrada instrucci\u00f3n put_line correcta");
+                // Añadir un salto de línea al final en la generación de código
+
+}
+
+  static final public void inst_invocacion_o_asignacion() throws ParseException {TypeValue p = null, exp = null;
+        Token asign = null;
+    p = primario();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tASIGN:{
+      asign = jj_consume_token(tASIGN);
+      exp = expresion();
+      break;
+      }
+    default:
+      jj_la1[25] = jj_gen;
+      ;
+    }
+SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
+                if (asign != null) System.out.println("Asignaci\u00f3n correcta en l\u00ednea: " + String.valueOf(asign.beginLine));
+                else System.out.println("Invocaci\u00f3n correcta");
+}
+
+  static final public void inst_if(Symbol sf) throws ParseException {TypeValue expif = null, expelsif = null;
+        Token tif = null, elsif = null;
+    // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
+        tif = jj_consume_token(tIF);
+    expif = expresion();
+    jj_consume_token(tTHEN);
+SemanticFunctions.inst_if(expif, tif);
+    label_6:
+    while (true) {
+      instruccion(sf);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAPAR:{
-        jj_consume_token(tAPAR);
-        exp = expresion();
-        jj_consume_token(tCPAR);
-{if ("" != null) return exp;}
+      case tNULL:
+      case tRETURN:
+      case tCHARCONST:
+      case tINTCONST:
+      case tTRUE:
+      case tFALSE:
+      case tSTRING:
+      case tAPAR:
+      case tSKIPLINE:
+      case tGET:
+      case tPUTLINE:
+      case tPUT:
+      case tINT2CHAR:
+      case tCHAR2INT:
+      case tIF:
+      case tWHILE:
+      case tID:{
+        ;
         break;
         }
-      case tINT2CHAR:{
-        fnToken = jj_consume_token(tINT2CHAR);
-        jj_consume_token(tAPAR);
-        exp = expresion();
-        jj_consume_token(tCPAR);
+      default:
+        jj_la1[26] = jj_gen;
+        break label_6;
+      }
+    }
+    label_7:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tELSIF:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[27] = jj_gen;
+        break label_7;
+      }
+      elsif = jj_consume_token(tELSIF);
+      expelsif = expresion();
+      jj_consume_token(tTHEN);
+SemanticFunctions.inst_if(expelsif, elsif);
+      label_8:
+      while (true) {
+        instruccion(sf);
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case tNULL:
+        case tRETURN:
+        case tCHARCONST:
+        case tINTCONST:
+        case tTRUE:
+        case tFALSE:
+        case tSTRING:
+        case tAPAR:
+        case tSKIPLINE:
+        case tGET:
+        case tPUTLINE:
+        case tPUT:
+        case tINT2CHAR:
+        case tCHAR2INT:
+        case tIF:
+        case tWHILE:
+        case tID:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[28] = jj_gen;
+          break label_8;
+        }
+      }
+    }
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tELSE:{
+      jj_consume_token(tELSE);
+      label_9:
+      while (true) {
+        instruccion(sf);
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case tNULL:
+        case tRETURN:
+        case tCHARCONST:
+        case tINTCONST:
+        case tTRUE:
+        case tFALSE:
+        case tSTRING:
+        case tAPAR:
+        case tSKIPLINE:
+        case tGET:
+        case tPUTLINE:
+        case tPUT:
+        case tINT2CHAR:
+        case tCHAR2INT:
+        case tIF:
+        case tWHILE:
+        case tID:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[29] = jj_gen;
+          break label_9;
+        }
+      }
+      break;
+      }
+    default:
+      jj_la1[30] = jj_gen;
+      ;
+    }
+    jj_consume_token(tEND);
+    jj_consume_token(tIF);
+}
+
+  static final public void inst_while(Symbol sf) throws ParseException {TypeValue exp = null;
+        Token twhile = null;
+    twhile = jj_consume_token(tWHILE);
+    exp = expresion();
+    jj_consume_token(tLOOP);
+    label_10:
+    while (true) {
+      instruccion(sf);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tNULL:
+      case tRETURN:
+      case tCHARCONST:
+      case tINTCONST:
+      case tTRUE:
+      case tFALSE:
+      case tSTRING:
+      case tAPAR:
+      case tSKIPLINE:
+      case tGET:
+      case tPUTLINE:
+      case tPUT:
+      case tINT2CHAR:
+      case tCHAR2INT:
+      case tIF:
+      case tWHILE:
+      case tID:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[31] = jj_gen;
+        break label_10;
+      }
+    }
+    jj_consume_token(tEND);
+    jj_consume_token(tLOOP);
+SemanticFunctions.inst_while(exp, twhile);
+                System.out.println("Encontrada instrucci\u00f3n while correcta en l\u00ednea: " + String.valueOf(twhile.beginLine));
+}
+
+  static final public void inst_return(Symbol sf) throws ParseException {TypeValue exp = null;
+        Token treturn = null;
+    treturn = jj_consume_token(tRETURN);
+    exp = expresion();
+SemanticFunctions.inst_return(exp, sf, treturn);
+                System.out.println("Encontrada instrucci\u00f3n return correcta en l\u00ednea: " + String.valueOf(treturn.beginLine));
+}
+
+  static final public TypeValue expresion() throws ParseException {TypeValue prel = null, rest_rel = null;
+    Token op = null;
+    prel = relacion();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAND:
+    case tOR:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tAND:{
+        op = jj_consume_token(tAND);
+        break;
+        }
+      case tOR:{
+        op = jj_consume_token(tOR);
+        break;
+        }
+      default:
+        jj_la1[32] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      rest_rel = lista_una_o_mas_relaciones_booleanas();
+      break;
+      }
+    default:
+      jj_la1[33] = jj_gen;
+      ;
+    }
+{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue lista_una_o_mas_relaciones_booleanas() throws ParseException {TypeValue prel = null, rest_rel = null;
+    Token op = null;
+    prel = relacion();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAND:
+    case tOR:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tAND:{
+        op = jj_consume_token(tAND);
+        break;
+        }
+      case tOR:{
+        op = jj_consume_token(tOR);
+        break;
+        }
+      default:
+        jj_la1[34] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      rest_rel = lista_una_o_mas_relaciones_booleanas();
+      break;
+      }
+    default:
+      jj_la1[35] = jj_gen;
+      ;
+    }
+{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue relacion() throws ParseException {TypeValue exp1 = null, exp2 = null;
+    Token op = null;
+    exp1 = expresion_simple();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tLT:
+    case tGT:
+    case tEQ:
+    case tNE:
+    case tLE:
+    case tGE:{
+      op = operador_relacional();
+      exp2 = expresion_simple();
+      break;
+      }
+    default:
+      jj_la1[36] = jj_gen;
+      ;
+    }
+{if ("" != null) return SemanticFunctions.relacion(exp1, op, exp2, tEQ, tNE, tLT, tLE, tGT, tGE);}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public Token operador_relacional() throws ParseException {Token t;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tEQ:{
+      t = jj_consume_token(tEQ);
+      break;
+      }
+    case tNE:{
+      t = jj_consume_token(tNE);
+      break;
+      }
+    case tLT:{
+      t = jj_consume_token(tLT);
+      break;
+      }
+    case tLE:{
+      t = jj_consume_token(tLE);
+      break;
+      }
+    case tGT:{
+      t = jj_consume_token(tGT);
+      break;
+      }
+    case tGE:{
+      t = jj_consume_token(tGE);
+      break;
+      }
+    default:
+      jj_la1[37] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+{if ("" != null) return t;}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue expresion_simple() throws ParseException {TypeValue term = null, term_resultante = null;
+    Token op = null, ops = null;
+    // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
+
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tPLUS:
+    case tMINUS:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPLUS:{
+        ops = jj_consume_token(tPLUS);
+        break;
+        }
+      case tMINUS:{
+        ops = jj_consume_token(tMINUS);
+        break;
+        }
+      default:
+        jj_la1[38] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      break;
+      }
+    default:
+      jj_la1[39] = jj_gen;
+      ;
+    }
+    term = termino();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tPLUS:
+    case tMINUS:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPLUS:{
+        op = jj_consume_token(tPLUS);
+        break;
+        }
+      case tMINUS:{
+        op = jj_consume_token(tMINUS);
+        break;
+        }
+      default:
+        jj_la1[40] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      term_resultante = una_o_mas_expresiones_simples();
+      break;
+      }
+    default:
+      jj_la1[41] = jj_gen;
+      ;
+    }
+{if ("" != null) return SemanticFunctions.expresion_simple(ops, term, op, term_resultante, tPLUS, tMINUS);}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue una_o_mas_expresiones_simples() throws ParseException {TypeValue term = null, term_resultante = null;
+    Token op = null, ops = null;
+    term = termino();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tPLUS:
+    case tMINUS:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tPLUS:{
+        op = jj_consume_token(tPLUS);
+        break;
+        }
+      case tMINUS:{
+        op = jj_consume_token(tMINUS);
+        break;
+        }
+      default:
+        jj_la1[42] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      term_resultante = una_o_mas_expresiones_simples();
+      break;
+      }
+    default:
+      jj_la1[43] = jj_gen;
+      ;
+    }
+{if ("" != null) return SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_resultante, tPLUS, tMINUS);}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue termino() throws ParseException {TypeValue fact = null, fact_resultante = null;
+    Token op = null;
+    fact = factor();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tTIMES:
+    case tDIV:
+    case tMOD:{
+      op = operador_multiplicativo();
+      fact_resultante = lista_una_o_mas_terminos();
+      break;
+      }
+    default:
+      jj_la1[44] = jj_gen;
+      ;
+    }
+{if ("" != null) return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue lista_una_o_mas_terminos() throws ParseException {TypeValue fact = null, fact_resultante = null;
+    Token op = null;
+    fact = factor();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tTIMES:
+    case tDIV:
+    case tMOD:{
+      op = operador_multiplicativo();
+      fact_resultante = lista_una_o_mas_terminos();
+      break;
+      }
+    default:
+      jj_la1[45] = jj_gen;
+      ;
+    }
+{if ("" != null) return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public Token operador_multiplicativo() throws ParseException {Token t;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tTIMES:{
+      t = jj_consume_token(tTIMES);
+      break;
+      }
+    case tDIV:{
+      t = jj_consume_token(tDIV);
+      break;
+      }
+    case tMOD:{
+      t = jj_consume_token(tMOD);
+      break;
+      }
+    default:
+      jj_la1[46] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+{if ("" != null) return t;}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue factor() throws ParseException {TypeValue p = null;
+        Token not = null;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tCHARCONST:
+    case tINTCONST:
+    case tTRUE:
+    case tFALSE:
+    case tSTRING:
+    case tAPAR:
+    case tINT2CHAR:
+    case tCHAR2INT:
+    case tID:{
+      p = primario();
+{if ("" != null) return p;}
+      break;
+      }
+    case tNOT:{
+      not = jj_consume_token(tNOT);
+      p = primario();
+{if ("" != null) return SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);}
+      break;
+      }
+    default:
+      jj_la1[47] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue primario() throws ParseException {TypeValue exp = null;
+    Token id = null, fnToken = null;
+    ArrayList<TypeValue> exps = null;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tAPAR:{
+      jj_consume_token(tAPAR);
+      exp = expresion();
+      jj_consume_token(tCPAR);
+{if ("" != null) return exp;}
+      break;
+      }
+    case tINT2CHAR:{
+      fnToken = jj_consume_token(tINT2CHAR);
+      jj_consume_token(tAPAR);
+      exp = expresion();
+      jj_consume_token(tCPAR);
 // System.out.println(exp.value);
     if (exp.type == Symbol.Types.INT) {
+                // en gen. de código comprobar que el valor es mayor que 0 ?? 
          {if ("" != null) return new TypeValue(Symbol.Types.CHAR, exp.value);}
     } else {
          UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
     }
-        break;
-        }
-      case tCHAR2INT:{
-        fnToken = jj_consume_token(tCHAR2INT);
-        jj_consume_token(tAPAR);
-        exp = expresion();
-        jj_consume_token(tCPAR);
+      break;
+      }
+    case tCHAR2INT:{
+      fnToken = jj_consume_token(tCHAR2INT);
+      jj_consume_token(tAPAR);
+      exp = expresion();
+      jj_consume_token(tCPAR);
 if (exp.type == Symbol.Types.CHAR) {
                  {if ("" != null) return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));}
          } else {
-                 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
+                 UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
          }
-        break;
-        }
-      default:
-        jj_la1[48] = jj_gen;
-        if (jj_2_2(2)) {
-          id = jj_consume_token(tID);
-          jj_consume_token(tAPAR);
-          exps = lista_una_o_mas_exps();
-          jj_consume_token(tCPAR);
+      break;
+      }
+    default:
+      jj_la1[48] = jj_gen;
+      if (jj_2_2(2)) {
+        id = jj_consume_token(tID);
+        jj_consume_token(tAPAR);
+        exps = lista_una_o_mas_exps();
+        jj_consume_token(tCPAR);
 {if ("" != null) return SemanticFunctions.invoc_func_o_comp_array(id, exps, st);}
-        } else {
-          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-          case tID:{
-            id = jj_consume_token(tID);
+      } else {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case tID:{
+          id = jj_consume_token(tID);
 {if ("" != null) return SemanticFunctions.var_o_func_sin_params(id, st);}
-            break;
-            }
-          case tCHARCONST:
-          case tINTCONST:
-          case tTRUE:
-          case tFALSE:
-          case tSTRING:{
-            exp = tipo_constante();
-{if ("" != null) return exp;}
-            break;
-            }
-          default:
-            jj_la1[49] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
+          break;
           }
+        case tCHARCONST:
+        case tINTCONST:
+        case tTRUE:
+        case tFALSE:
+        case tSTRING:{
+          exp = tipo_constante();
+{if ("" != null) return exp;}
+          break;
+          }
+        default:
+          jj_la1[49] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
         }
       }
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("primario");
     }
+    throw new Error("Missing return statement in function");
 }
 
-  static final public ArrayList<TypeValue> lista_una_o_mas_exps() throws ParseException {
-    trace_call("lista_una_o_mas_exps");
-    try {
-ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+  static final public ArrayList<TypeValue> lista_una_o_mas_exps() throws ParseException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
     TypeValue exp;
+    exp = expresion();
+    exps = lista_exps_ll();
+exps.add(0, exp);
+         {if ("" != null) return exps;}
+    throw new Error("Missing return statement in function");
+}
+
+  static final public ArrayList<TypeValue> lista_exps_ll() throws ParseException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
+    TypeValue exp;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case tCOMA:{
+      jj_consume_token(tCOMA);
       exp = expresion();
       exps = lista_exps_ll();
 exps.add(0, exp);
          {if ("" != null) return exps;}
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("lista_una_o_mas_exps");
-    }
-}
-
-  static final public ArrayList<TypeValue> lista_exps_ll() throws ParseException {
-    trace_call("lista_exps_ll");
-    try {
-ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
-    TypeValue exp;
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tCOMA:{
-        jj_consume_token(tCOMA);
-        exp = expresion();
-        exps = lista_exps_ll();
-exps.add(0, exp);
-         {if ("" != null) return exps;}
-        break;
-        }
-      default:
-        jj_la1[50] = jj_gen;
-{if ("" != null) return exps;}
+      break;
       }
-    throw new Error("Missing return statement in function");
-    } finally {
-      trace_return("lista_exps_ll");
+    default:
+      jj_la1[50] = jj_gen;
+{if ("" != null) return exps;}
     }
+    throw new Error("Missing return statement in function");
 }
 
   static private boolean jj_2_1(int xla)
@@ -1582,9 +1366,6 @@ exps.add(0, exp);
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
-  {
-      enable_tracing();
-  }
   /** Constructor with InputStream. */
   public alike(java.io.InputStream stream) {
 	  this(stream, null);
@@ -1703,7 +1484,6 @@ exps.add(0, exp);
 		   }
 		 }
 	   }
-	   trace_token(token, "");
 	   return token;
 	 }
 	 token = oldToken;
@@ -1747,7 +1527,6 @@ exps.add(0, exp);
 	 else token = token.next = token_source.getNextToken();
 	 jj_ntk = -1;
 	 jj_gen++;
-	   trace_token(token, " (in getNextToken)");
 	 return token;
   }
 
@@ -1856,53 +1635,12 @@ exps.add(0, exp);
 	 return trace_enabled;
   }
 
-  static private int trace_indent = 0;
-/** Enable tracing. */
+  /** Enable tracing. */
   static final public void enable_tracing() {
-	 trace_enabled = true;
   }
 
-/** Disable tracing. */
+  /** Disable tracing. */
   static final public void disable_tracing() {
-	 trace_enabled = false;
-  }
-
-  static protected void trace_call(String s) {
-	 if (trace_enabled) {
-	   for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
-	   System.out.println("Call:	" + s);
-	 }
-	 trace_indent = trace_indent + 2;
-  }
-
-  static protected void trace_return(String s) {
-	 trace_indent = trace_indent - 2;
-	 if (trace_enabled) {
-	   for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
-	   System.out.println("Return: " + s);
-	 }
-  }
-
-  static protected void trace_token(Token t, String where) {
-	 if (trace_enabled) {
-	   for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
-	   System.out.print("Consumed token: <" + tokenImage[t.kind]);
-	   if (t.kind != 0 && !tokenImage[t.kind].equals("\"" + t.image + "\"")) {
-		 System.out.print(": \"" + TokenMgrError.addEscapes(t.image) + "\"");
-	   }
-	   System.out.println(" at line " + t.beginLine + " column " + t.beginColumn + ">" + where);
-	 }
-  }
-
-  static protected void trace_scan(Token t1, int t2) {
-	 if (trace_enabled) {
-	   for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
-	   System.out.print("Visited token: <" + tokenImage[t1.kind]);
-	   if (t1.kind != 0 && !tokenImage[t1.kind].equals("\"" + t1.image + "\"")) {
-		 System.out.print(": \"" + TokenMgrError.addEscapes(t1.image) + "\"");
-	   }
-	   System.out.println(" at line " + t1.beginLine + " column " + t1.beginColumn + ">; Expected token: <" + tokenImage[t2] + ">");
-	 }
   }
 
   static private void jj_rescan_token() {

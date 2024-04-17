@@ -8,7 +8,7 @@
 options {
     IGNORE_CASE = true;    //No distinguir entre mayúsculas y minúsculas
     COMMON_TOKEN_ACTION = false; //Se generan acciones por defecto
-    DEBUG_PARSER = true; //Genera información de depuración
+    DEBUG_PARSER = false; //Genera información de depuración
 }
 
 PARSER_BEGIN(alike)
@@ -265,6 +265,7 @@ ArrayList<Symbol> declaracion_var() :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
+		return new ArrayList<Symbol>();
     }
 }
 
@@ -335,7 +336,6 @@ void declaracion_func():
 			SemanticFunctions.newFuncBlock(st, func);
 		}
 		( vars = declaracion_variables() )? {
-			// perdón, era necesario
 			if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 		}
 		<tBEGIN>
@@ -411,8 +411,8 @@ SymbolFunction cabecera_funcion():
     
 }
 {
-    <tFUNC> id_func = <tID> ( func_params = parametros_formales() )? <tRETURN> returnType = tipo_dato(new ArrayList<String>(Arrays.asList("returnType")), false) <tIS> {
-		if (returnType.get(0).type != Symbol.Types.INT || returnType.get(0).type != Symbol.Types.BOOL || returnType.get(0).type != Symbol.Types.CHAR) {
+    <tFUNC> id_func = <tID> ( func_params = parametros_formales() )? <tRETURN> returnType = tipo_base(new ArrayList<String>(Arrays.asList("returnType")), false) <tIS> {
+		if (returnType.get(0).type != Symbol.Types.INT && returnType.get(0).type != Symbol.Types.BOOL && returnType.get(0).type != Symbol.Types.CHAR) {
 			ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
 			expectedTypes.add(Symbol.Types.INT);
 			expectedTypes.add(Symbol.Types.CHAR);
@@ -538,8 +538,10 @@ void inst_invocacion_o_asignacion() :
 	Token asign = null;
 }
 {
-    p = primario() ( asign = <tASIGN> exp = expresion())? {
+    p = primario() (asign = <tASIGN> exp = expresion())? {
 		SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
+		if (asign != null) System.out.println("Asignación correcta en línea: " + String.valueOf(asign.beginLine));
+		else System.out.println("Invocación correcta");
 	}
 }
 
@@ -550,12 +552,14 @@ void inst_if(Symbol sf) :
 }
 {
     // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
-    tif = <tIF> expif = expresion() <tTHEN> (instruccion(sf))+
-    (elsif = <tELSIF> expelsif = expresion() <tTHEN> (instruccion(sf))+)*
+    tif = <tIF> expif = expresion() <tTHEN> {
+		SemanticFunctions.inst_if(expif, tif);
+	} (instruccion(sf))+
+    (elsif = <tELSIF> expelsif = expresion() <tTHEN>  {
+		SemanticFunctions.inst_if(expelsif, elsif);
+	} (instruccion(sf))+ )*
     (<tELSE> (instruccion(sf))+)?
-    <tEND> <tIF> {
-		SemanticFunctions.inst_if(expif, expelsif, tif, elsif);
-	}
+    <tEND> <tIF>
 }
 
 void inst_while(Symbol sf) :
@@ -566,6 +570,7 @@ void inst_while(Symbol sf) :
 {
     twhile = <tWHILE> exp = expresion() <tLOOP> (instruccion(sf))+ <tEND> <tLOOP> {
 		SemanticFunctions.inst_while(exp, twhile);
+		System.out.println("Encontrada instrucción while correcta en línea: " + String.valueOf(twhile.beginLine)); 
 	}
 }
 
@@ -578,6 +583,7 @@ void inst_return(Symbol sf) :
 {
 	treturn = <tRETURN> exp = expresion() {
 		SemanticFunctions.inst_return(exp, sf, treturn);
+		System.out.println("Encontrada instrucción return correcta en línea: " + String.valueOf(treturn.beginLine));
 	}
 }
 
@@ -703,6 +709,7 @@ TypeValue primario() :
 |    fnToken = <tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
     // System.out.println(exp.value);
     if (exp.type == Symbol.Types.INT) {
+		// en gen. de código comprobar que el valor es mayor que 0 ?? 
    	 return new TypeValue(Symbol.Types.CHAR, exp.value);
     } else {
    	 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
@@ -712,7 +719,7 @@ TypeValue primario() :
    	 if (exp.type == Symbol.Types.CHAR) {
    		 return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
    	 } else {
-   		 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
+   		 UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
    	 }
     }
 |    LOOKAHEAD(2)

@@ -17,12 +17,19 @@ public class TypeValue<T> {
 
     public T value;
     public Symbol.Types type;
-    public boolean isLiteral;   // true si el tipo-valor no es el de una variable
+
+    // Para variables, indica si el valor es un literal o una variable
+    // util para 
+    public boolean isLiteral = true;
     
     // Para arrays, indica los índices mínimo y máximo
     public Symbol.Types baseType = Symbol.Types.UNDEFINED;
     public int minInd = 1;
     public int maxInd = 0;
+
+    // Para funciones, indica si el valor devuelto es el resultado de una invocación
+    // (para evitar que se intente asignar a una variable)
+    public boolean resultOfInvocation = false;
 
     public TypeValue(Symbol.Types type_, T value_, boolean isLiteral_) {
         this.value = value_;
@@ -32,7 +39,6 @@ public class TypeValue<T> {
     public TypeValue(Symbol.Types type_, T value_) {
         this.value = value_;
         this.type = type_;
-        this.isLiteral = true;
     }
 
     public TypeValue(Symbol.Types type_, T value_, int minInd_, int maxInd_, Symbol.Types baseType_) {
@@ -42,6 +48,12 @@ public class TypeValue<T> {
         this.maxInd = maxInd_;
         this.baseType = baseType_;
         this.isLiteral = false;
+    }
+
+    public TypeValue(Symbol.Types type_, boolean resultOfInvocation_, T value_) {
+        this.value = value_;
+        this.type = type_;
+        this.resultOfInvocation = resultOfInvocation_;
     }
 
     // public String toString() {

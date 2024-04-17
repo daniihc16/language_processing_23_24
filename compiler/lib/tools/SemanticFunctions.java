@@ -176,13 +176,17 @@ public class SemanticFunctions {
 				// Si ambas expresiones son constantes, evaluamos la relación
 				if (op.kind == tEQ) return new TypeValue(Symbol.Types.BOOL, exp1.value == exp2.value);
 				else if (op.kind == tNE) return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);
-				else if (op.kind == tLT && Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);
-				else if(op.kind == tLE && Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);
-				else if(op.kind == tGT && Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);
-				else if(op.kind == tGE  && Symbol.Types.INT == exp1.type) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);
+				else if (exp1.type == Symbol.Types.BOOL) return new TypeValue(Symbol.Types.BOOL, null);
+				else if (exp1.type == Symbol.Types.CHAR) return new TypeValue(Symbol.Types.BOOL, null);
+				else if (op.kind == tLT) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value < (int)exp2.value);
+				else if(op.kind == tLE) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value <= (int) exp2.value);
+				else if(op.kind == tGT) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value > (int)exp2.value);
+				else if(op.kind == tGE) return new TypeValue(Symbol.Types.BOOL, (int)exp1.value >= (int) exp2.value);
 				UnexpectedTypeException.getMessage(Symbol.Types.INT, exp1.type, op.beginLine, op.beginColumn);
 				return new TypeValue(Symbol.Types.BOOL, null);
 			} 
+			if (exp1.type == Symbol.Types.ARRAY || exp2.type == Symbol.Types.ARRAY) UnexpectedTypeException.getMessage(Symbol.Types.INT, Symbol.Types.ARRAY, op.beginLine, op.beginColumn);
+			if (exp1.type == Symbol.Types.STRING || exp2.type == Symbol.Types.STRING) UnexpectedTypeException.getMessage(Symbol.Types.INT, Symbol.Types.STRING, op.beginLine, op.beginColumn);
 			// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
 			return new TypeValue(Symbol.Types.BOOL, null);
 		}
@@ -311,12 +315,13 @@ public class SemanticFunctions {
 		if (sid == null) return new TypeValue(Symbol.Types.UNDEFINED, null);
 		if (sid.type == Symbol.Types.FUNCTION ) {
 			SymbolFunction sfid = (SymbolFunction)sid;
-			if (sfid.parList != null) BadInvocation.getMessage(sfid.name, "Function or procedure has too many arguments");
-			return new TypeValue(sid.type, null);
+			if (sfid.parList != null) BadInvocation.getMessage(sfid.name, "Function has too many arguments", id.beginLine, id.beginColumn);
+			return new TypeValue(sfid.returnType, true, null);
 		} else if (sid.type == Symbol.Types.PROCEDURE) {
 			SymbolProcedure spid = (SymbolProcedure)sid;
-			if (spid.parList != null) BadInvocation.getMessage(spid.name, "Function or procedure has too many arguments");
-			return new TypeValue(sid.type, null);
+			if (spid.name == st.getMainProc()) BadInvocation.getMessage(spid.name, "Principal Procedure cannot be invoked", id.beginLine, id.beginColumn);
+			if (spid.parList != null) BadInvocation.getMessage(spid.name, "Function has too many arguments", id.beginLine, id.beginColumn);
+			return new TypeValue(Symbol.Types.VOID, true, null);
 		} else if (sid.type == Symbol.Types.ARRAY) {
 			SymbolArray said = (SymbolArray)sid;
 			return new TypeValue(sid.type, null, said.minInd, said.maxInd, said.baseType);
@@ -342,40 +347,41 @@ public class SemanticFunctions {
 		if (sid == null) return new TypeValue(Symbol.Types.UNDEFINED, null);
 		if (sid.type == Symbol.Types.FUNCTION) {
 			SymbolFunction sfid = (SymbolFunction)sid;
-			if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments");
+			if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments", id.beginLine, id.beginColumn);
 			for (int i=0; i<exps.size(); i++) {
 				// Un array se considera del mismo tipo si tiene el mismo tipo y rango que otro
 				if (sfid.parList.get(i).type == Symbol.Types.ARRAY){
 					SymbolArray symArrayFunc = (SymbolArray)sfid.parList.get(i);
 					TypeValue symArrayExp = exps.get(i);
 					if (symArrayFunc.baseType != symArrayExp.baseType) UnexpectedTypeException.getMessage(symArrayFunc.baseType, symArrayExp.baseType, id.beginLine, id.beginColumn);
-					if (symArrayFunc.minInd != symArrayExp.minInd || symArrayFunc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes");
+					if (symArrayFunc.minInd != symArrayExp.minInd || symArrayFunc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes", id.beginLine, id.beginColumn);
 				}
 				if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type, id.beginLine, id.beginColumn);
-				if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal");
+				if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal", id.beginLine, id.beginColumn);
 			}
-			return new TypeValue(sfid.returnType, null);
+			return new TypeValue(sfid.returnType, true, null);
 		} else if (sid.type == Symbol.Types.PROCEDURE) {
 			SymbolProcedure spid = (SymbolProcedure)sid;
 			// procedimiento principal no es invocable
-			if (spid.name == st.getMainProc()) BadInvocation.getMessage(spid.name, "Principal Procedure cannot be invoked");
-			if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments");
+			if (spid.name == st.getMainProc()) BadInvocation.getMessage(spid.name, "Principal Procedure cannot be invoked", id.beginLine, id.beginColumn);
+			if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments", id.beginLine, id.beginColumn);
 			for (int i=0; i<exps.size(); i++) {
 				if (spid.parList.get(i).type == Symbol.Types.ARRAY){
 					SymbolArray symArrayProc = (SymbolArray)spid.parList.get(i);
 					TypeValue symArrayExp = exps.get(i);
 					if (symArrayProc.baseType != symArrayExp.baseType) UnexpectedTypeException.getMessage(symArrayProc.baseType, symArrayExp.baseType, id.beginLine, id.beginColumn);
-					if (symArrayProc.minInd != symArrayExp.minInd || symArrayProc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes");
+					if (symArrayProc.minInd != symArrayExp.minInd || symArrayProc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes", id.beginLine, id.beginColumn);
 				}
 				if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type, id.beginLine, id.beginColumn);
-				if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal");
+				if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal", id.beginLine, id.beginColumn);
 			}
-			return new TypeValue(Symbol.Types.VOID, null);
+			return new TypeValue(Symbol.Types.VOID, true, null);
 		} else if (sid.type == Symbol.Types.ARRAY) {
 			SymbolArray said = (SymbolArray)sid;
+			if (exps.size() > 1) BadInvocation.getMessage(said.name, "Invalid index", id.beginLine, id.beginColumn);
 			TypeValue exp = exps.get(0);
 			if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, id.beginLine, id.beginColumn);
-			if (exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) BadInvocation.getMessage(said.name, "Array index out of bounds");
+			if (exp.type == Symbol.Types.INT && exp.value != null && ((int)exp.value < said.minInd || (int)exp.value > said.maxInd)) BadInvocation.getMessage(said.name, "Array index out of bounds", id.beginLine, id.beginColumn);
 			return new TypeValue(said.baseType, null, false);
 		}
 		// Error, no hay ninguna invocación id(..) que no sea una función o un elemento de un array
@@ -400,6 +406,7 @@ public class SemanticFunctions {
 		expectedTypes.add(Symbol.Types.CHAR);
 		
 		for (TypeValue exp:exps) {
+			if (exp.isLiteral) BadInvocation.getMessage("GET", "Cannot read into literal value", get.beginLine, get.beginColumn);
 			if ((exp.type != Symbol.Types.INT && exp.type != Symbol.Types.CHAR)
 				|| (exp.type == Symbol.Types.ARRAY && exp.baseType != Symbol.Types.INT && exp.baseType != Symbol.Types.CHAR)) {
 				UnexpectedTypeException.getMessage(expectedTypes, exp.type, get.beginLine, get.beginColumn);
@@ -432,34 +439,36 @@ public class SemanticFunctions {
 	 */
 	static public void inst_invocacion_o_asignacion(TypeValue id, TypeValue exp, Token pos) {
 		if (pos != null) /* asignación */ {
-			if (id.type == Symbol.Types.FUNCTION || id.type == Symbol.Types.PROCEDURE) BadInvocation.getMessage("Asignación", "Left side of assignment is a function or procedure");
-			if (id.type != exp.type) UnexpectedTypeException.getMessage(id.type, exp.type, pos.beginLine, pos.beginColumn);
-			if (id.type == Symbol.Types.ARRAY) {
+			if (id.resultOfInvocation) BadInvocation.getMessage("Asignación", "Left side of assignment is a function or procedure", pos.beginLine, pos.beginColumn);
+			else if (id.isLiteral) BadInvocation.getMessage("Literal", "Literal cannot be assigned", pos.beginLine, pos.beginColumn);
+			else if (id.type == Symbol.Types.ARRAY) {
 				// Los vectores no son asignables directamente pero sus componentes sí
 				// este rango vacío indica que no se ha generado un TypeValue de identificador de array
 				// por tanto es tipo array pero no el identificador solo, por lo que es un acceso a una componente
 				if (id.minInd == 1 || id.maxInd == 0) UnexpectedTypeException.getMessage(id.baseType, id.type, pos.beginLine, pos.beginColumn);
-				if (id.baseType != exp.type) UnexpectedTypeException.getMessage(id.baseType, exp.type, pos.beginLine, pos.beginColumn);
-			}
+				else if (id.baseType != exp.type) UnexpectedTypeException.getMessage(id.baseType, exp.type, pos.beginLine, pos.beginColumn);
+			} else if (id.type != exp.type) UnexpectedTypeException.getMessage(id.type, exp.type, pos.beginLine, pos.beginColumn);
+			
 		} else /* invocación */ {
 			// si se invoca a una función, no se captura el valor devuelto
 			// se puede no generar el código de llamada a la función si no se captura el resultado
-			if (id.type == Symbol.Types.FUNCTION) System.err.println("WARNING: Unhandled function return type");
+			if (id.type == Symbol.Types.FUNCTION) System.err.println("WARNING: Unhandled function return value");
 		}
 		
 	}
 
-	static public void inst_if(TypeValue expif, TypeValue expelsif, Token tif, Token elsif) {
+	static public void inst_if(TypeValue expif, Token tif) {
 		if (expif.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, expif.type, tif.beginLine, tif.beginColumn);
-		if (expelsif != null && expelsif.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, expelsif.type, elsif.beginLine, elsif.beginColumn);
+		if (expif.value != null) System.err.println("WARNING: Constant condition in if instruction");
 	}
 
 	static public void inst_while(TypeValue exp, Token twhile) {
 		if (exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, exp.type, twhile.beginLine, twhile.beginColumn);
+		if (exp.value != null) System.err.println("WARNING: Constant condition in while instruction");
 	}
 
 	static public void inst_return(TypeValue exp, Symbol sf_, Token treturn) {
-		if (sf_.type != Symbol.Types.FUNCTION) BadInvocation.getMessage(sf_.name, "Return statement inside of a procedure >:(");
+		if (sf_.type != Symbol.Types.FUNCTION) BadInvocation.getMessage(sf_.name, "Return statement inside of a procedure >:(", treturn.beginLine, treturn.beginColumn);
 		else {
 			SymbolFunction sf = (SymbolFunction)sf_;
 			if (sf.returnType != exp.type) UnexpectedTypeException.getMessage(sf.returnType, exp.type, treturn.beginLine, treturn.beginColumn);

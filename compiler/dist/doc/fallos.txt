@@ -1,0 +1,37 @@
+fallos_expresiones: 	if true or false and true then
+Resultado del compilador: 
+    Syntax error (30,22): Current symbol: 'and'
+    Expected tokens: "+" "-" "*" "/" "mod" "and" "=" ">" "<" ">=" "<=" "/=" ")"
+Resultado esperado: -- No hay error --
+Causa: El compilador original no permite expresión de más de 2 relaciones. 
+El compilador, en caso de dar error, podría ser semántico pero el lenguaje alike permite las listas de dos o más relaciones. No es error sintáctico
+
+En la gramática básica aportada ->
+expresion:
+relacion ( ((<tAND> | <tOR>) relacion)+ )?
+
+
+fallos expresiones: elsif (var_bool_array) then
+Contexto: var_bool_array es una variable de tipo ARRAY de BOOLEAN
+Resultado del compilador: -- No hay error semántico --
+Resultado esperado: Error semántico
+Causa: Al parecer se está comprobando el tipo base del array, y lo está dando por válido cuando en  realidad se está pasando un array.
+Para arrays de tipos de dato base distintos a BOOLEAN, el compilador se comporta correctamente.
+
+fallos expresiones: fallos_expresiones;
+Contexto: Invocación al procedimiento principal
+Resultado del compilador: -- No hay error --
+Resultado esperado: Error Semántico, el procedimiento principal no puede ser invocado
+Causa: El procedimiento principal no es invocable (del enunciado de la práctica 3)
+
+fallos expresiones: var_integer := -var_array;
+Contexto: var_integer y var_array son variables de tipo INTEGER y ARRAY[INTEGER]
+Resultado del compilador: -- No hay error semántico --
+Resultado esperado: Error semántico
+Causa: No se puede aplicar el operador unario '-' a un ARRAY[INTEGER]
+
+
+fallos expresiones: var_array > var_array; "hello" > "world";
+Resultado del compilador: -- No hay error semántico --
+Resultado esperado: Error semántico
+Causa: ARRAY y STRING no se pueden comparar con nada
