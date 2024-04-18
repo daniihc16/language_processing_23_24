@@ -21,13 +21,13 @@ begin
 	if true then 
 		null;
 	end if;
-	if true or false and true then
+	if true or (false and true) then
 		null;
 	end if;
-	if (true and false) then
+	if true and false then
 		null;
 	end if;
-	if (true and false or 5 > 6 and (not true or 4 = 67)) then
+	if ((true and false) or (5 > 6 and (not true or 4 = 67))) then
 		null;
 	end if;
 	-- fallos instrucción if -> condición no booleana en if y elsif

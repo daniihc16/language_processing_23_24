@@ -440,13 +440,14 @@ public class SemanticFunctions {
 	static public void inst_invocacion_o_asignacion(TypeValue id, TypeValue exp, Token pos) {
 		if (pos != null) /* asignación */ {
 			if (id.resultOfInvocation) BadInvocation.getMessage("Asignación", "Left side of assignment is a function or procedure", pos.beginLine, pos.beginColumn);
-			else if (id.isLiteral) BadInvocation.getMessage("Literal", "Literal cannot be assigned", pos.beginLine, pos.beginColumn);
 			else if (id.type == Symbol.Types.ARRAY) {
-				// Los vectores no son asignables directamente pero sus componentes sí
+				// Los vectores no son asignables directamente pero sus componentes sí, estas devuelven
+				// el tipo base del vector así que con hacer la comprobación de tipos es suficiente
+				BadInvocation.getMessage("array", "array cannot be assigned", pos.beginLine, pos.beginColumn);
 				// este rango vacío indica que no se ha generado un TypeValue de identificador de array
 				// por tanto es tipo array pero no el identificador solo, por lo que es un acceso a una componente
-				if (id.minInd == 1 || id.maxInd == 0) UnexpectedTypeException.getMessage(id.baseType, id.type, pos.beginLine, pos.beginColumn);
-				else if (id.baseType != exp.type) UnexpectedTypeException.getMessage(id.baseType, exp.type, pos.beginLine, pos.beginColumn);
+				// if (id.minInd == 1 && id.maxInd == 0) BadInvocation.getMessage("array", "array cannot be assigned", pos.beginLine, pos.beginColumn);
+				// else if (id.baseType != exp.type) UnexpectedTypeException.getMessage(id.baseType, exp.type, pos.beginLine, pos.beginColumn);
 			} else if (id.type != exp.type) UnexpectedTypeException.getMessage(id.type, exp.type, pos.beginLine, pos.beginColumn);
 			
 		} else /* invocación */ {

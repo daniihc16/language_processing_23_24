@@ -35,3 +35,24 @@ fallos expresiones: var_array > var_array; "hello" > "world";
 Resultado del compilador: -- No hay error semántico --
 Resultado esperado: Error semántico
 Causa: ARRAY y STRING no se pueden comparar con nada
+
+--------------------------------------------------------------------------------------------------------
+ 42 put_line("yes", 'c', 1, true); -- ok
+ 43	
+ 44	-- inst_invocacion_o_asignacion
+ 45    -- asignar un valor a un literal
+ 46    1 := 1;
+
+Syntax error (42,34): Current symbol: '1'
+Expected tokens: "end" "if" "while" "get" "skip_line" "put" "put_line" "return" "exit" "null" <tID>
+El error se da en la línea 42 cuando realmente está en la línea 46
+
+
+Código que causa el error: funcion(1) := 4;
+Resultado del compilador: 
+    Error semántico (21,5): Símbolo: 'funcion'. No es un vector, pero se usa como tal
+    Error no controlado. No debería haber llegado aquí:
+    (21,19): Símbolo: '4
+    java.lang.ClassCastException: class a.c.e cannot be cast to class a.c.d (a.c.e and a.c.d are in unnamed module of loader 'app')   
+Resultado esperado: Error semántico, función no es un vector o una variable asignable
+PREGUNTAR A QUÉ NIVEL HAY QUE MANEJAR EL ID QUE ESTÁ SIENDO ASIGNADO, "1 := 1" DA ERRROR SINTÁCTICO PERO EL RESTO DA ERROR SEMÁNTICO

@@ -213,18 +213,10 @@ if (vars != null) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
         case tSKIPLINE:
         case tGET:
         case tPUTLINE:
         case tPUT:
-        case tINT2CHAR:
-        case tCHAR2INT:
         case tIF:
         case tWHILE:
         case tID:{
@@ -327,7 +319,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
 // Inserta el símbolo del procedimiento en la tabla de símbolos
 // Inserta bloque en la tabla de símbolos
 // Inserta los parámetros y variables en la tabla de símbolos
-  static final public void declaracion_proc() throws ParseException {SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+  static final public void declaracion_proc() throws ParseException {SymbolProcedure proc = null;
     ArrayList<Symbol> vars = null;
     try {
       proc = cabecera_procedimiento();
@@ -363,18 +355,10 @@ if (vars != null) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
         case tSKIPLINE:
         case tGET:
         case tPUTLINE:
         case tPUT:
-        case tINT2CHAR:
-        case tCHAR2INT:
         case tIF:
         case tWHILE:
         case tID:{
@@ -406,7 +390,7 @@ System.err.println("PARSE_ERROR: " + e.getMessage());
 // Inserta bloque en la tabla de símbolos
 // Inserta los parámetros y variables en la tabla de símbolos
   static final public void declaracion_func() throws ParseException {ArrayList<Symbol> vars = new ArrayList<Symbol>();
-    SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
+    SymbolFunction func = null;
     try {
       func = cabecera_funcion();
 SemanticFunctions.newFuncBlock(st, func);
@@ -427,18 +411,10 @@ if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
         case tSKIPLINE:
         case tGET:
         case tPUTLINE:
         case tPUT:
-        case tINT2CHAR:
-        case tCHAR2INT:
         case tIF:
         case tWHILE:
         case tID:{
@@ -562,6 +538,7 @@ if (returnType.get(0).type != Symbol.Types.INT && returnType.get(0).type != Symb
     throw new Error("Missing return statement in function");
 }
 
+// Devuelve el array con los símbolos de los identificadores con su tipo
   static final public ArrayList<Symbol> parametros_formales() throws ParseException {ArrayList<Symbol> params = new ArrayList<Symbol>();
     ArrayList<Symbol> ps, resto_p;
     try {
@@ -637,14 +614,6 @@ for (Symbol p :  resto_p) params.add(p);
         inst_escribir_linea();
         break;
         }
-      case tCHARCONST:
-      case tINTCONST:
-      case tTRUE:
-      case tFALSE:
-      case tSTRING:
-      case tAPAR:
-      case tINT2CHAR:
-      case tCHAR2INT:
       case tID:{
         inst_invocacion_o_asignacion();
         break;
@@ -725,7 +694,7 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
 
   static final public void inst_invocacion_o_asignacion() throws ParseException {TypeValue p = null, exp = null;
         Token asign = null;
-    p = primario();
+    p = invoc_o_asign_primario();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tASIGN:{
       asign = jj_consume_token(tASIGN);
@@ -737,7 +706,7 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
       ;
     }
 SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
-                if (asign != null) System.out.println("Asignaci\u00f3n correcta en l\u00ednea: " + String.valueOf(asign.beginLine));
+                if (asign != null) System.out.println("Invocaci\u00f3n correcta en l\u00ednea: " + String.valueOf(asign.beginLine));
                 else System.out.println("Invocaci\u00f3n correcta");
 }
 
@@ -754,18 +723,10 @@ SemanticFunctions.inst_if(expif, tif);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tNULL:
       case tRETURN:
-      case tCHARCONST:
-      case tINTCONST:
-      case tTRUE:
-      case tFALSE:
-      case tSTRING:
-      case tAPAR:
       case tSKIPLINE:
       case tGET:
       case tPUTLINE:
       case tPUT:
-      case tINT2CHAR:
-      case tCHAR2INT:
       case tIF:
       case tWHILE:
       case tID:{
@@ -798,18 +759,10 @@ SemanticFunctions.inst_if(expelsif, elsif);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
         case tSKIPLINE:
         case tGET:
         case tPUTLINE:
         case tPUT:
-        case tINT2CHAR:
-        case tCHAR2INT:
         case tIF:
         case tWHILE:
         case tID:{
@@ -831,18 +784,10 @@ SemanticFunctions.inst_if(expelsif, elsif);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:
-        case tAPAR:
         case tSKIPLINE:
         case tGET:
         case tPUTLINE:
         case tPUT:
-        case tINT2CHAR:
-        case tCHAR2INT:
         case tIF:
         case tWHILE:
         case tID:{
@@ -875,18 +820,10 @@ SemanticFunctions.inst_if(expelsif, elsif);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tNULL:
       case tRETURN:
-      case tCHARCONST:
-      case tINTCONST:
-      case tTRUE:
-      case tFALSE:
-      case tSTRING:
-      case tAPAR:
       case tSKIPLINE:
       case tGET:
       case tPUTLINE:
       case tPUT:
-      case tINT2CHAR:
-      case tCHAR2INT:
       case tIF:
       case tWHILE:
       case tID:{
@@ -912,50 +849,47 @@ SemanticFunctions.inst_return(exp, sf, treturn);
                 System.out.println("Encontrada instrucci\u00f3n return correcta en l\u00ednea: " + String.valueOf(treturn.beginLine));
 }
 
-  static final public TypeValue expresion() throws ParseException {TypeValue prel = null, rest_rel = null;
+  static final public TypeValue expresion() throws ParseException {TypeValue prel = null, srel = null;
     Token op = null;
-    prel = relacion();
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case tAND:
-    case tOR:{
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case tAND:{
-        op = jj_consume_token(tAND);
-        break;
-        }
-      case tOR:{
-        op = jj_consume_token(tOR);
-        break;
-        }
-      default:
-        jj_la1[32] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      rest_rel = lista_una_o_mas_relaciones_booleanas();
-      break;
-      }
-    default:
-      jj_la1[33] = jj_gen;
-      ;
-    }
-{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
-    throw new Error("Missing return statement in function");
-}
+        // "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 
-  static final public TypeValue lista_una_o_mas_relaciones_booleanas() throws ParseException {TypeValue prel = null, rest_rel = null;
-    Token op = null;
     prel = relacion();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAND:
     case tOR:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tAND:{
-        op = jj_consume_token(tAND);
+        label_11:
+        while (true) {
+          op = jj_consume_token(tAND);
+          srel = relacion();
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case tAND:{
+            ;
+            break;
+            }
+          default:
+            jj_la1[32] = jj_gen;
+            break label_11;
+          }
+        }
         break;
         }
       case tOR:{
-        op = jj_consume_token(tOR);
+        label_12:
+        while (true) {
+          op = jj_consume_token(tOR);
+          srel = relacion();
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case tOR:{
+            ;
+            break;
+            }
+          default:
+            jj_la1[33] = jj_gen;
+            break label_12;
+          }
+        }
         break;
         }
       default:
@@ -963,14 +897,13 @@ SemanticFunctions.inst_return(exp, sf, treturn);
         jj_consume_token(-1);
         throw new ParseException();
       }
-      rest_rel = lista_una_o_mas_relaciones_booleanas();
       break;
       }
     default:
       jj_la1[35] = jj_gen;
       ;
     }
-{if ("" != null) return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);}
+{if ("" != null) return SemanticFunctions.expresion(prel, op, srel, tAND, tOR);}
     throw new Error("Missing return statement in function");
 }
 
@@ -1211,7 +1144,6 @@ SemanticFunctions.inst_return(exp, sf, treturn);
 
   static final public TypeValue primario() throws ParseException {TypeValue exp = null;
     Token id = null, fnToken = null;
-    ArrayList<TypeValue> exps = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAPAR:{
       jj_consume_token(tAPAR);
@@ -1246,35 +1178,48 @@ if (exp.type == Symbol.Types.CHAR) {
          }
       break;
       }
+    case tID:{
+      exp = invoc_o_asign_primario();
+{if ("" != null) return exp;}
+      break;
+      }
+    case tCHARCONST:
+    case tINTCONST:
+    case tTRUE:
+    case tFALSE:
+    case tSTRING:{
+      exp = tipo_constante();
+{if ("" != null) return exp;}
+      break;
+      }
     default:
       jj_la1[48] = jj_gen;
-      if (jj_2_2(2)) {
-        id = jj_consume_token(tID);
-        jj_consume_token(tAPAR);
-        exps = lista_una_o_mas_exps();
-        jj_consume_token(tCPAR);
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  static final public TypeValue invoc_o_asign_primario() throws ParseException {TypeValue exp = null;
+    Token id = null;
+        ArrayList<TypeValue> exps = null;
+    if (jj_2_2(2)) {
+      id = jj_consume_token(tID);
+      jj_consume_token(tAPAR);
+      exps = lista_una_o_mas_exps();
+      jj_consume_token(tCPAR);
 {if ("" != null) return SemanticFunctions.invoc_func_o_comp_array(id, exps, st);}
-      } else {
-        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case tID:{
-          id = jj_consume_token(tID);
+    } else {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case tID:{
+        id = jj_consume_token(tID);
 {if ("" != null) return SemanticFunctions.var_o_func_sin_params(id, st);}
-          break;
-          }
-        case tCHARCONST:
-        case tINTCONST:
-        case tTRUE:
-        case tFALSE:
-        case tSTRING:{
-          exp = tipo_constante();
-{if ("" != null) return exp;}
-          break;
-          }
-        default:
-          jj_la1[49] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+        break;
         }
+      default:
+        jj_la1[49] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
     }
     throw new Error("Missing return statement in function");
@@ -1357,10 +1302,10 @@ exps.add(0, exp);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x6000000,0x0,0x0,0x740000,0x700000,0xf800000,0x0,0x18000,0xf8a0000,0x0,0x18000,0x18000,0x0,0x18000,0xf8a0000,0x0,0xf8a0000,0x1000,0x0,0x0,0x0,0x0,0x0,0xf8a0000,0x0,0x800,0xf8a0000,0x0,0xf8a0000,0xf8a0000,0x0,0xf8a0000,0x30000000,0x30000000,0x30000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0x80000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x0,0x4f800000,0x0,0xf800000,0x0,};
+	   jj_la1_0 = new int[] {0x6000000,0x0,0x0,0x740000,0x700000,0xf800000,0x0,0x18000,0xa0000,0x0,0x18000,0x18000,0x0,0x18000,0xa0000,0x0,0xa0000,0x1000,0x0,0x0,0x0,0x0,0x0,0xa0000,0x0,0x800,0xa0000,0x0,0xa0000,0xa0000,0x0,0xa0000,0x10000000,0x20000000,0x30000000,0x30000000,0x0,0x0,0x80000000,0x80000000,0x80000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x0,0x4f800000,0xf800000,0x0,0x0,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x0,0x0,0x10000000,0x0,0x147f0400,0x10000000,0x147f0400,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x1000,0x147f0400,0x400,0x0,0x147f0400,0x1000000,0x147f0400,0x147f0400,0x800000,0x147f0400,0x0,0x0,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x1,0x1,0x206,0x206,0x206,0x10300400,0x300400,0x10000000,0x4000,};
+	   jj_la1_1 = new int[] {0x0,0x1,0x1,0x0,0x0,0x0,0x10000000,0x0,0x144f0000,0x10000000,0x0,0x0,0x10000000,0x0,0x144f0000,0x10000000,0x144f0000,0x0,0x10000000,0x40000400,0x40000400,0x40000400,0x1000,0x144f0000,0x400,0x0,0x144f0000,0x1000000,0x144f0000,0x144f0000,0x800000,0x144f0000,0x0,0x0,0x0,0x0,0x1f8,0x1f8,0x1,0x1,0x1,0x1,0x1,0x1,0x206,0x206,0x206,0x10300400,0x10300400,0x10000000,0x4000,};
 	}
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;

@@ -284,7 +284,7 @@ void declaracion_procs_funcs() :
 // Inserta los parámetros y variables en la tabla de símbolos
 void declaracion_proc():
 {
-    SymbolProcedure proc = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+    SymbolProcedure proc = null;
     ArrayList<Symbol> vars = null;
 }
 {
@@ -327,7 +327,7 @@ void declaracion_proc():
 void declaracion_func():
 {
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
-    SymbolFunction func = new SymbolFunction("__NOT_A_FUNCTION__", new ArrayList<Symbol>(), Symbol.Types.UNDEFINED);
+    SymbolFunction func = null;
 }
 {
     
@@ -423,7 +423,7 @@ SymbolFunction cabecera_funcion():
     }
 }
 
-
+// Devuelve el array con los símbolos de los identificadores con su tipo
 ArrayList<Symbol> parametros_formales():
 {
     ArrayList<Symbol> params = new ArrayList<Symbol>();
@@ -538,9 +538,9 @@ void inst_invocacion_o_asignacion() :
 	Token asign = null;
 }
 {
-    p = primario() (asign = <tASIGN> exp = expresion())? {
+	p = invoc_o_asign_primario() (asign = <tASIGN> exp = expresion())? {
 		SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
-		if (asign != null) System.out.println("Asignación correcta en línea: " + String.valueOf(asign.beginLine));
+		if (asign != null) System.out.println("Invocación correcta en línea: " + String.valueOf(asign.beginLine));
 		else System.out.println("Invocación correcta");
 	}
 }
@@ -589,26 +589,18 @@ void inst_return(Symbol sf) :
 
 TypeValue expresion():
 {
-    TypeValue prel = null, rest_rel = null;
+    TypeValue prel = null, srel = null;
     Token op = null;
+	// "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 }
 {
-	prel = relacion() ( (op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
-	 	return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);
+	
+	prel = relacion() ((op = <tAND> srel = relacion())+ | (op = <tOR> srel = relacion())+)? {
+	 	return SemanticFunctions.expresion(prel, op, srel, tAND, tOR);
     }
 }
 
 
-TypeValue lista_una_o_mas_relaciones_booleanas():
-{
-    TypeValue prel = null, rest_rel = null;
-    Token op = null;
-}
-{
-    prel = relacion() ((op = <tAND> | op = <tOR>) rest_rel = lista_una_o_mas_relaciones_booleanas())? {
-   	 return SemanticFunctions.expresion(prel, op, rest_rel, tAND, tOR);
-    }
-}
 
 TypeValue relacion():
 {
@@ -702,7 +694,6 @@ TypeValue primario() :
 {
     TypeValue exp = null;
     Token id = null, fnToken = null;
-    ArrayList<TypeValue> exps = null;
 }
 {
 	<tAPAR> exp = expresion() <tCPAR> { return exp; }
@@ -714,7 +705,7 @@ TypeValue primario() :
     } else {
    	 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
     } 
-}
+}	
 |    fnToken = <tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
    	 if (exp.type == Symbol.Types.CHAR) {
    		 return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
@@ -722,14 +713,24 @@ TypeValue primario() :
    		 UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
    	 }
     }
-|    LOOKAHEAD(2)
-	id = <tID> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
+|    exp = invoc_o_asign_primario() {return exp;}
+|    exp = tipo_constante() { return exp; }
+}
+
+TypeValue invoc_o_asign_primario():
+{
+	TypeValue exp = null;
+    Token id = null;
+	ArrayList<TypeValue> exps = null;
+}
+{
+	LOOKAHEAD(2) id = <tID> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
 		return SemanticFunctions.invoc_func_o_comp_array(id, exps, st);
     }
-|    id = <tID> /*var. o func. sin pars*/ {
+	|    
+	id = <tID> /*var. o func. sin pars*/ {
 		return SemanticFunctions.var_o_func_sin_params(id, st);
     }
-|    exp = tipo_constante() { return exp; }
 }
 
 ArrayList<TypeValue> lista_una_o_mas_exps() :
