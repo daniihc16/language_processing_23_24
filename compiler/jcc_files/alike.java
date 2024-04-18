@@ -1158,12 +1158,9 @@ SemanticFunctions.inst_return(exp, sf, treturn);
       exp = expresion();
       jj_consume_token(tCPAR);
 // System.out.println(exp.value);
-    if (exp.type == Symbol.Types.INT) {
-                // en gen. de código comprobar que el valor es mayor que 0 ?? 
-         {if ("" != null) return new TypeValue(Symbol.Types.CHAR, exp.value);}
-    } else {
-         UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
-    }
+    if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
+        // en gen. de código comprobar que el valor es mayor que 0 ?? 
+        {if ("" != null) return new TypeValue(Symbol.Types.CHAR, exp.value);}
       break;
       }
     case tCHAR2INT:{
@@ -1171,11 +1168,8 @@ SemanticFunctions.inst_return(exp, sf, treturn);
       jj_consume_token(tAPAR);
       exp = expresion();
       jj_consume_token(tCPAR);
-if (exp.type == Symbol.Types.CHAR) {
-                 {if ("" != null) return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));}
-         } else {
-                 UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
-         }
+if (exp.type != Symbol.Types.CHAR) UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
+        {if ("" != null) return new TypeValue(Symbol.Types.INT, null);}
       break;
       }
     case tID:{

@@ -45,7 +45,7 @@ Causa: ARRAY y STRING no se pueden comparar con nada
 
 Syntax error (42,34): Current symbol: '1'
 Expected tokens: "end" "if" "while" "get" "skip_line" "put" "put_line" "return" "exit" "null" <tID>
-El error se da en la línea 42 cuando realmente está en la línea 46
+Resultado esperado: El error se da en la línea 42 cuando realmente está en la línea 46
 
 
 Código que causa el error: funcion(1) := 4;
@@ -55,4 +55,25 @@ Resultado del compilador:
     (21,19): Símbolo: '4
     java.lang.ClassCastException: class a.c.e cannot be cast to class a.c.d (a.c.e and a.c.d are in unnamed module of loader 'app')   
 Resultado esperado: Error semántico, función no es un vector o una variable asignable
-PREGUNTAR A QUÉ NIVEL HAY QUE MANEJAR EL ID QUE ESTÁ SIENDO ASIGNADO, "1 := 1" DA ERRROR SINTÁCTICO PERO EL RESTO DA ERROR SEMÁNTICO
+
+
+
+Código que causa el error:
+    -- función y procedimiento con un número incorrecto de parámetros (probar más y menos)
+    var_integer := func_con_params(true, -1, int2char(4), var_array, var_boolean, var_integer, var_char); -- 1 menos
+
+Contexto:
+    function func_con_params(bool_param: boolean; integer_param: integer; char_param: character; array_param: array(1..5) of integer; 
+                            ref_bool_param: ref  boolean; ref_integer_param: ref integer; ref_char_param: ref character; 
+                            ref_array_param: ref array(1..5) of integer) 
+    return integer is
+    begin
+        return 1;
+    end;
+
+Resultado del compilador:
+    Error semántico (49,20): Símbolo: 'func_con_params'. Diferente número de parámetros reales y formales
+    Error no controlado. No debería haber llegado aquí:
+    (49,104): Símbolo: ')
+    java.lang.IndexOutOfBoundsException: Index 7 out of bounds for length 7
+Resultado esperado: Error semántico, número incorrecto de parámetros

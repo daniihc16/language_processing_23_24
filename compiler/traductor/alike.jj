@@ -699,20 +699,15 @@ TypeValue primario() :
 	<tAPAR> exp = expresion() <tCPAR> { return exp; }
 |    fnToken = <tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
     // System.out.println(exp.value);
-    if (exp.type == Symbol.Types.INT) {
-		// en gen. de código comprobar que el valor es mayor que 0 ?? 
-   	 return new TypeValue(Symbol.Types.CHAR, exp.value);
-    } else {
-   	 UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
-    } 
+    if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
+	// en gen. de código comprobar que el valor es mayor que 0 ?? 
+	return new TypeValue(Symbol.Types.CHAR, exp.value);
 }	
 |    fnToken = <tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
-   	 if (exp.type == Symbol.Types.CHAR) {
-   		 return new TypeValue(Symbol.Types.INT, String.valueOf(exp.value));
-   	 } else {
-   		 UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
-   	 }
-    }
+	if (exp.type != Symbol.Types.CHAR) UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
+	return new TypeValue(Symbol.Types.INT, null);
+
+}
 |    exp = invoc_o_asign_primario() {return exp;}
 |    exp = tipo_constante() { return exp; }
 }

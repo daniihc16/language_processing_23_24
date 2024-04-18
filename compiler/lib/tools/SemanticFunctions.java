@@ -343,37 +343,42 @@ public class SemanticFunctions {
 	 */
 	static public TypeValue invoc_func_o_comp_array(Token id, ArrayList<TypeValue> exps, SymbolTable st) {
 		Symbol sid = SemanticFunctions.getSymbol(st, id.image);
-		
 		if (sid == null) return new TypeValue(Symbol.Types.UNDEFINED, null);
 		if (sid.type == Symbol.Types.FUNCTION) {
 			SymbolFunction sfid = (SymbolFunction)sid;
-			if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function or procedure has too few arguments", id.beginLine, id.beginColumn);
-			for (int i=0; i<exps.size(); i++) {
-				// Un array se considera del mismo tipo si tiene el mismo tipo y rango que otro
-				if (sfid.parList.get(i).type == Symbol.Types.ARRAY){
-					SymbolArray symArrayFunc = (SymbolArray)sfid.parList.get(i);
-					TypeValue symArrayExp = exps.get(i);
-					if (symArrayFunc.baseType != symArrayExp.baseType) UnexpectedTypeException.getMessage(symArrayFunc.baseType, symArrayExp.baseType, id.beginLine, id.beginColumn);
-					if (symArrayFunc.minInd != symArrayExp.minInd || symArrayFunc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes", id.beginLine, id.beginColumn);
+			if (sfid.parList == null) BadInvocation.getMessage(sfid.name, "Function expected no params", id.beginLine, id.beginColumn);
+			else if(sfid.parList.size() != exps.size()) BadInvocation.getMessage(sfid.name, "Function with incorrect number of arguments, expected " + sfid.parList.size()+ " found " + exps.size(), id.beginLine, id.beginColumn);
+			else { 
+				for (int i=0; i<exps.size(); i++) {
+					// Un array se considera del mismo tipo si tiene el mismo tipo y rango que otro
+					if (sfid.parList.get(i).type == Symbol.Types.ARRAY){
+						SymbolArray symArrayFunc = (SymbolArray)sfid.parList.get(i);
+						TypeValue symArrayExp = exps.get(i);
+						if (symArrayFunc.baseType != symArrayExp.baseType) UnexpectedTypeException.getMessage(symArrayFunc.baseType, symArrayExp.baseType, id.beginLine, id.beginColumn);
+						if (symArrayFunc.minInd != symArrayExp.minInd || symArrayFunc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes", id.beginLine, id.beginColumn);
+					}
+					if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type, id.beginLine, id.beginColumn);
+					if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal", id.beginLine, id.beginColumn);
 				}
-				if (sfid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(sfid.parList.get(i).type, exps.get(i).type, id.beginLine, id.beginColumn);
-				if (sfid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(sfid.parList.get(i).name, "Expected reference type, found literal", id.beginLine, id.beginColumn);
 			}
 			return new TypeValue(sfid.returnType, true, null);
 		} else if (sid.type == Symbol.Types.PROCEDURE) {
 			SymbolProcedure spid = (SymbolProcedure)sid;
 			// procedimiento principal no es invocable
 			if (spid.name == st.getMainProc()) BadInvocation.getMessage(spid.name, "Principal Procedure cannot be invoked", id.beginLine, id.beginColumn);
-			if (spid.parList == null) BadInvocation.getMessage(spid.name, "Function or procedure has too few arguments", id.beginLine, id.beginColumn);
-			for (int i=0; i<exps.size(); i++) {
-				if (spid.parList.get(i).type == Symbol.Types.ARRAY){
-					SymbolArray symArrayProc = (SymbolArray)spid.parList.get(i);
-					TypeValue symArrayExp = exps.get(i);
-					if (symArrayProc.baseType != symArrayExp.baseType) UnexpectedTypeException.getMessage(symArrayProc.baseType, symArrayExp.baseType, id.beginLine, id.beginColumn);
-					if (symArrayProc.minInd != symArrayExp.minInd || symArrayProc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes", id.beginLine, id.beginColumn);
+			if (spid.parList == null) BadInvocation.getMessage(spid.name, "Procedure expected no params", id.beginLine, id.beginColumn);
+			else if(spid.parList.size() != exps.size()) BadInvocation.getMessage(spid.name, "Procedure with incorrect number of arguments, expected " + spid.parList.size()+ " found " + exps.size(), id.beginLine, id.beginColumn);
+			else { 
+				for (int i=0; i<exps.size(); i++) {
+					if (spid.parList.get(i).type == Symbol.Types.ARRAY){
+						SymbolArray symArrayProc = (SymbolArray)spid.parList.get(i);
+						TypeValue symArrayExp = exps.get(i);
+						if (symArrayProc.baseType != symArrayExp.baseType) UnexpectedTypeException.getMessage(symArrayProc.baseType, symArrayExp.baseType, id.beginLine, id.beginColumn);
+						if (symArrayProc.minInd != symArrayExp.minInd || symArrayProc.maxInd != symArrayExp.maxInd) BadInvocation.getMessage("Array", "Ranges vary in sizes", id.beginLine, id.beginColumn);
+					}
+					if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type, id.beginLine, id.beginColumn);
+					if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal", id.beginLine, id.beginColumn);
 				}
-				if (spid.parList.get(i).type != exps.get(i).type) UnexpectedTypeException.getMessage(spid.parList.get(i).type, exps.get(i).type, id.beginLine, id.beginColumn);
-				if (spid.parList.get(i).parClass == Symbol.ParameterClass.REF && exps.get(i).isLiteral) BadInvocation.getMessage(spid.parList.get(i).name, "Expected reference type, found literal", id.beginLine, id.beginColumn);
 			}
 			return new TypeValue(Symbol.Types.VOID, true, null);
 		} else if (sid.type == Symbol.Types.ARRAY) {
@@ -391,6 +396,7 @@ public class SemanticFunctions {
 		expectedTypes.add(Symbol.Types.ARRAY);
 		UnexpectedTypeException.getMessage(expectedTypes, sid.type, id.beginLine, id.beginColumn);
 		return new TypeValue(Symbol.Types.UNDEFINED, null);
+		
 	}
 
 	/*
@@ -454,6 +460,7 @@ public class SemanticFunctions {
 			// si se invoca a una función, no se captura el valor devuelto
 			// se puede no generar el código de llamada a la función si no se captura el resultado
 			if (id.type == Symbol.Types.FUNCTION) System.err.println("WARNING: Unhandled function return value");
+			else if (id.type != Symbol.Types.VOID) BadInvocation.getMessage("symbol", "is not declared as procedure", 0, 0);
 		}
 		
 	}
