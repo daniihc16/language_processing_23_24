@@ -24,7 +24,7 @@ ant
 
 Ejecución de los tests:
 -------------------------------------------------------------
-python3 ../test/test_alike.py ./dist/alike.jar ../test/
+python3 test/test_alike.py dist/alike_4.jar test/
 -------------------------------------------------------------
 
 Características generales:
