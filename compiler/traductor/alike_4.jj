@@ -21,6 +21,7 @@ import java.util.*;
 import lib.tools.TypeValue;
 import lib.tools.SemanticFunctions;
 import lib.tools.exceptions.*;
+import lib.tools.Constants;
 
 
 public class alike {
@@ -48,7 +49,7 @@ public class alike {
    		System.err.println("LEX_ERROR: " + e.getMessage());
    	}
    	catch (ParseException e) {
-   		 System.err.println("PARSE_ERROR: " + e.getMessage());
+   		 System.err.println("SYNTAX_ERROR: " + e.getMessage());
    	}
    	//...
    }
@@ -212,7 +213,7 @@ void Programa() :
 			} else {
 				vars = new ArrayList<Symbol>();
 			}
-			System.out.println("Nuevo símbolo: " + st.toString());
+			if(Constants.verbose) System.out.println("Nuevo símbolo: " + st.toString());
 		}
 		( declaracion_procs_funcs() )?
 		<tBEGIN>
@@ -221,7 +222,7 @@ void Programa() :
 		<tPC>
 		< EOF >
     } catch (ParseException e) {
-		System.err.println("PARSE_ERROR: " + e.getMessage());
+		System.err.println("SYNTAX_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -258,7 +259,7 @@ ArrayList<Symbol> declaracion_var() :
 			return vars;
 		}
     } catch (ParseException e) {
-		System.err.println("PARSE_ERROR: " + e.getMessage());
+		System.err.println("SYNTAX_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -305,7 +306,7 @@ void declaracion_proc():
 		<tEND>
 		<tPC>
 		{
-			System.out.println("Procedimiento reconocido: " + st.toString());
+			if(Constants.verbose) System.out.println("Procedimiento reconocido: " + st.toString());
 			st.removeBlock();
 		}
     } catch (ParseException e) {
@@ -343,11 +344,11 @@ void declaracion_func():
 		<tEND>
 		<tPC>
 		{
-			System.out.println("Función reconocida: " + st.toString());
+			if(Constants.verbose) System.out.println("Función reconocida: " + st.toString());
 			st.removeBlock();
 		}
     } catch (ParseException e) {
-		System.err.println("PARSE_ERROR: " + e.getMessage());
+		System.err.println("SYNTAX_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -440,7 +441,7 @@ ArrayList<Symbol> parametros_formales():
 			} <tCPAR> // con parámetros
 		| "" ) // sin parámetros (épsilon)
     } catch (ParseException e) {
-		System.err.println("PARSE_ERROR: " + e.getMessage());
+		System.err.println("SYNTAX_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -484,7 +485,7 @@ void instruccion(Symbol where) :
 		|   inst_return(where)
 		|   <tNULL>) <tPC>
     } catch (ParseException e) {
-		System.err.println("PARSE_ERROR: " + e.getMessage());
+		System.err.println("SYNTAX_ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -503,7 +504,7 @@ void inst_leer() :
 {
     get = <tGET> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
 		SemanticFunctions.inst_leer(exps, get);
-		System.out.println("Encontrada instrucción get correcta");
+		if(Constants.verbose) System.out.println("Encontrada instrucción get correcta");
     }
 }
 
@@ -515,7 +516,7 @@ void inst_escribir() :
 {
     put = <tPUT> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
 		SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
-		System.out.println("Encontrada instrucción put correcta");
+		if(Constants.verbose) System.out.println("Encontrada instrucción put correcta");
     }
 }
 
@@ -527,7 +528,7 @@ void inst_escribir_linea() :
 {
     put = <tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps()    <tCPAR>)? {
 		SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
-		System.out.println("Encontrada instrucción put_line correcta");
+		if(Constants.verbose) System.out.println("Encontrada instrucción put_line correcta");
 		// Añadir un salto de línea al final en la generación de código
     }
 }
@@ -540,8 +541,10 @@ void inst_invocacion_o_asignacion() :
 {
 	p = invoc_o_asign_primario() (asign = <tASIGN> exp = expresion())? {
 		SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
-		if (asign != null) System.out.println("Invocación correcta en línea: " + String.valueOf(asign.beginLine));
-		else System.out.println("Invocación correcta");
+		if(Constants.verbose) {
+			if (asign != null) System.out.println("Invocación correcta en línea: " + String.valueOf(asign.beginLine));
+			else System.out.println("Invocación correcta");
+		}
 	}
 }
 
@@ -570,7 +573,7 @@ void inst_while(Symbol sf) :
 {
     twhile = <tWHILE> exp = expresion() <tLOOP> (instruccion(sf))+ <tEND> <tLOOP> {
 		SemanticFunctions.inst_while(exp, twhile);
-		System.out.println("Encontrada instrucción while correcta en línea: " + String.valueOf(twhile.beginLine)); 
+		if(Constants.verbose) System.out.println("Encontrada instrucción while correcta en línea: " + String.valueOf(twhile.beginLine)); 
 	}
 }
 
@@ -583,7 +586,7 @@ void inst_return(Symbol sf) :
 {
 	treturn = <tRETURN> exp = expresion() {
 		SemanticFunctions.inst_return(exp, sf, treturn);
-		System.out.println("Encontrada instrucción return correcta en línea: " + String.valueOf(treturn.beginLine));
+		if(Constants.verbose) System.out.println("Encontrada instrucción return correcta en línea: " + String.valueOf(treturn.beginLine));
 	}
 }
 
@@ -761,9 +764,9 @@ ArrayList<TypeValue> lista_exps_ll() :
 
 TOKEN_MGR_DECLS : {
     static void CommonTokenAction(Token token) {
-   	 if (token.kind == tRESTO) System.out.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
-   	 System.out.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
-   	 System.out.println();
+   	 if (token.kind == tRESTO) System.err.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
+   	 System.err.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
+   	 System.err.println();
     }
     
 }

@@ -19,6 +19,8 @@ import traductor.Token;
 import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import lib.tools.exceptions.*;
+import lib.tools.TypeValue;
+import lib.tools.Constants;
 
 
 public class SemanticFunctions {
@@ -81,10 +83,10 @@ public class SemanticFunctions {
 	 */
    static public void insertSymbol(SymbolTable st, Symbol sym) {
        try {
-           st.insertSymbol(sym);
-           System.out.println("Nuevo símbolo: " + st.toString());
+           	st.insertSymbol(sym);
+        	if(Constants.verbose) System.out.println("Nuevo símbolo: " + st.toString());
        } catch (AlreadyDefinedSymbolException ads) {
-           System.err.println("SEMANTIC_ERROR: Error insertando nuevo símbolo " + ads.getMessage(sym) + ": Ya declarado");
+          	System.err.println("SEMANTIC_ERROR: Error insertando nuevo símbolo " + ads.getMessage(sym) + ": Ya declarado");
        }
    	}
 
