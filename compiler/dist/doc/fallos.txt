@@ -37,6 +37,7 @@ Resultado esperado: Error semántico
 Causa: ARRAY y STRING no se pueden comparar con nada
 
 --------------------------------------------------------------------------------------------------------
+Código que causa el error:
  42 put_line("yes", 'c', 1, true); -- ok
  43	
  44	-- inst_invocacion_o_asignacion

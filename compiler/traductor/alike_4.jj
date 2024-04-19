@@ -309,7 +309,7 @@ void declaracion_proc():
 			st.removeBlock();
 		}
     } catch (ParseException e) {
-		System.err.println("PARSE_ERROR: " + e.getMessage());
+		System.err.println("SYNTAX ERROR: " + e.getMessage());
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -591,12 +591,17 @@ TypeValue expresion():
 {
     TypeValue prel = null, srel = null;
     Token op = null;
+	TypeValue result = null;
 	// "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 }
 {
 	
-	prel = relacion() ((op = <tAND> srel = relacion())+ | (op = <tOR> srel = relacion())+)? {
-	 	return SemanticFunctions.expresion(prel, op, srel, tAND, tOR);
+	prel = relacion() ((op = <tAND> srel = relacion() {
+		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
+	})+ | (op = <tOR> srel = relacion() {
+		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
+	})+)? {
+	 	return SemanticFunctions.expresion(prel, result, op, tAND, tOR);
     }
 }
 

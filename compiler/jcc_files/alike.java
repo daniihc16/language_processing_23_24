@@ -375,7 +375,7 @@ if (vars != null) {
 System.out.println("Procedimiento reconocido: " + st.toString());
                         st.removeBlock();
     } catch (ParseException e) {
-System.err.println("PARSE_ERROR: " + e.getMessage());
+System.err.println("SYNTAX ERROR: " + e.getMessage());
 
                 // Reconocer hasta el token <tPC>
                 while (true) {
@@ -851,6 +851,7 @@ SemanticFunctions.inst_return(exp, sf, treturn);
 
   static final public TypeValue expresion() throws ParseException {TypeValue prel = null, srel = null;
     Token op = null;
+        TypeValue result = null;
         // "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 
     prel = relacion();
@@ -863,6 +864,7 @@ SemanticFunctions.inst_return(exp, sf, treturn);
         while (true) {
           op = jj_consume_token(tAND);
           srel = relacion();
+result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tAND:{
             ;
@@ -880,6 +882,7 @@ SemanticFunctions.inst_return(exp, sf, treturn);
         while (true) {
           op = jj_consume_token(tOR);
           srel = relacion();
+result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tOR:{
             ;
@@ -903,7 +906,7 @@ SemanticFunctions.inst_return(exp, sf, treturn);
       jj_la1[35] = jj_gen;
       ;
     }
-{if ("" != null) return SemanticFunctions.expresion(prel, op, srel, tAND, tOR);}
+{if ("" != null) return SemanticFunctions.expresion(prel, result, op, tAND, tOR);}
     throw new Error("Missing return statement in function");
 }
 

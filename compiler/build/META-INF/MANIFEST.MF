@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.10.12
 Created-By: 11.0.22+7-post-Ubuntu-0ubuntu222.04.1 (Ubuntu)
 Main-Class: traductor/alike
-Class-Path: traductor/alike.jar
+Class-Path: traductor/alike_4.jar
 

@@ -138,7 +138,7 @@ public class SemanticFunctions {
 	 * @param rest_rel Componente derecha de la expresión
 	 * @param tAND Token del operador AND
 	 */
-	static public TypeValue expresion(TypeValue prel, Token op, TypeValue rest_rel, int tAND, int tOR) {
+	static public TypeValue expresion(TypeValue prel, TypeValue rest_rel, Token op, int tAND, int tOR) {
 		if (rest_rel != null) {
 			if (prel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, prel.type, op.beginLine, op.beginColumn);
 			if (rest_rel.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, rest_rel.type, op.beginLine, op.beginColumn);
@@ -172,7 +172,7 @@ public class SemanticFunctions {
 		if (exp2 != null) {
 			// Si hay un operador relacional y las expresiones no son del mismo tipo, lanzamos una excepción
 			if (exp1.type != exp2.type) UnexpectedTypeException.getMessage(exp1.type, exp2.type, op.beginLine, op.beginColumn);
-			if (exp1.type != Symbol.Types.ARRAY && exp1.type != Symbol.Types.STRING && exp1.type == exp2.type && exp1.value != null && exp2.value != null) {
+			if (exp1.type != Symbol.Types.VOID && exp1.type != Symbol.Types.ARRAY && exp1.type != Symbol.Types.STRING && exp1.type == exp2.type && exp1.value != null && exp2.value != null) {
 				// Si ambas expresiones son constantes, evaluamos la relación
 				if (op.kind == tEQ) return new TypeValue(Symbol.Types.BOOL, exp1.value == exp2.value);
 				else if (op.kind == tNE) return new TypeValue(Symbol.Types.BOOL, exp1.value != exp2.value);
@@ -187,6 +187,7 @@ public class SemanticFunctions {
 			} 
 			if (exp1.type == Symbol.Types.ARRAY || exp2.type == Symbol.Types.ARRAY) UnexpectedTypeException.getMessage(Symbol.Types.INT, Symbol.Types.ARRAY, op.beginLine, op.beginColumn);
 			if (exp1.type == Symbol.Types.STRING || exp2.type == Symbol.Types.STRING) UnexpectedTypeException.getMessage(Symbol.Types.INT, Symbol.Types.STRING, op.beginLine, op.beginColumn);
+			if (exp1.type == Symbol.Types.VOID || exp2.type == Symbol.Types.VOID) UnexpectedTypeException.getMessage(Symbol.Types.INT, Symbol.Types.VOID, op.beginLine, op.beginColumn);
 			// Si alguna de las expresiones no es constante, devolvemos su tipo (ambas tienen el mismo)
 			return new TypeValue(Symbol.Types.BOOL, null);
 		}
@@ -276,7 +277,7 @@ public class SemanticFunctions {
 				if (op.kind == tTIMES) return new TypeValue(Symbol.Types.INT, (int)fact.value * (int)fact_resultante.value);
 				else if (op.kind == tDIV) {
 					if ((int)fact_resultante.value != 0) return new TypeValue(Symbol.Types.INT, (int)fact.value / (int)fact_resultante.value);
-					System.err.println("WARNING: Attempting integer division by zero");
+					System.err.println("WARNING ("+ op.beginLine + ", " + op.beginColumn +") : Attempting integer division by zero");
 					return new TypeValue(Symbol.Types.INT, null);
 				}
 				else if (op.kind == tMOD) return new TypeValue(Symbol.Types.INT, (int)fact.value % (int)fact_resultante.value);
@@ -467,12 +468,12 @@ public class SemanticFunctions {
 
 	static public void inst_if(TypeValue expif, Token tif) {
 		if (expif.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, expif.type, tif.beginLine, tif.beginColumn);
-		if (expif.value != null) System.err.println("WARNING: Constant condition in if instruction");
+		if (expif.value != null) System.err.println("WARNING (" + tif.beginLine + ", " + tif.beginColumn + "): Constant condition in if instruction");
 	}
 
 	static public void inst_while(TypeValue exp, Token twhile) {
 		if (exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, exp.type, twhile.beginLine, twhile.beginColumn);
-		if (exp.value != null) System.err.println("WARNING: Constant condition in while instruction");
+		if (exp.value != null) System.err.println("WARNING(" + twhile.beginLine + ", " + twhile.beginColumn + "): Constant condition in while instruction");
 	}
 
 	static public void inst_return(TypeValue exp, Symbol sf_, Token treturn) {
@@ -482,7 +483,6 @@ public class SemanticFunctions {
 			if (sf.returnType != exp.type) UnexpectedTypeException.getMessage(sf.returnType, exp.type, treturn.beginLine, treturn.beginColumn);
 		}
 	}
-
 }
 
 

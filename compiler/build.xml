@@ -56,7 +56,7 @@
 
 	<target name="jcc" depends="init"> 
 	  	<!-- Generar el código fuente del traductor desde ${src_compiler} hasta ${jcc_files} -->
-	  	<javacc target="${jcc_src}/${project}.jj"
+	  	<javacc target="${jcc_src}/alike_4.jj"
 	      	javacchome="${user.home}/.javacc/target"
 	      	outputdirectory="${jcc_files}"
 	      	static="true"
@@ -75,10 +75,10 @@
 	<!-- Crear el jar con todo en ${dist} -->
 	<target name="dist" depends="compile">
 		<manifest file="${build_META_INF}/MANIFEST.MF" >
-	  		<attribute name="Class-Path" value="${dir_traductor}/${project}.jar" />
+	  		<attribute name="Class-Path" value="${dir_traductor}/alike_4.jar" />
 	    	<attribute name="Main-Class" value="${dir_traductor}/${main_class}" />  
  		</manifest>
-		<jar manifest="${build_META_INF}/MANIFEST.MF" jarfile="${dist}/${project}.jar" basedir="${build}" />
+		<jar manifest="${build_META_INF}/MANIFEST.MF" jarfile="${dist}/alike_4.jar" basedir="${build}" />
 	</target>
 
 	<!-- Limpiar todo -->

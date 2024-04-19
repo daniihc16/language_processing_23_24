@@ -46,9 +46,3 @@ Modificaciones TS:
 ---------------------------------------------
 Se ha añadido el tipo VOID
 Las consultas a la tabla de símbolos se transforman a minúsculas para hacer el lenguaje case insensitive
-
-TODOS
-- Funciones tienen que tener un return y que sea adecuado
-- Mirar posibles bucles infinitos (guardas constantes)
-- GET() los params pueden ser variables o comp de array -> donde meter que puedan ser comp de array y checkear que no estén fuera de rango si la expresion es constante
-- PREGUNTAR SI TENEMOS QUE CONSIDERAR QUE HAYA UN RETURN INACCESIBLE (BAJO UN if(false)) QUE AFECTE AL ALGORITMO DE DETECCIÓN DE DEVOLUCIÓN CORRECTO DE TIPOS EN FUNCIONES

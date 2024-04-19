@@ -30,6 +30,9 @@ begin
 	if ((true and false) or (5 > 6 and (not true or 4 = 67))) then
 		null;
 	end if;
+	if VaR_BooLean then
+		null;
+	end if;
 	-- fallos instrucción if -> condición no booleana en if y elsif
 	if (var_integer) then
 		null;
