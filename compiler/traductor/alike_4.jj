@@ -199,6 +199,8 @@ void Programa() :
     SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
     ArrayList<Symbol> vars = null;
 	Label labelMain = null;
+	CodeBlock cb = new CodeBlock();
+	CodeBlock cbProcsFuncs = new CodeBlock();
 }
 {
    try {
@@ -207,14 +209,13 @@ void Programa() :
 			st.setMainProc(proc_main.name);
 			// generar etiqueta de procmain	
 			labelMain = CGUtils.newLabel();
-			CodeBlock.addComment("Entrada al programa");
-			CodeBlock.addInst(PCodeInstruction.OpCode.ENP, labelMain);
+			cb.addComment("Entrada al programa");
+			cb.addInst(PCodeInstruction.OpCode.ENP, labelMain);
 		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
 				for (Symbol var : vars) {
 					SemanticFunctions.insertSymbol(st, var);
-					// insertar variable en el frame??
 				}
 				
 			} else {
@@ -222,15 +223,17 @@ void Programa() :
 			}
 			if(Constants.verbose) System.out.println("Nuevo símbolo: " + st.toString());
 		}
-		( declaracion_procs_funcs() )?
+		( cbProcsFuncs = declaracion_procs_funcs() {
+			cb.addBlock(cbProcsFuncs);
+		} )?
 		<tBEGIN>
 		(instruccion(proc_main) {
-			CodeBlock.addLabel(labelMain);
-			CodeBlock.addBlock(insts);
+			// cb.addLabel(labelMain);
+			// cb.addBlock(insts);
 		} )*
 		<tEND>
 		<tPC>
-		< EOF >
+		< EOF > { cb.encloseXMLTags("ProcedimientoPrincipal"); }
     } catch (ParseException e) {
 		System.err.println("SYNTAX_ERROR: " + e.getMessage());
 
@@ -281,12 +284,15 @@ ArrayList<Symbol> declaracion_var() :
 }
 
 
-void declaracion_procs_funcs() :
+CodeBlock declaracion_procs_funcs() :
 {
-
+	CodeBlock cb = new CodeBlock();
+	CodeBlock cbInternal = new CodeBlock();
 }
 {
-    ( declaracion_proc() | declaracion_func() )+
+    ( cbInternal = declaracion_proc() | cbInternal = declaracion_func() {
+		cb.addBlock(cbInternal);
+	} )+
 }
 
 // Reconoce la declaración de un procedimiento
@@ -297,11 +303,30 @@ void declaracion_proc():
 {
     SymbolProcedure proc = null;
     ArrayList<Symbol> vars = null;
+	CodeBlock cb = new CodeBlock();
+	Label labelProc = null;
 }
 {
     try {
 		proc = cabecera_procedimiento() {
 			SemanticFunctions.newProcBlock(st, proc);
+			// El lenguaje permite el uso de par´ametros escalares y de vectores, tanto por 
+			// valor como por referencia en procedimientos y funciones
+			// params
+			// para cada param leyendo al revés
+			//? Preguntar qué sentido tiene mover los valores de la pila principal al frame en lugar de tener punteros
+			//? a la pila principal: mejor en caso de vectores por valor
+			// void a(m, k: integer, z: array of integer)
+			// a(x, y, z[]) -> push x (srf + drf); push y; push z  -> |					z3,z2,z1,y,x| -> push z..
+				// si es por valor
+					// si es escalar -> srf + asgi
+					// si es vector -> n*(srf + asgi) | 
+				// si es por ref
+					// si es escalar -> srf + asgi
+					// si es vector -> srf + asgi
+			labelProc = CGUtils.newLabel();
+			cb.addComment("Procedimiento " + proc.name);
+			cb.insetInst(PCodeInstruction.OpCode.JMP, labelProc);
 		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
@@ -318,6 +343,7 @@ void declaracion_proc():
 		{
 			if(Constants.verbose) System.out.println("Procedimiento reconocido: " + st.toString());
 			st.removeBlock();
+			cb.encloseXMLTags(proc.name);
 		}
     } catch (ParseException e) {
 		System.err.println("SYNTAX ERROR: " + e.getMessage());
