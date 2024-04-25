@@ -198,18 +198,25 @@ void Programa() :
 {
     SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
     ArrayList<Symbol> vars = null;
+	Label labelMain = null;
 }
 {
    try {
 		proc_main = cabecera_procedimiento() {
 			SemanticFunctions.insertSymbol(st, proc_main);
 			st.setMainProc(proc_main.name);
+			// generar etiqueta de procmain	
+			labelMain = CGUtils.newLabel();
+			CodeBlock.addComment("Entrada al programa");
+			CodeBlock.addInst(PCodeInstruction.OpCode.ENP, labelMain);
 		}
 		( vars = declaracion_variables() )? {
 			if (vars != null) {
 				for (Symbol var : vars) {
 					SemanticFunctions.insertSymbol(st, var);
+					// insertar variable en el frame??
 				}
+				
 			} else {
 				vars = new ArrayList<Symbol>();
 			}
@@ -217,7 +224,10 @@ void Programa() :
 		}
 		( declaracion_procs_funcs() )?
 		<tBEGIN>
-		(instruccion(proc_main))*
+		(instruccion(proc_main) {
+			CodeBlock.addLabel(labelMain);
+			CodeBlock.addBlock(insts);
+		} )*
 		<tEND>
 		<tPC>
 		< EOF >
