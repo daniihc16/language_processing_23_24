@@ -77,6 +77,7 @@ TOKEN : {
 |    < tNULL: "null" >
 |    < tARRAY: "array" >
 |    < tRETURN: "return" >
+|	 < tEXIT: "exit" >
 
 
     //Tipos de datos
@@ -207,6 +208,7 @@ void Programa() :
 	CodeBlock cb = new CodeBlock();
 	CodeBlock cbProcsFuncs = new CodeBlock();
 	CodeBlock insts = new CodeBlock();
+	long dirBase = 3;
 }
 {
    try {
@@ -218,7 +220,7 @@ void Programa() :
 			cb.addComment("Entrada al programa");
 			cb.addInst(PCodeInstruction.OpCode.ENP, labelMain);
 		}
-		( vars = declaracion_variables() )? {
+		( vars = declaracion_variables(dirBase) )? {
 			if (vars != null) {
 				for (Symbol var : vars) {
 					SemanticFunctions.insertSymbol(st, var);
@@ -252,13 +254,13 @@ void Programa() :
 
 }
 
-ArrayList<Symbol> declaracion_variables() :
+ArrayList<Symbol> declaracion_variables(long dirBase) :
 {
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
     ArrayList<Symbol> var_list = null;
 }
 {
-    ( var_list = declaracion_var() {
+    ( var_list = declaracion_var(dirBase) {
    	 	for (Symbol var: var_list) vars.add(var);
     } )+ {
    	 	return vars;
@@ -266,7 +268,7 @@ ArrayList<Symbol> declaracion_variables() :
 }
     
 
-ArrayList<Symbol> declaracion_var() :
+ArrayList<Symbol> declaracion_var(long dirBase) :
 {
     ArrayList<String> ids;
     ArrayList<Symbol> vars;
@@ -274,7 +276,7 @@ ArrayList<Symbol> declaracion_var() :
 {
     try {
 		// tipo_dato devuelve el símbolo
-		ids = lista_ids() <tDP> vars = tipo_dato(ids, false) <tPC> {
+		ids = lista_ids() <tDP> vars = tipo_dato(ids, false, dirBase) <tPC> {
 			return vars;
 		}
     } catch (ParseException e) {
@@ -294,6 +296,7 @@ CodeBlock declaracion_procs_funcs() :
 {
 	CodeBlock cb = new CodeBlock();
 	CodeBlock cbInternal = new CodeBlock();
+	long dirBase = 3;
 }
 {
     ( cbInternal = declaracion_proc() | cbInternal = declaracion_func() {
@@ -334,7 +337,7 @@ void declaracion_proc():
 			cb.addComment("Procedimiento " + proc.name);
 			cb.insetInst(PCodeInstruction.OpCode.JMP, labelProc);
 		}
-		( vars = declaracion_variables() )? {
+		( vars = declaracion_variables(dirBase) )? {
 			if (vars != null) {
 				for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 			} else {
@@ -371,6 +374,7 @@ void declaracion_func():
 {
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
     SymbolFunction func = null;
+	long dirBase = 3;
 }
 {
     
@@ -378,9 +382,10 @@ void declaracion_func():
 		func = cabecera_funcion() {
 			SemanticFunctions.newFuncBlock(st, func);
 		}
-		( vars = declaracion_variables() )? {
+		( vars = declaracion_variables(dirBase) )? {
 			if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 		}
+		( declaracion_procs_funcs() )?
 		<tBEGIN>
 		(instruccion(func))+ // Pasamos el símbolo de la función para que se pueda comprobar el return
 		<tEND>
@@ -400,14 +405,14 @@ void declaracion_func():
     }
 }
 
-ArrayList<Symbol> declaracion_param() :
+ArrayList<Symbol> declaracion_param(long dirBase) :
 {
     ArrayList<String> ids;
     ArrayList<Symbol> ids_con_tipo;
     Token ref = null;
 }
 {
-    ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref != null)
+    ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref != null, dirBase)
     {
    	 	return ids_con_tipo;
     }
@@ -467,18 +472,18 @@ SymbolFunction cabecera_funcion():
 }
 
 // Devuelve el array con los símbolos de los identificadores con su tipo
-ArrayList<Symbol> parametros_formales():
+ArrayList<Symbol> parametros_formales(long dirBase):
 {
     ArrayList<Symbol> params = new ArrayList<Symbol>();
     ArrayList<Symbol> ps, resto_p;
 }
 {
     try {
-		( <tAPAR>    ps = declaracion_param() {
+		( <tAPAR>    ps = declaracion_param(dirBase) {
 				for (Symbol p :  ps) params.add(p);
 			}
 		
-			resto_p = lista_parametros_formales() {
+			resto_p = lista_parametros_formales(dirBase) {
 				for (Symbol p :  resto_p) params.add(p);
 			} <tCPAR> // con parámetros
 		| "" ) // sin parámetros (épsilon)
@@ -494,13 +499,13 @@ ArrayList<Symbol> parametros_formales():
     { return params; }
 }
 
-ArrayList<Symbol> lista_parametros_formales():
+ArrayList<Symbol> lista_parametros_formales(long dirBase):
 {
     ArrayList<Symbol> params = new ArrayList<Symbol>();
     ArrayList<Symbol> ps, resto_p;
 }
 {
-    (<tPC> ps = declaracion_param(){
+    (<tPC> ps = declaracion_param(dirBase){
 		for (Symbol p :  ps) params.add(p);
 	}
    	resto_p = lista_parametros_formales() {
@@ -520,13 +525,14 @@ CodeBlock instruccion(Symbol where) :
 {
     try {
 		(inst_leer()
-		|   <tSKIPLINE>
+		|   inst_skipline()
 		|    inst_escribir()
 		|   inst_escribir_linea()
 		|   inst_invocacion_o_asignacion()
 		|   inst_if(where)
 		|   inst_while(where)
 		|   inst_return(where)
+		|   inst_exit()
 		|   <tNULL>) <tPC>
     } catch (ParseException e) {
 		System.err.println("SYNTAX_ERROR: " + e.getMessage());
@@ -634,6 +640,23 @@ CodeBlock inst_return(Symbol sf) :
 		SemanticFunctions.inst_return(exp, sf, treturn);
 		if(Constants.verbose) System.out.println("Encontrada instrucción return correcta en línea: " + String.valueOf(treturn.beginLine));
 	}
+}
+
+
+CodeBlock inst_exit() :
+{
+	Token texit = null;
+}
+{
+	texit = <tEXIT> {
+		if(Constants.verbose) System.out.println("Encontrada instrucción exit correcta en línea: " + String.valueOf(texit.beginLine));
+	}
+}
+
+CodeBlock inst_skipline() : 
+{}
+{
+	<tSKIPLINE>
 }
 
 TypeValue expresion():
@@ -773,12 +796,42 @@ TypeValue invoc_o_asign_primario():
 	ArrayList<TypeValue> exps = null;
 }
 {
-	LOOKAHEAD(2) id = <tID> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
-		return SemanticFunctions.invoc_func_o_comp_array(id, exps, st);
+	LOOKAHEAD(2) id = <tID> <tAPAR> {
+		// distinguir si id es func/proc o array
+		// si es func/proc -> instanciar attributes a "EnInvocacion" + poner en attributes todos los parámetros y sus tipos (val/ref)
+		// si es array -> no hace falta, todo es por valor
+	} exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
+		TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, st);
+		// mirar ts con id.img para obtener el Symbol.dir
+		// si id es func/proc -> apilar + osf
+		// si id es comp. vector
+			// si es por ref -> srf
+			// si no -> srf + drf
+		return semanticResult;
     }
 	|    
 	id = <tID> /*var. o func. sin pars*/ {
-		return SemanticFunctions.var_o_func_sin_params(id, st);
+		TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
+		// generar codigo
+
+		// invocación a función
+		// mirar ts con id.img para obtener el Symbol.dir
+		// si id es escalar 
+			// si se pasa por ref 
+				// si id es una ref -> srf + drf
+				// si no -> srf
+			// si no
+				// si id es una ref -> srf + drf + drf
+				// si no -> srf + drf
+		// si id es vector
+			// si se pasa por ref
+				// si id es una ref -> srf + drf
+				// si no -> srf
+			// si no
+				// si id es una ref -> srf + drf (ahora tienes @vector) + n*(srf + drf) (cargas todas las componentes con el offset en un bucle)
+				// si no -> n*(srf + drf)
+		// si id es funcion/proc -> osf
+		return semanticResult;
     }
 }
 

@@ -56,7 +56,8 @@ public class SemanticFunctions {
        for (int i=0; i<ids.size(); i++) {
 		   SymbolArray symarr = new SymbolArray(ids.get(i), minInd, maxInd, t.get(i).type, p_class);
 		   symarr.dir = dirBase;
-		   dirBase++;
+		   if (isRef) dirBase++;
+		   else dirBase += maxInd - minInd;
            ids_con_tipo.add(symarr);
        }
        return ids_con_tipo;

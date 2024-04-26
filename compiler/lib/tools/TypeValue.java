@@ -31,9 +31,6 @@ public class TypeValue<T> {
     // (para evitar que se intente asignar a una variable)
     public boolean resultOfInvocation = false;
 
-    //Si el tipo valor corresponde a una variable, se guarda su nombre para poder acceder a la tabla de símbolos
-    public String name = ""; 
-
     public TypeValue(Symbol.Types type_, T value_, boolean isLiteral_) {
         this.value = value_;
         this.type = type_;
