@@ -146,15 +146,20 @@ Token boolconst():
 // Devuelve el array con los símbolos de los identificadores con su tipo
 // @param ids: lista de identificadores a los que se les va a asignar un tipo
 // @param ref: token que indica si el tipo es por referencia
-ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef):
+ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef, long dirBase):
 {
     ArrayList<Symbol> t;
     Token neg1 = null, neg2 = null, min, max;
 }
 {
-    t = tipo_base(ids, isRef) { return t; }
+    t = tipo_base(ids, isRef) { 
+		for (Symbol sym:t) {
+			sym.dir = dirBase;
+			dirBase++;
+		}
+	}
     | <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, isRef) {
-   	 return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);
+   	 return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2, dirBase);
     }
 }
 
@@ -201,6 +206,7 @@ void Programa() :
 	Label labelMain = null;
 	CodeBlock cb = new CodeBlock();
 	CodeBlock cbProcsFuncs = new CodeBlock();
+	CodeBlock insts = new CodeBlock();
 }
 {
    try {
@@ -227,9 +233,9 @@ void Programa() :
 			cb.addBlock(cbProcsFuncs);
 		} )?
 		<tBEGIN>
-		(instruccion(proc_main) {
-			// cb.addLabel(labelMain);
-			// cb.addBlock(insts);
+		{cb.addLabel(labelMain);}
+		( insts = instruccion(proc_main) {
+			cb.addBlock(insts);
 		} )*
 		<tEND>
 		<tPC>
@@ -320,7 +326,7 @@ void declaracion_proc():
 			// a(x, y, z[]) -> push x (srf + drf); push y; push z  -> |					z3,z2,z1,y,x| -> push z..
 				// si es por valor
 					// si es escalar -> srf + asgi
-					// si es vector -> n*(srf + asgi) | 
+					// si es vector -> n*(srf + asgi) (4n instrucciones entre apilar y desapilar) | 
 				// si es por ref
 					// si es escalar -> srf + asgi
 					// si es vector -> srf + asgi
@@ -507,8 +513,10 @@ ArrayList<Symbol> lista_parametros_formales():
 
 //where es el símbolo de la función o el procedimiento en la que se encuentra la instrucción
 //Usado para comprobar que el return tiene el tipo correcto y no hay return en procedimientos
-void instruccion(Symbol where) :
-{}
+CodeBlock instruccion(Symbol where) :
+{
+	CodeBlock cb = null;
+}
 {
     try {
 		(inst_leer()
@@ -532,19 +540,21 @@ void instruccion(Symbol where) :
 
 }
 
-void inst_leer() :
+CodeBlock inst_leer() :
 {
     ArrayList<TypeValue> exps = null;
 	Token get = null;	// Token usado para que en caso de error se pueda mostrar la línea y columna
+	CodeBlock cb = null;
 }
 {
     get = <tGET> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
-		SemanticFunctions.inst_leer(exps, get);
+		cb = SemanticFunctions.inst_leer(exps, get);
 		if(Constants.verbose) System.out.println("Encontrada instrucción get correcta");
+		return cb;
     }
 }
 
-void inst_escribir() :
+CodeBlock inst_escribir() :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 	Token put = null;
@@ -556,7 +566,7 @@ void inst_escribir() :
     }
 }
 
-void inst_escribir_linea() :
+CodeBlock inst_escribir_linea() :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 	Token put = null;
@@ -569,7 +579,7 @@ void inst_escribir_linea() :
     }
 }
 
-void inst_invocacion_o_asignacion() :
+CodeBlock inst_invocacion_o_asignacion() :
 {
 	TypeValue p = null, exp = null;
 	Token asign = null;
@@ -584,7 +594,7 @@ void inst_invocacion_o_asignacion() :
 	}
 }
 
-void inst_if(Symbol sf) :
+CodeBlock inst_if(Symbol sf) :
 {
 	TypeValue expif = null, expelsif = null;
 	Token tif = null, elsif = null;
@@ -601,7 +611,7 @@ void inst_if(Symbol sf) :
     <tEND> <tIF>
 }
 
-void inst_while(Symbol sf) :
+CodeBlock inst_while(Symbol sf) :
 {
 	TypeValue exp = null;
 	Token twhile = null;
@@ -614,7 +624,7 @@ void inst_while(Symbol sf) :
 }
 
 
-void inst_return(Symbol sf) :
+CodeBlock inst_return(Symbol sf) :
 {
 	TypeValue exp = null;
 	Token treturn = null;
