@@ -27,6 +27,10 @@ public class SymbolTable {
     private final int HASH_SIZE = 1023; //buckets
     private ArrayList<HashMap<String, Symbol>> st;
     private String mainProc;
+    
+    // No es una pila con cada dirección base de cada bloque por que alike no permite la declaración de variables
+    // tras la declaración de un procedimiento o función
+    private long dirBase;
 
     public int level; //nivel actual
 
@@ -40,6 +44,7 @@ public class SymbolTable {
     public void insertBlock() {
         st.add(new HashMap<String, Symbol>(HASH_SIZE));
         level++;
+        dirBase = 3;
     }
 
     //elimina un bloque
@@ -56,6 +61,12 @@ public class SymbolTable {
             throw new AlreadyDefinedSymbolException();
         } else {
             s.nivel = level;
+            s.dir = dirBase;
+            if (s.type == Symbol.Types.ARRAY) {
+                SymbolArray sar = (SymbolArray)s;
+                dirBase += sar.maxInd - sar.minInd;
+            }
+            dirBase++;
             currentBlock.put(s.name.toLowerCase(), s);
         }
     }

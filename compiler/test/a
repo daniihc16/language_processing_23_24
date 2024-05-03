@@ -1,0 +1,49 @@
+<ProcedimientoPrincipal>
+; --Entrada al programa
+  ENP L0:
+L0::
+  STC 34
+  WRT 48
+  STC 97
+  WRT 48
+  STC 95
+  WRT 48
+  STC 114
+  WRT 48
+  STC 97
+  WRT 48
+  STC 118
+  WRT 48
+  STC 34
+  WRT 48
+  STC 10
+  WRT  0
+  STC 34
+  WRT 48
+  STC 98
+  WRT 48
+  STC 95
+  WRT 48
+  STC 114
+  WRT 48
+  STC 97
+  WRT 48
+  STC 118
+  WRT 48
+  STC 34
+  WRT 48
+  STC 10
+  WRT  0
+  STC 34
+  WRT 48
+  STC 98
+  WRT 48
+  STC 43
+  WRT 48
+  STC 97
+  WRT 48
+  STC 34
+  WRT 48
+  STC 10
+  WRT  0
+</ProcedimientoPrincipal>

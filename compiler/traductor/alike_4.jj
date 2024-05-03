@@ -22,36 +22,53 @@ import lib.tools.TypeValue;
 import lib.tools.SemanticFunctions;
 import lib.tools.exceptions.*;
 import lib.tools.Constants;
+import lib.tools.codeGeneration.*;
+import lib.tools.Attributes;
+import java.io.*;
+
 
 
 public class alike {
    //...
-   public static SymbolTable st = new SymbolTable();
-   public static void main(String[] args) {
-   	alike parser = null;
-       
-   	try {
-   		if(args.length == 0) {
-   			parser = new alike(System.in);
-   		}
-   		else {
-   			parser = new alike(new java.io.FileInputStream(args[0]));
-   		}
-   		//Programa es el símbolo inicial de la gramática
-   		parser.Programa();
-   		//...
-   		System.out.println("***** Análisis terminado con éxito *****");
-   	}
-   	catch (java.io.FileNotFoundException e) {
-   		System.err.println ("Fichero " + args[0] + " no encontrado.");
-   	}
-   	catch (TokenMgrError e) {
-   		System.err.println("LEX_ERROR: " + e.getMessage());
-   	}
-   	catch (ParseException e) {
-   		 System.err.println("SYNTAX_ERROR: " + e.getMessage());
-   	}
-   	//...
+	public static SymbolTable st = new SymbolTable();
+	public static void main(String[] args) {
+		alike parser = null;
+		
+		// Parseamos las opciones de la línea de comandos para inicializar las Constants
+		// flags posibles: -v, -x, -v = verbose, -x = xmlOutput
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals("-v")) {
+				Constants.verbose = true;
+			} else if (args[i].equals("-x")) {
+				Constants.xmlOutput = true;
+			}
+		}
+
+		try {
+			if(args.length == 0) {
+				parser = new alike(System.in);
+			}
+			else {
+				parser = new alike(new java.io.FileInputStream(args[0]));
+			}
+			//Programa es el símbolo inicial de la gramática
+			parser.Programa(args[args.length - 1].split("\\.")[0]);
+			//...
+			System.out.println("***** Análisis terminado con éxito *****");
+		}
+		catch (java.io.FileNotFoundException e) {
+			System.err.println ("Fichero " + args[0] + " no encontrado.");
+		}
+		catch (TokenMgrError e) {
+			System.err.println("LEX_ERROR: " + e.getMessage());
+			Constants.errorFree = false;
+
+		}
+		catch (ParseException e) {
+			System.err.println("SYNTAX_ERROR: " + e.getMessage());
+			Constants.errorFree = false;
+		}
+		//...
    }
 }
 PARSER_END(alike)
@@ -147,20 +164,17 @@ Token boolconst():
 // Devuelve el array con los símbolos de los identificadores con su tipo
 // @param ids: lista de identificadores a los que se les va a asignar un tipo
 // @param ref: token que indica si el tipo es por referencia
-ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef, long dirBase):
+ArrayList<Symbol> tipo_dato(ArrayList<String> ids, boolean isRef):
 {
     ArrayList<Symbol> t;
     Token neg1 = null, neg2 = null, min, max;
 }
 {
-    t = tipo_base(ids, isRef) { 
-		for (Symbol sym:t) {
-			sym.dir = dirBase;
-			dirBase++;
-		}
+    t = tipo_base(ids, isRef){
+   	 	return t;
 	}
     | <tARRAY> <tAPAR> ( neg1 = <tMINUS>)? min = <tINTCONST> <tRANGE> ( neg2 = <tMINUS>)?  max = <tINTCONST> <tCPAR> <tOF> t = tipo_base(ids, isRef) {
-   	 return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2, dirBase);
+   	 return SemanticFunctions.simbolos_con_tipo(ids, isRef, t, min, max, neg1, neg2);
     }
 }
 
@@ -179,28 +193,52 @@ ArrayList<Symbol> tipo_base(ArrayList<String> ids, boolean isRef):
 }
 
 
-TypeValue tipo_constante():
+// Devuelve el typevalue con el valor de la constante
+// Apila el valor de la constante, y si es un string y se tiene que escribir también genera los WRT
+TypeValue tipo_constante(Attributes at, CodeBlock cb):
 {
     Token char_const = null;
     Token int_const = null;
     Token bool_const = null;
     Token string_const = null;
+	TypeValue tv = null;
 }
 {
     char_const = <tCHARCONST> {
-   	 	return new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));
+   	 	tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));
+		if (Constants.errorFree) {
+			cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
+			at.cbInst(tv.type, cb);
+		}
+		return tv;
     } | int_const = <tINTCONST> {
-   	 	return new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
+		tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
+		if (Constants.errorFree) {
+			cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
+		}
+		return tv;
     } | bool_const = boolconst() {
-   	 	return new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
+		tv = new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
+		if (Constants.errorFree) {
+			cb.addInst(PCodeInstruction.OpCode.STC, (boolean)tv.value ? 1 : 0);
+		}
+		return tv;
     } | string_const = <tSTRING> {
-   	 	return new TypeValue(Symbol.Types.STRING, string_const.image);
+		tv = new TypeValue(Symbol.Types.STRING, string_const.image);
+		if (Constants.errorFree) {
+			// Recorremos el string y lo vamos apilando de final a inicio
+			for (int i = string_const.image.length() - 1; i >= 0; i--) {
+				cb.addInst(PCodeInstruction.OpCode.STC, (int)(string_const.image.charAt(i)));
+				at.cbInst(Symbol.Types.CHAR, cb);
+			}
+		}
+   	 	return tv;
     }
 }
 
 
 //------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
-void Programa() :
+void Programa(String outputFile) :
 {
     SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
     ArrayList<Symbol> vars = null;
@@ -208,7 +246,6 @@ void Programa() :
 	CodeBlock cb = new CodeBlock();
 	CodeBlock cbProcsFuncs = new CodeBlock();
 	CodeBlock insts = new CodeBlock();
-	long dirBase = 3;
 }
 {
    try {
@@ -216,11 +253,11 @@ void Programa() :
 			SemanticFunctions.insertSymbol(st, proc_main);
 			st.setMainProc(proc_main.name);
 			// generar etiqueta de procmain	
-			labelMain = CGUtils.newLabel();
+			labelMain = new Label(CGUtils.newLabel());
 			cb.addComment("Entrada al programa");
-			cb.addInst(PCodeInstruction.OpCode.ENP, labelMain);
+			cb.addInst(PCodeInstruction.OpCode.ENP, labelMain.toString());
 		}
-		( vars = declaracion_variables(dirBase) )? {
+		( vars = declaracion_variables() )? {
 			if (vars != null) {
 				for (Symbol var : vars) {
 					SemanticFunctions.insertSymbol(st, var);
@@ -235,15 +272,31 @@ void Programa() :
 			cb.addBlock(cbProcsFuncs);
 		} )?
 		<tBEGIN>
-		{cb.addLabel(labelMain);}
+		{cb.addLabel(labelMain.toString());}
 		( insts = instruccion(proc_main) {
 			cb.addBlock(insts);
 		} )*
 		<tEND>
 		<tPC>
-		< EOF > { cb.encloseXMLTags("ProcedimientoPrincipal"); }
+		< EOF > { 
+			cb.encloseXMLTags("ProcedimientoPrincipal");
+			if (Constants.errorFree) {
+				try {
+					BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+					writer.write(cb.toString());
+					writer.close();
+					System.out.println("Generado código en " + outputFile);
+				} catch (Exception e) {
+					System.out.println("Error escribiendo en " + outputFile);
+				}				
+				
+			} else System.err.println("***** No se ha generado código *****");
+			
+		}
     } catch (ParseException e) {
 		System.err.println("SYNTAX_ERROR: " + e.getMessage());
+		Constants.errorFree = false;
+
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -254,13 +307,13 @@ void Programa() :
 
 }
 
-ArrayList<Symbol> declaracion_variables(long dirBase) :
+ArrayList<Symbol> declaracion_variables() :
 {
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
     ArrayList<Symbol> var_list = null;
 }
 {
-    ( var_list = declaracion_var(dirBase) {
+    ( var_list = declaracion_var() {
    	 	for (Symbol var: var_list) vars.add(var);
     } )+ {
    	 	return vars;
@@ -268,7 +321,7 @@ ArrayList<Symbol> declaracion_variables(long dirBase) :
 }
     
 
-ArrayList<Symbol> declaracion_var(long dirBase) :
+ArrayList<Symbol> declaracion_var() :
 {
     ArrayList<String> ids;
     ArrayList<Symbol> vars;
@@ -276,11 +329,13 @@ ArrayList<Symbol> declaracion_var(long dirBase) :
 {
     try {
 		// tipo_dato devuelve el símbolo
-		ids = lista_ids() <tDP> vars = tipo_dato(ids, false, dirBase) <tPC> {
+		ids = lista_ids() <tDP> vars = tipo_dato(ids, false) <tPC> {
 			return vars;
 		}
     } catch (ParseException e) {
 		System.err.println("SYNTAX_ERROR: " + e.getMessage());
+		Constants.errorFree = false;
+
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -296,24 +351,28 @@ CodeBlock declaracion_procs_funcs() :
 {
 	CodeBlock cb = new CodeBlock();
 	CodeBlock cbInternal = new CodeBlock();
-	long dirBase = 3;
 }
 {
     ( cbInternal = declaracion_proc() | cbInternal = declaracion_func() {
 		cb.addBlock(cbInternal);
-	} )+
+	} )+ {
+		return cb;
+	
+	}
 }
 
 // Reconoce la declaración de un procedimiento
 // Inserta el símbolo del procedimiento en la tabla de símbolos
 // Inserta bloque en la tabla de símbolos
 // Inserta los parámetros y variables en la tabla de símbolos
-void declaracion_proc():
+CodeBlock declaracion_proc():
 {
     SymbolProcedure proc = null;
     ArrayList<Symbol> vars = null;
 	CodeBlock cb = new CodeBlock();
 	Label labelProc = null;
+	CodeBlock cbProcsFuncs = new CodeBlock();
+	CodeBlock insts = new CodeBlock();
 }
 {
     try {
@@ -333,35 +392,43 @@ void declaracion_proc():
 				// si es por ref
 					// si es escalar -> srf + asgi
 					// si es vector -> srf + asgi
-			labelProc = CGUtils.newLabel();
+			labelProc = new Label(CGUtils.newLabel());
 			cb.addComment("Procedimiento " + proc.name);
-			cb.insetInst(PCodeInstruction.OpCode.JMP, labelProc);
+			cb.addInst(PCodeInstruction.OpCode.JMP, labelProc.toString());
 		}
-		( vars = declaracion_variables(dirBase) )? {
+		( vars = declaracion_variables() )? {
 			if (vars != null) {
 				for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 			} else {
 				vars = new ArrayList<Symbol>();
 			}
 		}
-		( declaracion_procs_funcs() )?
+		
+		( cbProcsFuncs = declaracion_procs_funcs() {
+			cb.addBlock(cbProcsFuncs);
+		})?
 		<tBEGIN>
-		(instruccion(proc))+
+		{cb.addLabel(labelProc.toString());}
+		( insts = instruccion(proc) {
+			cb.addBlock(insts);
+		})+
 		<tEND>
 		<tPC>
 		{
 			if(Constants.verbose) System.out.println("Procedimiento reconocido: " + st.toString());
 			st.removeBlock();
 			cb.encloseXMLTags(proc.name);
+			return cb;
 		}
     } catch (ParseException e) {
 		System.err.println("SYNTAX ERROR: " + e.getMessage());
-
+		Constants.errorFree = false;
 		// Reconocer hasta el token <tPC>
 		while (true) {
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
+		return cb;
     }
 }
 
@@ -370,49 +437,65 @@ void declaracion_proc():
 // Inserta el símbolo de la función en la tabla de símbolos
 // Inserta bloque en la tabla de símbolos
 // Inserta los parámetros y variables en la tabla de símbolos
-void declaracion_func():
+CodeBlock declaracion_func():
 {
     ArrayList<Symbol> vars = new ArrayList<Symbol>();
     SymbolFunction func = null;
-	long dirBase = 3;
+	CodeBlock cb = new CodeBlock();
+	Label labelFunc = null;
+	CodeBlock cbProcsFuncs = new CodeBlock();
+	CodeBlock insts = new CodeBlock();
 }
 {
     
     try {
 		func = cabecera_funcion() {
 			SemanticFunctions.newFuncBlock(st, func);
+			labelFunc = new Label(CGUtils.newLabel());
+			cb.addComment("Procedimiento " + func.name);
+			cb.addInst(PCodeInstruction.OpCode.JMP, labelFunc.toString());
 		}
-		( vars = declaracion_variables(dirBase) )? {
+		( vars = declaracion_variables() )? {
 			if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 		}
-		( declaracion_procs_funcs() )?
+		( cbProcsFuncs = declaracion_procs_funcs() {
+			cb.addBlock(cbProcsFuncs);
+		})?
 		<tBEGIN>
-		(instruccion(func))+ // Pasamos el símbolo de la función para que se pueda comprobar el return
+		{cb.addLabel(labelFunc.toString());}
+		( insts = instruccion(func) {
+			cb.addBlock(insts);
+		})+ // Pasamos el símbolo de la función para que se pueda comprobar el return
 		<tEND>
 		<tPC>
 		{
 			if(Constants.verbose) System.out.println("Función reconocida: " + st.toString());
 			st.removeBlock();
+			cb.encloseXMLTags(func.name);
+			return cb;
 		}
     } catch (ParseException e) {
 		System.err.println("SYNTAX_ERROR: " + e.getMessage());
+		Constants.errorFree = false;
+
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
+		return cb;
     }
 }
 
-ArrayList<Symbol> declaracion_param(long dirBase) :
+ArrayList<Symbol> declaracion_param() :
 {
     ArrayList<String> ids;
     ArrayList<Symbol> ids_con_tipo;
     Token ref = null;
 }
 {
-    ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref != null, dirBase)
+    ids = lista_ids() <tDP> ( ref=<tREF> )? ids_con_tipo = tipo_dato(ids, ref != null)
     {
    	 	return ids_con_tipo;
     }
@@ -472,23 +555,25 @@ SymbolFunction cabecera_funcion():
 }
 
 // Devuelve el array con los símbolos de los identificadores con su tipo
-ArrayList<Symbol> parametros_formales(long dirBase):
+ArrayList<Symbol> parametros_formales():
 {
     ArrayList<Symbol> params = new ArrayList<Symbol>();
     ArrayList<Symbol> ps, resto_p;
 }
 {
     try {
-		( <tAPAR>    ps = declaracion_param(dirBase) {
+		( <tAPAR>    ps = declaracion_param() {
 				for (Symbol p :  ps) params.add(p);
 			}
 		
-			resto_p = lista_parametros_formales(dirBase) {
+			resto_p = lista_parametros_formales() {
 				for (Symbol p :  resto_p) params.add(p);
 			} <tCPAR> // con parámetros
 		| "" ) // sin parámetros (épsilon)
     } catch (ParseException e) {
 		System.err.println("SYNTAX_ERROR: " + e.getMessage());
+		Constants.errorFree = false;
+
 
 		// Reconocer hasta el token <tPC>
 		while (true) {
@@ -499,13 +584,13 @@ ArrayList<Symbol> parametros_formales(long dirBase):
     { return params; }
 }
 
-ArrayList<Symbol> lista_parametros_formales(long dirBase):
+ArrayList<Symbol> lista_parametros_formales():
 {
     ArrayList<Symbol> params = new ArrayList<Symbol>();
     ArrayList<Symbol> ps, resto_p;
 }
 {
-    (<tPC> ps = declaracion_param(dirBase){
+    (<tPC> ps = declaracion_param(){
 		for (Symbol p :  ps) params.add(p);
 	}
    	resto_p = lista_parametros_formales() {
@@ -520,23 +605,25 @@ ArrayList<Symbol> lista_parametros_formales(long dirBase):
 //Usado para comprobar que el return tiene el tipo correcto y no hay return en procedimientos
 CodeBlock instruccion(Symbol where) :
 {
-	CodeBlock cb = null;
+	CodeBlock cb = new CodeBlock();
 }
 {
     try {
-		(inst_leer()
-		|   inst_skipline()
-		|    inst_escribir()
-		|   inst_escribir_linea()
-		|   inst_invocacion_o_asignacion()
-		|   inst_if(where)
-		|   inst_while(where)
-		|   inst_return(where)
-		|   inst_exit()
-		|   <tNULL>) <tPC>
+		(  cb = inst_leer()
+		|  cb = inst_skipline()
+		|  cb = inst_escribir()
+		|  cb = inst_escribir_linea()
+		|  cb = inst_invocacion_o_asignacion()
+		|  cb = inst_if(where)
+		|  cb = inst_while(where)
+		|  cb = inst_return(where)
+		|  cb = inst_exit()
+		|  <tNULL>) <tPC> {
+			return cb;
+		}
     } catch (ParseException e) {
 		System.err.println("SYNTAX_ERROR: " + e.getMessage());
-
+		Constants.errorFree = false;
 		// Reconocer hasta el token <tPC>
 		while (true) {
 			Token t = getNextToken();
@@ -550,12 +637,15 @@ CodeBlock inst_leer() :
 {
     ArrayList<TypeValue> exps = null;
 	Token get = null;	// Token usado para que en caso de error se pueda mostrar la línea y columna
-	CodeBlock cb = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.EnInvocacion, Attributes.DequeueMethod.Peek, PCodeInstruction.OpCode.RD);
+	attrs.setQueue(Symbol.ParameterClass.REF);
 }
 {
-    get = <tGET> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
-		cb = SemanticFunctions.inst_leer(exps, get);
+    get = <tGET> <tAPAR> exps = lista_una_o_mas_exps(attrs, cb) <tCPAR> {
+		SemanticFunctions.inst_leer(exps, get);
 		if(Constants.verbose) System.out.println("Encontrada instrucción get correcta");
+		if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("get");
 		return cb;
     }
 }
@@ -564,11 +654,16 @@ CodeBlock inst_escribir() :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 	Token put = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.EnInvocacion, Attributes.DequeueMethod.Peek, PCodeInstruction.OpCode.WRT);
+	attrs.setQueue(Symbol.ParameterClass.VAL);
 }
 {
-    put = <tPUT> <tAPAR> exps = lista_una_o_mas_exps() <tCPAR> {
+    put = <tPUT> <tAPAR> exps = lista_una_o_mas_exps(attrs, cb) <tCPAR> {
 		SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
 		if(Constants.verbose) System.out.println("Encontrada instrucción put correcta");
+		if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("put");
+		return cb;
     }
 }
 
@@ -576,12 +671,22 @@ CodeBlock inst_escribir_linea() :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
 	Token put = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.EnInvocacion, Attributes.DequeueMethod.Peek, PCodeInstruction.OpCode.WRT);
+	attrs.setQueue(Symbol.ParameterClass.VAL);
 }
 {
-    put = <tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps()    <tCPAR>)? {
+    put = <tPUTLINE> (<tAPAR> exps = lista_una_o_mas_exps(attrs, cb)    <tCPAR>)? {
 		SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
 		if(Constants.verbose) System.out.println("Encontrada instrucción put_line correcta");
-		// Añadir un salto de línea al final en la generación de código
+		if	(Constants.errorFree) {
+			// Añadir un salto de línea al final en la generación de código
+			cb.addInst(PCodeInstruction.OpCode.STC, 10);
+			cb.addInst(PCodeInstruction.OpCode.WRT, 0);
+			if (Constants.xmlOutput) cb.encloseXMLTags("put_line");
+		} 
+		return cb;
+	
     }
 }
 
@@ -589,14 +694,17 @@ CodeBlock inst_invocacion_o_asignacion() :
 {
 	TypeValue p = null, exp = null;
 	Token asign = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.EnInvocacion, Attributes.DequeueMethod.Remove);
 }
 {
-	p = invoc_o_asign_primario() (asign = <tASIGN> exp = expresion())? {
+	p = invoc_o_asign_primario(attrs, cb) (asign = <tASIGN> exp = expresion(attrs, cb))? {
 		SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
 		if(Constants.verbose) {
 			if (asign != null) System.out.println("Invocación correcta en línea: " + String.valueOf(asign.beginLine));
 			else System.out.println("Invocación correcta");
 		}
+		return cb;
 	}
 }
 
@@ -604,28 +712,33 @@ CodeBlock inst_if(Symbol sf) :
 {
 	TypeValue expif = null, expelsif = null;
 	Token tif = null, elsif = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
     // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
-    tif = <tIF> expif = expresion() <tTHEN> {
+    tif = <tIF> expif = expresion(attrs, cb) <tTHEN> {
 		SemanticFunctions.inst_if(expif, tif);
 	} (instruccion(sf))+
-    (elsif = <tELSIF> expelsif = expresion() <tTHEN>  {
+    (elsif = <tELSIF> expelsif = expresion(attrs, cb) <tTHEN>  {
 		SemanticFunctions.inst_if(expelsif, elsif);
 	} (instruccion(sf))+ )*
     (<tELSE> (instruccion(sf))+)?
-    <tEND> <tIF>
+    <tEND> <tIF> {return cb;}
 }
 
 CodeBlock inst_while(Symbol sf) :
 {
 	TypeValue exp = null;
 	Token twhile = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
-    twhile = <tWHILE> exp = expresion() <tLOOP> (instruccion(sf))+ <tEND> <tLOOP> {
+    twhile = <tWHILE> exp = expresion(attrs, cb) <tLOOP> (instruccion(sf))+ <tEND> <tLOOP> {
 		SemanticFunctions.inst_while(exp, twhile);
-		if(Constants.verbose) System.out.println("Encontrada instrucción while correcta en línea: " + String.valueOf(twhile.beginLine)); 
+		if(Constants.verbose) System.out.println("Encontrada instrucción while correcta en línea: " + String.valueOf(twhile.beginLine));
+		return cb; 
 	}
 }
 
@@ -634,11 +747,14 @@ CodeBlock inst_return(Symbol sf) :
 {
 	TypeValue exp = null;
 	Token treturn = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
-	treturn = <tRETURN> exp = expresion() {
+	treturn = <tRETURN> exp = expresion(attrs, cb) {
 		SemanticFunctions.inst_return(exp, sf, treturn);
 		if(Constants.verbose) System.out.println("Encontrada instrucción return correcta en línea: " + String.valueOf(treturn.beginLine));
+		return cb;
 	}
 }
 
@@ -646,20 +762,26 @@ CodeBlock inst_return(Symbol sf) :
 CodeBlock inst_exit() :
 {
 	Token texit = null;
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
 	texit = <tEXIT> {
 		if(Constants.verbose) System.out.println("Encontrada instrucción exit correcta en línea: " + String.valueOf(texit.beginLine));
+		return cb;
 	}
 }
 
 CodeBlock inst_skipline() : 
-{}
 {
-	<tSKIPLINE>
+	CodeBlock cb = new CodeBlock();
+	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+}
+{
+	<tSKIPLINE> {return cb;}
 }
 
-TypeValue expresion():
+TypeValue expresion(Attributes at, CodeBlock cb):
 {
     TypeValue prel = null, srel = null;
     Token op = null;
@@ -668,9 +790,10 @@ TypeValue expresion():
 }
 {
 	
-	prel = relacion() ((op = <tAND> srel = relacion() {
+	prel = relacion(at, cb) ((op = <tAND> srel = relacion(at, cb) {
 		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
-	})+ | (op = <tOR> srel = relacion() {
+	})+ 
+	| (op = <tOR> srel = relacion(at, cb) {
 		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
 	})+)? {
 	 	return SemanticFunctions.expresion(prel, result, op, tAND, tOR);
@@ -679,14 +802,29 @@ TypeValue expresion():
 
 
 
-TypeValue relacion():
+TypeValue relacion(Attributes at, CodeBlock cb):
 {
     TypeValue exp1 = null, exp2 = null;    
     Token op = null;
 }
 {
-	exp1 = expresion_simple()
-	( op = operador_relacional() exp2 = expresion_simple() )? {
+	exp1 = expresion_simple(at, cb)
+	( op = operador_relacional() exp2 = expresion_simple(at, cb) )? {
+		if(Constants.verbose) System.out.println("Encontrada relación correcta");
+		if(Constants.errorFree){
+			if (op != null) {
+				cb.addComment("Relación " + op.image);
+				switch(op.kind) {
+					case tEQ: cb.addInst(PCodeInstruction.OpCode.EQ); break;
+					case tNE: cb.addInst(PCodeInstruction.OpCode.NEQ); break;
+					case tLT: cb.addInst(PCodeInstruction.OpCode.LT); break;
+					case tLE: cb.addInst(PCodeInstruction.OpCode.LTE); break;
+					case tGT: cb.addInst(PCodeInstruction.OpCode.GT); break;
+					case tGE: cb.addInst(PCodeInstruction.OpCode.GTE); break;
+				}
+			}
+			
+		} 
 		return SemanticFunctions.relacion(exp1, op, exp2, tEQ, tNE, tLT, tLE, tGT, tGE);
     }
 }
@@ -699,48 +837,47 @@ Token operador_relacional():
     (t = <tEQ> | t = <tNE> | t = <tLT> | t = <tLE> | t = <tGT> | t = <tGE>) { return t; }
 }
 
-TypeValue expresion_simple():
+TypeValue expresion_simple(Attributes at, CodeBlock cb):
 {
     TypeValue term = null, term_resultante = null;
     Token op = null, ops = null;
-    // HACER TESTS DE CADA UNA DE LAS CONDICIONES QUE SE DAN
 }
 {
 	( ops = <tPLUS> | ops =    <tMINUS> )?
-	term = termino()  (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
+	term = termino(at, cb)  (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples(at, cb))? {
 		return SemanticFunctions.expresion_simple(ops, term, op, term_resultante, tPLUS, tMINUS);
     }
 }
 
-TypeValue una_o_mas_expresiones_simples():
+TypeValue una_o_mas_expresiones_simples(Attributes at, CodeBlock cb):
 {
     TypeValue term = null, term_resultante = null;
     Token op = null, ops = null;
 }
 {
-    term = termino() (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples())? {
+    term = termino(at, cb) (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples(at, cb))? {
    	 return SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_resultante, tPLUS, tMINUS);
     }
 }
 
-TypeValue termino():
+TypeValue termino(Attributes at, CodeBlock cb):
 {
     TypeValue fact = null, fact_resultante = null;
     Token op = null;
 }
 {
-    fact = factor() ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos() )? {
+    fact = factor(at, cb) ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(at, cb) )? {
 		return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
     }
 }
 
-TypeValue lista_una_o_mas_terminos():
+TypeValue lista_una_o_mas_terminos(Attributes at, CodeBlock cb):
 {
     TypeValue fact = null, fact_resultante = null;
     Token op = null;
 }
 {
-    fact = factor() ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos())? {
+    fact = factor(at, cb) ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(at, cb))? {
    	 	return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
     }
 }
@@ -753,43 +890,44 @@ Token operador_multiplicativo() :
     (t = <tTIMES> | t = <tDIV> | t = <tMOD>) { return t; }
 }
 
-TypeValue factor():
+TypeValue factor(Attributes at, CodeBlock cb):
 {
     TypeValue p = null;
 	Token not = null;
 }
 {
-    p = primario() {
+    p = primario(at, cb) {
    	 return p;
     }
-    | not = <tNOT> p = primario() {
+    | not = <tNOT> p = primario(at, cb) {
 		return SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);
     }
 }
 
-TypeValue primario() :
+TypeValue primario(Attributes at, CodeBlock cb) :
 {
     TypeValue exp = null;
     Token id = null, fnToken = null;
 }
 {
-	<tAPAR> exp = expresion() <tCPAR> { return exp; }
-|    fnToken = <tINT2CHAR> <tAPAR> exp = expresion() <tCPAR> {
+	<tAPAR> exp = expresion(at, cb) <tCPAR> { return exp; } // new Attributes 
+|    fnToken = <tINT2CHAR> <tAPAR> exp = expresion(at, cb) <tCPAR> {
     // System.out.println(exp.value);
     if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
 	// en gen. de código comprobar que el valor es mayor que 0 ?? 
 	return new TypeValue(Symbol.Types.CHAR, exp.value);
 }	
-|    fnToken = <tCHAR2INT> <tAPAR> exp = expresion() <tCPAR> {
+|    fnToken = <tCHAR2INT> <tAPAR> exp = expresion(at, cb) <tCPAR> {
 	if (exp.type != Symbol.Types.CHAR) UnexpectedTypeException.getMessage(Symbol.Types.CHAR, exp.type, fnToken.beginLine, fnToken.beginColumn);
 	return new TypeValue(Symbol.Types.INT, null);
 
 }
-|    exp = invoc_o_asign_primario() {return exp;}
-|    exp = tipo_constante() { return exp; }
+|    exp = invoc_o_asign_primario(at, cb) {return exp;}
+|    exp = tipo_constante(at, cb) { return exp; }
 }
 
-TypeValue invoc_o_asign_primario():
+// Reconoce a un invocado o a un asignado
+TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 {
 	TypeValue exp = null;
     Token id = null;
@@ -800,7 +938,7 @@ TypeValue invoc_o_asign_primario():
 		// distinguir si id es func/proc o array
 		// si es func/proc -> instanciar attributes a "EnInvocacion" + poner en attributes todos los parámetros y sus tipos (val/ref)
 		// si es array -> no hace falta, todo es por valor
-	} exps = lista_una_o_mas_exps() <tCPAR> /*invoc. func. o comp. array*/ {
+	} exps = lista_una_o_mas_exps(at, cb) <tCPAR> /*invoc. func. o comp. array*/ {
 		TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, st);
 		// mirar ts con id.img para obtener el Symbol.dir
 		// si id es func/proc -> apilar + osf
@@ -813,7 +951,7 @@ TypeValue invoc_o_asign_primario():
 	id = <tID> /*var. o func. sin pars*/ {
 		TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
 		// generar codigo
-
+	
 		// invocación a función
 		// mirar ts con id.img para obtener el Symbol.dir
 		// si id es escalar 
@@ -831,31 +969,35 @@ TypeValue invoc_o_asign_primario():
 				// si id es una ref -> srf + drf (ahora tienes @vector) + n*(srf + drf) (cargas todas las componentes con el offset en un bucle)
 				// si no -> n*(srf + drf)
 		// si id es funcion/proc -> osf
+
+		// usada para cuando estas en inst get/put/put_line
+		// get -> Attributes.ioInst -> RD
+		//attrs.cbInst(type, cb);
 		return semanticResult;
     }
 }
 
-ArrayList<TypeValue> lista_una_o_mas_exps() :
+ArrayList<TypeValue> lista_una_o_mas_exps(Attributes at, CodeBlock cb) :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
     TypeValue exp;
 }
 {
-    exp = expresion() exps = lista_exps_ll()	{
-	exps.add(0, exp);
-	 return exps;
+    exp = expresion(at, cb) exps = lista_exps_ll(at, cb) {
+		exps.add(0, exp);
+		return exps;
     }
 }
 
-ArrayList<TypeValue> lista_exps_ll() :
+ArrayList<TypeValue> lista_exps_ll(Attributes at, CodeBlock cb) :
 {
     ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
     TypeValue exp;
 }
 {
-    <tCOMA> exp = expresion() exps = lista_exps_ll() {
-   	 exps.add(0, exp);
-   	 return exps;
+    <tCOMA> exp = expresion(at, cb) exps = lista_exps_ll(at, cb) {
+		exps.add(0, exp);
+		return exps;
     }
     | {return exps;}
 }
@@ -863,9 +1005,12 @@ ArrayList<TypeValue> lista_exps_ll() :
 
 TOKEN_MGR_DECLS : {
     static void CommonTokenAction(Token token) {
-   	 if (token.kind == tRESTO) System.err.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
-   	 System.err.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
-   	 System.err.println();
+		if (token.kind == tRESTO) {
+			System.err.println("ERROR LEXICO: (" + token.beginLine + ", " + token.beginColumn + "): simbolo no reconocido: " + token.image);
+			Constants.errorFree = false;
+		}
+		System.err.println("(" + token.beginLine + ", " + token.beginColumn + "): " + alikeConstants.tokenImage[token.kind] + " " + token.image);
+		System.err.println();
     }
     
 }

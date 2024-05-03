@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a>
+; --- Program "a"
+  ENP L0
+<constant_variable_declaration>
+; --- Simple variable "var_a", type INT, level 0,  address [3]!
+; --- Simple variable "var_b", type INT, level 0,  address [4]!
+; --- Simple variable "enb", type INT, level 0,  address [5]!
+</constant_variable_declaration>
+L0:
+<a_instruction_block>
+<get>
+; --- Get simple variable/parameter "var_a".
+  SRF  0  3
+  RD  1
+; --- Get simple variable/parameter "var_b".
+  SRF  0  4
+  RD  1
+</get>
+<get>
+; --- Get simple variable/parameter "var_a".
+  SRF  0  3
+  RD  1
+</get>
+<get>
+; --- Get simple variable/parameter "var_b".
+  SRF  0  4
+  RD  1
+</get>
+<put>
+; --- Write STRING "var_a"
+; --- Standard string writing
+  STC 118
+  WRT  0
+  STC 97
+  WRT  0
+  STC 114
+  WRT  0
+  STC 95
+  WRT  0
+  STC 97
+  WRT  0
+</put>
+<put>
+; --- Constant / variable / parameter "var_a"
+  SRF  0  3
+  DRF 
+; --- Put INTEGER
+  WRT  1
+</put>
+<put_line>
+; --- CR/LF
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+</put_line>
+<put>
+; --- Write STRING "var_b"
+; --- Standard string writing
+  STC 118
+  WRT  0
+  STC 97
+  WRT  0
+  STC 114
+  WRT  0
+  STC 95
+  WRT  0
+  STC 98
+  WRT  0
+</put>
+<put>
+; --- Constant / variable / parameter "var_b"
+  SRF  0  4
+  DRF 
+; --- Put INTEGER
+  WRT  1
+</put>
+<put_line>
+; --- CR/LF
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+</put_line>
+<put>
+; --- Write STRING "a+b"
+; --- Standard string writing
+  STC 97
+  WRT  0
+  STC 43
+  WRT  0
+  STC 98
+  WRT  0
+</put>
+<put>
+; --- Constant / variable / parameter "var_a"
+  SRF  0  3
+  DRF 
+; --- Constant / variable / parameter "var_b"
+  SRF  0  4
+  DRF 
+  PLUS 
+; --- Put INTEGER
+  WRT  1
+</put>
+<put_line>
+; --- CR/LF
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+</put_line>
+</a_instruction_block>
+  LVP 
+</a>

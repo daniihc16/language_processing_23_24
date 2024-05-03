@@ -20,7 +20,6 @@ import lib.symbolTable.*;
 import lib.symbolTable.exceptions.*;
 import lib.tools.exceptions.*;
 import lib.tools.TypeValue;
-import lib.tools.codeGeneration.CodeBlock;
 import lib.tools.Constants;
 
 
@@ -44,7 +43,7 @@ public class SemanticFunctions {
 	* @param neg2 Token con el signo negativo del valor máximo del rango
 	* @return ArrayList<Symbol> con los símbolos de los identificadores
     */
-   static public ArrayList<Symbol> simbolos_con_tipo(ArrayList<String> ids, boolean isRef, ArrayList<Symbol> t, Token min, Token max, Token neg1, Token neg2, long dirBase) {
+   static public ArrayList<Symbol> simbolos_con_tipo(ArrayList<String> ids, boolean isRef, ArrayList<Symbol> t, Token min, Token max, Token neg1, Token neg2) {
        Symbol.ParameterClass p_class = isRef ? Symbol.ParameterClass.REF : Symbol.ParameterClass.VAL;
        int minInd = Integer.parseInt(min.image);
        int maxInd = Integer.parseInt(max.image);
@@ -53,13 +52,7 @@ public class SemanticFunctions {
 	   // comprobación rango no vacío
 	   if (minInd > maxInd) System.err.println("SEMANTIC ERROR: Void range: " + min.image + " is greater than" + max.image);
        ArrayList<Symbol> ids_con_tipo = new ArrayList<Symbol>();
-       for (int i=0; i<ids.size(); i++) {
-		   SymbolArray symarr = new SymbolArray(ids.get(i), minInd, maxInd, t.get(i).type, p_class);
-		   symarr.dir = dirBase;
-		   if (isRef) dirBase++;
-		   else dirBase += maxInd - minInd;
-           ids_con_tipo.add(symarr);
-       }
+       for (int i=0; i<ids.size(); i++) ids_con_tipo.add(new SymbolArray(ids.get(i), minInd, maxInd, t.get(i).type, p_class));
        return ids_con_tipo;
    }
 
@@ -414,15 +407,12 @@ public class SemanticFunctions {
 	 * @param get Token con la instrucción de lectura
 	 * @throws UnexpectedTypeException Si el tipo de las expresiones no es correcto
 	 */
-	static public CodeBlock inst_leer(ArrayList<TypeValue> exps, Token get) {
-		CodeBlock cb = new CodeBlock();
-		cb.addComment("Leer.");
+	static public void inst_leer(ArrayList<TypeValue> exps, Token get) {
 		ArrayList<Symbol.Types> expectedTypes = new ArrayList<Symbol.Types>();
 		expectedTypes.add(Symbol.Types.INT);
 		expectedTypes.add(Symbol.Types.CHAR);
 		
 		for (TypeValue exp:exps) {
-			cb.addComment("Dirección de la variable" + exp.name);
 			if (exp.isLiteral) BadInvocation.getMessage("GET", "Cannot read into literal value", get.beginLine, get.beginColumn);
 			if ((exp.type != Symbol.Types.INT && exp.type != Symbol.Types.CHAR)
 				|| (exp.type == Symbol.Types.ARRAY && exp.baseType != Symbol.Types.INT && exp.baseType != Symbol.Types.CHAR)) {
@@ -436,7 +426,7 @@ public class SemanticFunctions {
 	 * @param exp Expresión a comprobar
 	 * @param expected Tipo esperado
 	 */
-	static public CodeBlock inst_escribir(ArrayList<TypeValue> exps, int line, int column) {
+	static public void inst_escribir(ArrayList<TypeValue> exps, int line, int column) {
 		// todas las expresiones de una instrucción de escribir deben ser de tipo char o string, los enteros
 		// han de convertirse con int2char()
 		for (TypeValue exp:exps) {
@@ -454,7 +444,7 @@ public class SemanticFunctions {
 	 * @param exp Expresión que se asigna
 	 * @param pos Token con la posición de la asignación
 	 */
-	static public CodeBlock inst_invocacion_o_asignacion(TypeValue id, TypeValue exp, Token pos) {
+	static public void inst_invocacion_o_asignacion(TypeValue id, TypeValue exp, Token pos) {
 		if (pos != null) /* asignación */ {
 			if (id.resultOfInvocation) BadInvocation.getMessage("Asignación", "Left side of assignment is a function or procedure", pos.beginLine, pos.beginColumn);
 			else if (id.type == Symbol.Types.ARRAY) {
@@ -471,22 +461,22 @@ public class SemanticFunctions {
 			// si se invoca a una función, no se captura el valor devuelto
 			// se puede no generar el código de llamada a la función si no se captura el resultado
 			if (id.type == Symbol.Types.FUNCTION) System.err.println("WARNING: Unhandled function return value");
-			else if (id.type != Symbol.Types.CodeBlock) BadInvocation.getMessage("symbol", "is not declared as procedure", 0, 0);
+			else if (id.type != Symbol.Types.VOID) BadInvocation.getMessage("symbol", "is not declared as procedure", 0, 0);
 		}
 		
 	}
 
-	static public CodeBlock inst_if(TypeValue expif, Token tif) {
+	static public void inst_if(TypeValue expif, Token tif) {
 		if (expif.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, expif.type, tif.beginLine, tif.beginColumn);
 		if (expif.value != null) System.err.println("WARNING (" + tif.beginLine + ", " + tif.beginColumn + "): Constant condition in if instruction");
 	}
 
-	static public CodeBlock inst_while(TypeValue exp, Token twhile) {
+	static public void inst_while(TypeValue exp, Token twhile) {
 		if (exp.type != Symbol.Types.BOOL) UnexpectedTypeException.getMessage(Symbol.Types.BOOL, exp.type, twhile.beginLine, twhile.beginColumn);
 		if (exp.value != null) System.err.println("WARNING(" + twhile.beginLine + ", " + twhile.beginColumn + "): Constant condition in while instruction");
 	}
 
-	static public CodeBlock inst_return(TypeValue exp, Symbol sf_, Token treturn) {
+	static public void inst_return(TypeValue exp, Symbol sf_, Token treturn) {
 		if (sf_.type != Symbol.Types.FUNCTION) BadInvocation.getMessage(sf_.name, "Return statement inside of a procedure >:(", treturn.beginLine, treturn.beginColumn);
 		else {
 			SymbolFunction sf = (SymbolFunction)sf_;

@@ -3,6 +3,8 @@ package lib.tools;
 import java.util.*;
 
 import lib.symbolTable.Symbol;
+import lib.tools.codeGeneration.CodeBlock;
+import lib.tools.codeGeneration.PCodeInstruction;
 
 // procOFunc(a,b : ref integer, ...)
 
@@ -30,21 +32,55 @@ public class Attributes {
         Normal
     }
 
+    public static enum DequeueMethod {
+        Remove,
+        Peek
+    }
+
     public State state = State.Normal;
     // paramIsRefInvocacion guarda, en el caso de que el estado sea "EnInvocacion", la lista de parámetros de la función invocada
     // para saber, a la hora de reconocer identificadores, si se han de pasar por valor o por referencia.
     // True -> parámetro por referencia
     // False -> caso contrario
     private Queue<Boolean> paramIsRefInvocacion;
+    private DequeueMethod dequeueMethod;
+    public PCodeInstruction.OpCode ioInst = null;
 
-    public Attributes(State state_) {state = state_;}
+    public Attributes(State state_, DequeueMethod dequeueMethod_) {state = state_; dequeueMethod = dequeueMethod_;}
+    public Attributes(State state_, DequeueMethod dequeueMethod_, PCodeInstruction.OpCode ioInst_) {state = state_; dequeueMethod = dequeueMethod_; ioInst = ioInst_;}
 
     public void setQueue(ArrayList<Symbol> params) {
         this.paramIsRefInvocacion = new PriorityQueue<Boolean>();
         for (Symbol param:params) this.paramIsRefInvocacion.add(param.parClass == Symbol.ParameterClass.REF);
     }
 
-    public boolean consumeQueue() {
+    public void setQueue(Symbol.ParameterClass param) {
+        this.paramIsRefInvocacion = new PriorityQueue<Boolean>();
+        this.paramIsRefInvocacion.add(param == Symbol.ParameterClass.REF);
+    }
+    
+    private boolean removeFromQueue() {
         return this.paramIsRefInvocacion.remove();
     }
+
+    private boolean peekQueue() {
+        return this.paramIsRefInvocacion.peek();
+    }
+
+    public boolean consumeQueue() {
+        if (dequeueMethod == DequeueMethod.Remove) return removeFromQueue();
+        return peekQueue();
+    }
+
+    // cbInst añade la instrucción de entrada/salida a un bloque de código
+    public void cbInst(Symbol.Types type, CodeBlock cb) {
+        if (this.ioInst != null) {
+            cb.addInst(this.ioInst, type == Symbol.Types.CHAR ? '0' : '1');
+        }
+    }
+
+    public boolean isEmptyQueue() {
+        return this.paramIsRefInvocacion.isEmpty();
+    }
+
 }

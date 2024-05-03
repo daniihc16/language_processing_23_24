@@ -11,9 +11,11 @@
 package lib.tools.exceptions;
 import java.util.*;
 import lib.symbolTable.Symbol;
+import lib.tools.Constants;
 
 public class BadInvocation extends Exception {
 	public static void getMessage(String id, String msg, int line, int col) {
+		Constants.errorFree = false;
 		System.err.println("SEMANTIC ERROR (" + line + ", " + col + ") : Bad invocation error detected on: " + id + " -> " + msg);
 	}
 }
