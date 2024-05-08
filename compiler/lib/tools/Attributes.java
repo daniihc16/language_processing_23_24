@@ -28,7 +28,7 @@ import lib.tools.codeGeneration.PCodeInstruction;
 
 public class Attributes {
     public static enum State {
-        EnInvocacion,
+        EnInvocacion, // Estamos en la invocación a un procedimiento o función
         Normal
     }
 
@@ -75,7 +75,8 @@ public class Attributes {
     // cbInst añade la instrucción de entrada/salida a un bloque de código
     public void cbInst(Symbol.Types type, CodeBlock cb) {
         if (this.ioInst != null) {
-            cb.addInst(this.ioInst, type == Symbol.Types.CHAR ? '0' : '1');
+            if (type == Symbol.Types.CHAR) cb.addInst(this.ioInst, 0);
+            else cb.addInst(this.ioInst, 1);
         }
     }
 

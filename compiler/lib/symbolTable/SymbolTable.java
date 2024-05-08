@@ -30,7 +30,7 @@ public class SymbolTable {
     
     // No es una pila con cada dirección base de cada bloque por que alike no permite la declaración de variables
     // tras la declaración de un procedimiento o función
-    private long dirBase;
+    private int dirBase;
 
     public int level; //nivel actual
 
@@ -65,8 +65,7 @@ public class SymbolTable {
             if (s.type == Symbol.Types.ARRAY) {
                 SymbolArray sar = (SymbolArray)s;
                 dirBase += sar.maxInd - sar.minInd;
-            }
-            dirBase++;
+            } else if (s.type != Symbol.Types.PROCEDURE && s.type != Symbol.Types.FUNCTION) dirBase++;
             currentBlock.put(s.name.toLowerCase(), s);
         }
     }

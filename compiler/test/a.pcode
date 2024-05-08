@@ -1,116 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <a>
-; --- Program "a"
+; --- p-code instruction 0
   ENP L0
 <constant_variable_declaration>
-; --- Simple variable "var_a", type INT, level 0,  address [3]!
-; --- Simple variable "var_b", type INT, level 0,  address [4]!
-; --- Simple variable "enb", type INT, level 0,  address [5]!
 </constant_variable_declaration>
+<procedure_proc_con_v>
+L1:
+<recover_argument_1>
+; --- p-code instruction 1
+  SRF  0  6
+; --- p-code instruction 2
+  ASGI 
+; --- p-code instruction 3
+  SRF  0  5
+; --- p-code instruction 4
+  ASGI 
+; --- p-code instruction 5
+  SRF  0  4
+; --- p-code instruction 6
+  ASGI 
+; --- p-code instruction 7
+  SRF  0  3
+; --- p-code instruction 8
+  ASGI 
+</recover_argument_1>
+; --- p-code instruction 9
+  JMP L2
+<constant_variable_declaration>
+</constant_variable_declaration>
+L2:
+<proc_con_v_instruction_block>
+; --- p-code instruction 10
+  CSF 
+</proc_con_v_instruction_block>
+</procedure_proc_con_v>
+<procedure_proc_con_v_ref>
+L3:
+<recover_argument_1>
+; --- p-code instruction 11
+  SRF  0  3
+; --- p-code instruction 12
+  ASGI 
+</recover_argument_1>
+; --- p-code instruction 13
+  JMP L4
+<constant_variable_declaration>
+</constant_variable_declaration>
+L4:
+<proc_con_v_ref_instruction_block>
+<procedure_call_proc_con_v>
+<argument_1>
+; --- p-code instruction 14
+  SRF  0  3
+; --- p-code instruction 15
+  DRF 
+; --- p-code instruction 16
+  STC  0
+; --- p-code instruction 17
+  PLUS 
+; --- p-code instruction 18
+  DRF 
+; --- p-code instruction 19
+  SRF  0  3
+; --- p-code instruction 20
+  DRF 
+; --- p-code instruction 21
+  STC  1
+; --- p-code instruction 22
+  PLUS 
+; --- p-code instruction 23
+  DRF 
+; --- p-code instruction 24
+  SRF  0  3
+; --- p-code instruction 25
+  DRF 
+; --- p-code instruction 26
+  STC  2
+; --- p-code instruction 27
+  PLUS 
+; --- p-code instruction 28
+  DRF 
+; --- p-code instruction 29
+  SRF  0  3
+; --- p-code instruction 30
+  DRF 
+; --- p-code instruction 31
+  STC  3
+; --- p-code instruction 32
+  PLUS 
+; --- p-code instruction 33
+  DRF 
+</argument_1>
+; --- p-code instruction 34
+  OSF  4  1 L1
+</procedure_call_proc_con_v>
+; --- p-code instruction 35
+  CSF 
+</proc_con_v_ref_instruction_block>
+</procedure_proc_con_v_ref>
 L0:
 <a_instruction_block>
-<get>
-; --- Get simple variable/parameter "var_a".
-  SRF  0  3
-  RD  1
-; --- Get simple variable/parameter "var_b".
-  SRF  0  4
-  RD  1
-</get>
-<get>
-; --- Get simple variable/parameter "var_a".
-  SRF  0  3
-  RD  1
-</get>
-<get>
-; --- Get simple variable/parameter "var_b".
-  SRF  0  4
-  RD  1
-</get>
-<put>
-; --- Write STRING "var_a"
-; --- Standard string writing
-  STC 118
-  WRT  0
-  STC 97
-  WRT  0
-  STC 114
-  WRT  0
-  STC 95
-  WRT  0
-  STC 97
-  WRT  0
-</put>
-<put>
-; --- Constant / variable / parameter "var_a"
-  SRF  0  3
-  DRF 
-; --- Put INTEGER
-  WRT  1
-</put>
-<put_line>
-; --- CR/LF
-  STC 13
-  WRT  0
-  STC 10
-  WRT  0
-</put_line>
-<put>
-; --- Write STRING "var_b"
-; --- Standard string writing
-  STC 118
-  WRT  0
-  STC 97
-  WRT  0
-  STC 114
-  WRT  0
-  STC 95
-  WRT  0
-  STC 98
-  WRT  0
-</put>
-<put>
-; --- Constant / variable / parameter "var_b"
-  SRF  0  4
-  DRF 
-; --- Put INTEGER
-  WRT  1
-</put>
-<put_line>
-; --- CR/LF
-  STC 13
-  WRT  0
-  STC 10
-  WRT  0
-</put_line>
-<put>
-; --- Write STRING "a+b"
-; --- Standard string writing
-  STC 97
-  WRT  0
-  STC 43
-  WRT  0
-  STC 98
-  WRT  0
-</put>
-<put>
-; --- Constant / variable / parameter "var_a"
-  SRF  0  3
-  DRF 
-; --- Constant / variable / parameter "var_b"
-  SRF  0  4
-  DRF 
+<Assignment_to_component_of_array_v_array>
+; --- p-code instruction 36
+  STC  0
+; --- p-code instruction 37
+  STC  0
+; --- p-code instruction 38
+  SBT 
+; --- p-code instruction 39
+  SRF  0  6
+; --- p-code instruction 40
   PLUS 
-; --- Put INTEGER
-  WRT  1
-</put>
-<put_line>
-; --- CR/LF
-  STC 13
-  WRT  0
-  STC 10
-  WRT  0
-</put_line>
+; --- p-code instruction 41
+  STC  1
+; --- p-code instruction 42
+  ASG 
+</Assignment_to_component_of_array_v_array>
+<Assignment_to_component_of_array_v_array>
+; --- p-code instruction 43
+  STC  1
+; --- p-code instruction 44
+  STC  0
+; --- p-code instruction 45
+  SBT 
+; --- p-code instruction 46
+  SRF  0  6
+; --- p-code instruction 47
+  PLUS 
+; --- p-code instruction 48
+  STC  2
+; --- p-code instruction 49
+  ASG 
+</Assignment_to_component_of_array_v_array>
+<Assignment_to_component_of_array_v_array>
+; --- p-code instruction 50
+  STC  2
+; --- p-code instruction 51
+  STC  0
+; --- p-code instruction 52
+  SBT 
+; --- p-code instruction 53
+  SRF  0  6
+; --- p-code instruction 54
+  PLUS 
+; --- p-code instruction 55
+  STC  3
+; --- p-code instruction 56
+  ASG 
+</Assignment_to_component_of_array_v_array>
+<Assignment_to_component_of_array_v_array>
+; --- p-code instruction 57
+  STC  3
+; --- p-code instruction 58
+  STC  0
+; --- p-code instruction 59
+  SBT 
+; --- p-code instruction 60
+  SRF  0  6
+; --- p-code instruction 61
+  PLUS 
+; --- p-code instruction 62
+  STC  4
+; --- p-code instruction 63
+  ASG 
+</Assignment_to_component_of_array_v_array>
+<procedure_call_proc_con_v_ref>
+<argument_1>
+; --- p-code instruction 64
+  SRF  0  6
+</argument_1>
+; --- p-code instruction 65
+  OSF 10  0 L3
+</procedure_call_proc_con_v_ref>
 </a_instruction_block>
+; --- p-code instruction 66
   LVP 
 </a>

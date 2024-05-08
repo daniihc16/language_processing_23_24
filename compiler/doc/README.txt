@@ -32,6 +32,8 @@ Características generales:
 Contiene un analizador léxico y sintáctico (parser) para el lenguaje Alike
 El lenguaje aceptado es de nivel 4
 
+ESTADO ACTUAL -> no se generan los codeblocks de funciones y procs anidados
+
 
 Analizador Semántico:
 ---------------------------------------------

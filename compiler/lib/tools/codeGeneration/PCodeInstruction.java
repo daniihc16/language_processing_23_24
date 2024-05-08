@@ -84,6 +84,7 @@ public class PCodeInstruction extends CodeElement{
 		if (code != OpCode.OSF) {
 			if (args != null) {
 				for (int i=0; i<args.length; i++) {
+					
 					strBldr.append (String.format(" %2d", args[i])); 
 				}
 			}

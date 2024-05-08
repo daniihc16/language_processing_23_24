@@ -24,13 +24,13 @@ abstract public class Symbol implements Cloneable {
     //será NONE para no parámetros
     public ParameterClass parClass; 
     //dirección en memoria. Para func/proc, dirección de la primera instrucción
-    public long dir;
+    public int dir;
     //mi tipo
     public Types type;
     // es constante?  
     public boolean constant;
     public int nivel; //nivel dentro de la TS
-
+    
     public Symbol (String _name, Types _type) {
     	this (_name, -1, _type, ParameterClass.NONE, false); 
     }
@@ -39,7 +39,7 @@ abstract public class Symbol implements Cloneable {
     	this (_name, -1, _type, _parClass, false); 
     }
    
-    public Symbol (String _name, long _dir, Types _type, ParameterClass _parClass, boolean _constant) {
+    public Symbol (String _name, int _dir, Types _type, ParameterClass _parClass, boolean _constant) {
     	name = _name;
     	dir = _dir; 
     	type = _type; 

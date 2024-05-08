@@ -1,0 +1,85 @@
+<ProcedimientoPrincipal>
+; --Entrada al programa
+  ENP L0
+L0:
+<get>
+  SRF  0  3
+  SRF  0  4
+</get>
+<get>
+  SRF  0  3
+</get>
+<get>
+  SRF  0  4
+</get>
+<put_line>
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> _
+  STC 95
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+  SRF  0  3
+  DRF
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+</put_line>
+<put_line>
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> _
+  STC 95
+  WRT  0
+; --Storing constant character -> b
+  STC 98
+  WRT  0
+  SRF  0  4
+  DRF
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+</put_line>
+<put_line>
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> +
+  STC 43
+  WRT  0
+; --Storing constant character -> b
+  STC 98
+  WRT  0
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+</put_line>
+; --Vector por valor pasado a parámetro por referencia
+  SRF  0  6
+</ProcedimientoPrincipal>

@@ -17,6 +17,6 @@ public class Label extends CodeElement {
 	}
 	
 	public String toString() {
-		return label+":"; 
+		return label; 
 	}
 }

@@ -19,9 +19,10 @@ public class SymbolFunction extends Symbol implements Cloneable {
     public ArrayList<Symbol> parList;
 
     public Types returnType; //tipo de la función
+    public String label;
 
     public SymbolFunction(String _name, ArrayList<Symbol> _parList, 
-                          Types _returnType) {
+                          Types _returnType, String label) {
     	super(_name, Types.FUNCTION, ParameterClass.NONE);
         parList = _parList;
         returnType = _returnType;

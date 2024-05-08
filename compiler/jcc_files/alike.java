@@ -23,23 +23,33 @@ public class alike implements alikeConstants {
 
                 // Parseamos las opciones de la línea de comandos para inicializar las Constants
                 // flags posibles: -v, -x, -v = verbose, -x = xmlOutput
-                for (int i = 0; i < args.length; i++) {
+                int i = 0;
+                while (i < args.length && args[i].startsWith("-")) {
+                        System.out.println("Argumento: " + args[i]);
                         if (args[i].equals("-v")) {
                                 Constants.verbose = true;
                         } else if (args[i].equals("-x")) {
                                 Constants.xmlOutput = true;
                         }
+                        i++;
                 }
+                // Si no se ha especificado un fichero de entrada se da error, se usa el nombre del fichero de entrada	
+                if (i == args.length) {
+                        System.err.println("Uso: java -jar alike [-v] [-x] fichero_entrada.alike [fichero_salida.pcode]");
+                        System.exit(1);
+                }
+
+
 
                 try {
                         if(args.length == 0) {
                                 parser = new alike(System.in);
                         }
                         else {
-                                parser = new alike(new java.io.FileInputStream(args[0]));
+                                parser = new alike(new java.io.FileInputStream(args[i]));
                         }
                         //Programa es el símbolo inicial de la gramática
-                        parser.Programa(args[args.length - 1].split("\\.")[0]);
+                        parser.Programa(args[args.length - 1].split("\\.")[0] + "DL.pcode");
                         //...
                         System.out.println("***** An\u00e1lisis terminado con \u00e9xito *****");
                 }
@@ -167,10 +177,11 @@ t = new SymbolInt("");
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tCHARCONST:{
       char_const = jj_consume_token(tCHARCONST);
-tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));
+tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(1));
                 if (Constants.errorFree) {
-                        cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
-                        at.cbInst(tv.type, cb);
+                        cb.addComment("Storing constant character -> " + char_const.image.charAt(1));
+                        cb.addInst(PCodeInstruction.OpCode.STC, (int)(char)tv.value);
+                        at.cbInst(Symbol.Types.CHAR, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -179,7 +190,9 @@ tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(0));
       int_const = jj_consume_token(tINTCONST);
 tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
                 if (Constants.errorFree) {
+                        cb.addComment("Storing constant integer -> " + int_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
+                        at.cbInst(Symbol.Types.INT, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -189,7 +202,9 @@ tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
       bool_const = boolconst();
 tv = new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
                 if (Constants.errorFree) {
+                        cb.addComment("Storing constant boolean -> " + bool_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (boolean)tv.value ? 1 : 0);
+                        at.cbInst(Symbol.Types.BOOL, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -199,7 +214,8 @@ tv = new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
 tv = new TypeValue(Symbol.Types.STRING, string_const.image);
                 if (Constants.errorFree) {
                         // Recorremos el string y lo vamos apilando de final a inicio
-                        for (int i = string_const.image.length() - 1; i >= 0; i--) {
+                        for (int i = 1; i < string_const.image.length() - 1; i++) {
+                                cb.addComment("Storing constant character -> " + string_const.image.charAt(i));
                                 cb.addInst(PCodeInstruction.OpCode.STC, (int)(string_const.image.charAt(i)));
                                 at.cbInst(Symbol.Types.CHAR, cb);
                         }
@@ -216,18 +232,17 @@ tv = new TypeValue(Symbol.Types.STRING, string_const.image);
 }
 
 //------------ Símbolo inicial de la gramática. Para análisis léxico no hace falta más
-  static final public void Programa(String outputFile) throws ParseException {SymbolProcedure proc_main = new SymbolProcedure("__NOT_A_PROCEDURE__", new ArrayList<Symbol>());
+  static final public void Programa(String outputFile) throws ParseException {SymbolProcedure proc_main = null;
     ArrayList<Symbol> vars = null;
-        Label labelMain = null;
+        Label labelMain = new Label(CGUtils.newLabel());;
         CodeBlock cb = new CodeBlock();
         CodeBlock cbProcsFuncs = new CodeBlock();
         CodeBlock insts = new CodeBlock();
     try {
-      proc_main = cabecera_procedimiento();
+      proc_main = cabecera_procedimiento(labelMain);
 SemanticFunctions.insertSymbol(st, proc_main);
                         st.setMainProc(proc_main.name);
                         // generar etiqueta de procmain	
-                        labelMain = new Label(CGUtils.newLabel());
                         cb.addComment("Entrada al programa");
                         cb.addInst(PCodeInstruction.OpCode.ENP, labelMain.toString());
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -260,7 +275,7 @@ cb.addBlock(cbProcsFuncs);
         ;
       }
       jj_consume_token(tBEGIN);
-cb.addLabel(labelMain.toString());
+cb.addLabel(labelMain.toString() + ":");
       label_1:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -287,9 +302,10 @@ cb.addBlock(insts);
       jj_consume_token(tEND);
       jj_consume_token(tPC);
       jj_consume_token(0);
-cb.encloseXMLTags("ProcedimientoPrincipal");
-                        if (Constants.errorFree) {
+if (Constants.errorFree) {
                                 try {
+                                        if (Constants.xmlOutput) cb.encloseXMLTags("ProcedimientoPrincipal");
+
                                         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
                                         writer.write(cb.toString());
                                         writer.close();
@@ -367,7 +383,8 @@ System.err.println("SYNTAX_ERROR: " + e.getMessage());
         }
       case tFUNC:{
         cbInternal = declaracion_func();
-cb.addBlock(cbInternal);
+System.out.println(cbInternal.toString());
+                cb.addBlock(cbInternal);
         break;
         }
       default:
@@ -397,11 +414,11 @@ cb.addBlock(cbInternal);
   static final public CodeBlock declaracion_proc() throws ParseException {SymbolProcedure proc = null;
     ArrayList<Symbol> vars = null;
         CodeBlock cb = new CodeBlock();
-        Label labelProc = null;
+        Label labelProc = new Label(CGUtils.newLabel());
         CodeBlock cbProcsFuncs = new CodeBlock();
         CodeBlock insts = new CodeBlock();
     try {
-      proc = cabecera_procedimiento();
+      proc = cabecera_procedimiento(labelProc);
 SemanticFunctions.newProcBlock(st, proc);
                         // El lenguaje permite el uso de par´ametros escalares y de vectores, tanto por 
                         // valor como por referencia en procedimientos y funciones
@@ -417,9 +434,13 @@ SemanticFunctions.newProcBlock(st, proc);
                                 // si es por ref
                                         // si es escalar -> srf + asgi
                                         // si es vector -> srf + asgi
-                        labelProc = new Label(CGUtils.newLabel());
-                        cb.addComment("Procedimiento " + proc.name);
-                        cb.addInst(PCodeInstruction.OpCode.JMP, labelProc.toString());
+
+                        if (Constants.errorFree) {
+                                // JMP para saltar al código del procc/func actual, sino se ejecutaría el código
+                                // de los procedimientos y funciones declarados internamente, que es lo que se encuentra
+                                // debajo de la declaración de variables locales
+                                cb.addInst(PCodeInstruction.OpCode.JMP, labelProc.toString());
+                        }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tID:{
         vars = declaracion_variables();
@@ -446,7 +467,7 @@ cb.addBlock(cbProcsFuncs);
         ;
       }
       jj_consume_token(tBEGIN);
-cb.addLabel(labelProc.toString());
+cb.addLabel(labelProc.toString() + ":");
       label_4:
       while (true) {
         insts = instruccion(proc);
@@ -474,7 +495,7 @@ cb.addBlock(insts);
       jj_consume_token(tPC);
 if(Constants.verbose) System.out.println("Procedimiento reconocido: " + st.toString());
                         st.removeBlock();
-                        cb.encloseXMLTags(proc.name);
+                        if (Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("Procedimiento_" + proc.name);
                         {if ("" != null) return cb;}
     } catch (ParseException e) {
 System.err.println("SYNTAX ERROR: " + e.getMessage());
@@ -496,15 +517,17 @@ System.err.println("SYNTAX ERROR: " + e.getMessage());
   static final public CodeBlock declaracion_func() throws ParseException {ArrayList<Symbol> vars = new ArrayList<Symbol>();
     SymbolFunction func = null;
         CodeBlock cb = new CodeBlock();
-        Label labelFunc = null;
+        Label labelFunc = new Label(CGUtils.newLabel());
         CodeBlock cbProcsFuncs = new CodeBlock();
         CodeBlock insts = new CodeBlock();
     try {
-      func = cabecera_funcion();
+      func = cabecera_funcion(labelFunc);
 SemanticFunctions.newFuncBlock(st, func);
-                        labelFunc = new Label(CGUtils.newLabel());
-                        cb.addComment("Procedimiento " + func.name);
-                        cb.addInst(PCodeInstruction.OpCode.JMP, labelFunc.toString());
+                        if (Constants.errorFree) {
+                                cb.addComment("Procedimiento " + func.name);
+                                cb.addInst(PCodeInstruction.OpCode.JMP, labelFunc.toString());
+                                if (Constants.xmlOutput) cb.encloseXMLTags("Funci\u00f3n " + func.name);
+                        }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tID:{
         vars = declaracion_variables();
@@ -519,7 +542,8 @@ if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var
       case tPROC:
       case tFUNC:{
         cbProcsFuncs = declaracion_procs_funcs();
-cb.addBlock(cbProcsFuncs);
+cb.addComment("Procedimientos y funciones internos");
+                        cb.addBlock(cbProcsFuncs);
         break;
         }
       default:
@@ -527,7 +551,7 @@ cb.addBlock(cbProcsFuncs);
         ;
       }
       jj_consume_token(tBEGIN);
-cb.addLabel(labelFunc.toString());
+cb.addLabel(labelFunc.toString() + ":");
       label_5:
       while (true) {
         insts = instruccion(func);
@@ -620,7 +644,7 @@ ids.add(id.image);
 }
 
 // Devuelve el símbolo del procedimiento con los parámetros
-  static final public SymbolProcedure cabecera_procedimiento() throws ParseException {Token id_proc;
+  static final public SymbolProcedure cabecera_procedimiento(Label label) throws ParseException {Token id_proc;
     ArrayList<Symbol> proc_params = null;
     jj_consume_token(tPROC);
     id_proc = jj_consume_token(tID);
@@ -635,12 +659,12 @@ ids.add(id.image);
       ;
     }
     jj_consume_token(tIS);
-{if ("" != null) return new SymbolProcedure(id_proc.image, proc_params);}
+{if ("" != null) return new SymbolProcedure(id_proc.image, proc_params, label.toString());}
     throw new Error("Missing return statement in function");
 }
 
 // Devuelve el símbolo de la función con los parámetros
-  static final public SymbolFunction cabecera_funcion() throws ParseException {Token id_func;
+  static final public SymbolFunction cabecera_funcion(Label label) throws ParseException {Token id_func;
     ArrayList<Symbol> func_params = null;
     ArrayList<Symbol> returnType = null;
     jj_consume_token(tFUNC);
@@ -665,7 +689,7 @@ if (returnType.get(0).type != Symbol.Types.INT && returnType.get(0).type != Symb
                         expectedTypes.add(Symbol.Types.BOOL);
                         UnexpectedTypeException.getMessage(expectedTypes, returnType.get(0).type, id_func.beginLine, id_func.beginColumn);
                 }
-                {if ("" != null) return new SymbolFunction(id_func.image, func_params, returnType.get(0).type);}
+                {if ("" != null) return new SymbolFunction(id_func.image, func_params, returnType.get(0).type, label.toString());}
     throw new Error("Missing return statement in function");
 }
 
@@ -843,8 +867,14 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
                 if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n put_line correcta");
                 if      (Constants.errorFree) {
                         // Añadir un salto de línea al final en la generación de código
-                        cb.addInst(PCodeInstruction.OpCode.STC, 10);
+                        cb.addComment("Salto de l\u00ednea");
+
+                        cb.addInst(PCodeInstruction.OpCode.STC, 13); // CR
                         cb.addInst(PCodeInstruction.OpCode.WRT, 0);
+
+                        cb.addInst(PCodeInstruction.OpCode.STC, 10); // LF
+                        cb.addInst(PCodeInstruction.OpCode.WRT, 0);
+
                         if (Constants.xmlOutput) cb.encloseXMLTags("put_line");
                 }
                 {if ("" != null) return cb;}
@@ -1414,6 +1444,12 @@ if (exp.type != Symbol.Types.CHAR) UnexpectedTypeException.getMessage(Symbol.Typ
     if (jj_2_2(2)) {
       id = jj_consume_token(tID);
       jj_consume_token(tAPAR);
+// distinguir si id es func/proc o array
+                Symbol s = st.getSymbol(id.image);
+                if (s.type == Symbol.Types.FUNCTION) at.setQueue(((SymbolFunction) s).parList);
+                else if (s.type == Symbol.Types.PROCEDURE) at.setQueue(((SymbolProcedure) s).parList);
+                // si es func/proc -> instanciar attributes a "EnInvocacion" + poner en attributes todos los parámetros y sus tipos (val/ref)
+                // si es array -> no hace falta, todo es por valor
 
       exps = lista_una_o_mas_exps(at, cb);
       jj_consume_token(tCPAR);
@@ -1431,23 +1467,95 @@ TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, s
 TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                 // generar codigo
 
-                // invocación a función
                 // mirar ts con id.img para obtener el Symbol.dir
-                // si id es escalar 
-                        // si se pasa por ref 
-                                // si id es una ref -> srf + drf
-                                // si no -> srf
-                        // si no
-                                // si id es una ref -> srf + drf + drf
-                                // si no -> srf + drf
-                // si id es vector
-                        // si se pasa por ref
-                                // si id es una ref -> srf + drf
-                                // si no -> srf
-                        // si no
+                Symbol s = st.getSymbol(id.image);
+
+                // Es una variable por referencia si esta en una invocación de un proc/func y consumo de la cola si el parámetro
+                // que se está reconociendo es por referencia
+                boolean porRefEnInv = at.state == Attributes.State.EnInvocacion && at.consumeQueue();
+
+                switch (s.type) {
+                        case ARRAY:
+                        // si id es vector
+
                                 // si id es una ref -> srf + drf (ahora tienes @vector) + n*(srf + drf) (cargas todas las componentes con el offset en un bucle)
                                 // si no -> n*(srf + drf)
-                // si id es funcion/proc -> osf
+                                if (porRefEnInv) {
+                                        // si se pasa por ref
+
+                                        if(s.parClass == Symbol.ParameterClass.REF) {
+                                                // si id es una ref -> srf + drf   Estás anidado y la variable ya era por ref
+                                                cb.addComment("Vector por referencia pasado a par\u00e1metro por referencia");
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                        } else {
+                                                // si no, id valor es un valor pero pide una referencia -> srf
+                                                cb.addComment("Vector por valor pasado a par\u00e1metro por referencia");
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                        }
+                                } else {
+                                        // O no está en una invocación a proc/func -> Se quiere el valor de la variable
+                                        // O estás en invocación pero el parámetro es por valor -> Se quiere el valor de la variable
+
+                                        if(s.parClass == Symbol.ParameterClass.REF){
+                                                // Tenemos la referencia al vector que hay que pasar por valor
+                                                // si id es una ref -> srf + drf (ahora tienes @vector) + (n-1)*(srf + drf) (cargas todas las componentes con el offset en un bucle)
+                                                cb.addComment("Vector por referencia pasado a par\u00e1metro por valor");
+                                                // Ahora se tiene en la pila la dirección del vector pero como se espera el valor del mismo hay que apilar todas sus componentes
+                                                for (int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd; i++) {
+                                                        cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                        cb.addInst(PCodeInstruction.OpCode.DRF);
+                                                        cb.addInst(PCodeInstruction.OpCode.STC, i);
+                                                        cb.addInst(PCodeInstruction.OpCode.PLUS); // @vector[i]
+                                                        cb.addInst(PCodeInstruction.OpCode.DRF);
+                                                }
+                                        }else {
+                                                // Tenemos el valor del vector y hay que pasarlo por valor
+                                                // si no -> n*(srf + drf)
+                                                cb.addComment("Vector por valor pasado por par\u00e1metro por valor");
+                                                for(int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd; i++) {
+                                                        cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir + i);
+                                                        cb.addInst(PCodeInstruction.OpCode.DRF);
+                                                }
+                                        }
+                                }
+                                break;
+                        case FUNCTION:
+                                // si id es funcion/proc -> osf
+                                cb.addOSFInst(st.level, st.level-s.nivel, ((SymbolFunction) s).label);
+                                break;
+
+                        case PROCEDURE:
+                                // si id es funcion/proc -> osf
+                                cb.addOSFInst(st.level, st.level-s.nivel, ((SymbolProcedure) s).label);
+                                break;
+
+                        default: // Es escalar		
+                                // si se pasa por ref 
+                                if (porRefEnInv) {
+                                        // si id es una ref -> srf + drf
+                                        if (s.parClass == Symbol.ParameterClass.REF) {
+                                                // si id es una ref -> srf + drf
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                        } else {
+                                                // si no -> srf
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                        }
+                                } else {
+                                        // si id es una ref -> srf + drf + drf
+                                        if ( s.parClass == Symbol.ParameterClass.REF) {
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                        } else { // si no -> srf + drf
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                        }
+                                }
+                                break;
+                }
+
 
                 // usada para cuando estas en inst get/put/put_line
                 // get -> Attributes.ioInst -> RD
@@ -1507,17 +1615,17 @@ exps.add(0, exp);
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_1()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tCOMA)) return true;
-    return false;
-  }
-
   static private boolean jj_3_2()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tAPAR)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tCOMA)) return true;
     return false;
   }
 
