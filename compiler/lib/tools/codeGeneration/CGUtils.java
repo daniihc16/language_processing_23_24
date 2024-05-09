@@ -18,6 +18,9 @@ public class CGUtils {
 	public static String newLabel () {
 		return "L"+(l++); 
 	}
+	public static String newLabel(String prefix) {
+		return prefix + (l++);
+	}
 	
 	// campo requeridos para la generación de código
 	public static int memorySpaces[] = new int[100];

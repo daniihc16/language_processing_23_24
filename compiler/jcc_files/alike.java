@@ -812,6 +812,7 @@ System.err.println("SYNTAX_ERROR: " + e.getMessage());
                         Token t = getNextToken();
                         if (t.kind == tPC) break;
                 }
+                {if ("" != null) return cb;}
     }
     throw new Error("Missing return statement in function");
 }
@@ -914,15 +915,40 @@ SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
   static final public CodeBlock inst_if(Symbol sf) throws ParseException {TypeValue expif = null, expelsif = null;
         Token tif = null, elsif = null;
         CodeBlock cb = new CodeBlock();
+        CodeBlock cbInst = null;
         Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
-    // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
+        boolean condicionSiempreTrue = false;
+        Label nextLabel = new Label(CGUtils.newLabel("elseif_"));
+        Label endLabel = new Label(CGUtils.newLabel("endIf_"));
+    // if (exp) insts		-- (exp) | jmf  elsif0 | insts | jmp labelFinIf
+            // else if (exp) insts  -- jmt  trueElsif0 (... jmt trueElsifx)
+            // else insts			-- insts
+            // end if;
+            //						-- elsif0: (exp) | jmf elsifx | insts | jmp labelFinIf
+            //						-- elsifx(else): insts
+        // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
         tif = jj_consume_token(tIF);
     expif = expresion(attrs, cb);
     jj_consume_token(tTHEN);
-SemanticFunctions.inst_if(expif, tif);
+// expif es un TypeValue, por lo que si tiene valor no generaremos todo el código
+                SemanticFunctions.inst_if(expif, tif);
+                if (Constants.errorFree) {
+                        if(expif.value != null) {
+                                if ((boolean)expif.value) condicionSiempreTrue = true;
+                                else cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
+                        }
+
+                        if (expif.value == null || condicionSiempreTrue) {
+                                // Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
+                                System.out.println("Ha llegado con expif.value = null");
+                                cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
+                        }
+
+                }
     label_6:
     while (true) {
-      instruccion(sf);
+      cbInst = instruccion(sf);
+cb.addBlock(cbInst);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tNULL:
       case tRETURN:
@@ -942,6 +968,17 @@ SemanticFunctions.inst_if(expif, tif);
         break label_6;
       }
     }
+if (Constants.errorFree) {
+                        // generas el código del else if !condicionSimpreTrue y si expif.value == null || expif.value == true
+                        if (!condicionSiempreTrue && (expif.value == null || (boolean)expif.value)) {
+                                if ((boolean)expif.value) {
+                                        condicionSiempreTrue = true;
+                                        cb.addComment("Condici\u00f3n if siempre VERDADERA, detectada");
+                                }
+                                cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
+                        }
+
+                }
     label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -954,12 +991,27 @@ SemanticFunctions.inst_if(expif, tif);
         break label_7;
       }
       elsif = jj_consume_token(tELSIF);
+cb.addLabel(nextLabel.toString());
+                nextLabel = new Label(CGUtils.newLabel("elseif_"));
       expelsif = expresion(attrs, cb);
       jj_consume_token(tTHEN);
 SemanticFunctions.inst_if(expelsif, elsif);
+                if (!condicionSiempreTrue && Constants.errorFree) {
+                        if(expelsif.value != null) {
+                                if ((boolean)expelsif.value) condicionSiempreTrue = true;
+                                else cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
+                        }
+
+                        if (expelsif.value == null || condicionSiempreTrue) {
+                                // Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
+                                cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
+                        }
+
+                }
       label_8:
       while (true) {
-        instruccion(sf);
+        cbInst = instruccion(sf);
+cb.addBlock(cbInst);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
@@ -979,13 +1031,20 @@ SemanticFunctions.inst_if(expelsif, elsif);
           break label_8;
         }
       }
+if (Constants.errorFree) {
+                        if (expelsif.value == null || condicionSiempreTrue) {
+                                cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
+                        }
+                }
     }
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tELSE:{
       jj_consume_token(tELSE);
+cb.addLabel(nextLabel.toString());
       label_9:
       while (true) {
-        instruccion(sf);
+        cbInst = instruccion(sf);
+cb.addBlock(cbInst);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
@@ -1013,7 +1072,7 @@ SemanticFunctions.inst_if(expelsif, elsif);
     }
     jj_consume_token(tEND);
     jj_consume_token(tIF);
-{if ("" != null) return cb;}
+cb.addLabel(endLabel.toString()); {if ("" != null) return cb;}
     throw new Error("Missing return statement in function");
 }
 

@@ -663,6 +663,7 @@ CodeBlock instruccion(Symbol where) :
 			Token t = getNextToken();
 			if (t.kind == tPC) break;
 		}
+		return cb;
     }
 
 }
@@ -762,22 +763,78 @@ CodeBlock inst_if(Symbol sf) :
 	TypeValue expif = null, expelsif = null;
 	Token tif = null, elsif = null;
 	CodeBlock cb = new CodeBlock();
+	CodeBlock cbInst = null;
 	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+	boolean condicionSiempreTrue = false;
+	Label nextLabel = new Label(CGUtils.newLabel("elseif_"));
+	Label endLabel = new Label(CGUtils.newLabel("endIf_"));
 }
 {
+	
+	// if (exp) insts		-- (exp) | jmf  elsif0 | insts | jmp labelFinIf
+	// else if (exp) insts  -- jmt  trueElsif0 (... jmt trueElsifx)
+	// else insts			-- insts
+	// end if;
+	//						-- elsif0: (exp) | jmf elsifx | insts | jmp labelFinIf
+	//						-- elsifx(else): insts
     // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
     tif = <tIF> expif = expresion(attrs, cb) <tTHEN> {
 		// expif es un TypeValue, por lo que si tiene valor no generaremos todo el código
 		SemanticFunctions.inst_if(expif, tif);
 		if (Constants.errorFree) {
-			cb.addInst();
+			if(expif.value != null) {
+				if ((boolean)expif.value) condicionSiempreTrue = true;
+				else cb.addComment("Condición if siempre FALSA, no se ha generado código");
+				//! LA EXPRESIÓN YA ESTÁ APILADA EN LA PILA, HAY QUE QUITARLA
+			}
+			
+			if (expif.value == null || condicionSiempreTrue) {
+				// Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
+				cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
+			}
+			
 		}
-	} (instruccion(sf))+
-    (elsif = <tELSIF> expelsif = expresion(attrs, cb) <tTHEN>  {
+	} (cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+ {
+		if (Constants.errorFree) {
+			// generas el código del else if !condicionSimpreTrue y si expif.value == null || expif.value == true
+			if (!condicionSiempreTrue && (expif.value == null || (boolean)expif.value)) {
+				if ((boolean)expif.value) {
+					condicionSiempreTrue = true;
+					cb.addComment("Condición if siempre VERDADERA, detectada");
+				}
+				cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
+			}
+
+		}
+	}
+	
+	(elsif = <tELSIF>{
+		
+		cb.addLabel(nextLabel.toString());
+		nextLabel = new Label(CGUtils.newLabel("elseif_"));
+	} expelsif = expresion(attrs, cb) <tTHEN>  {
 		SemanticFunctions.inst_if(expelsif, elsif);
-	} (instruccion(sf))+ )*
-    (<tELSE> (instruccion(sf))+)?
-    <tEND> <tIF> {return cb;}
+		if (!condicionSiempreTrue && Constants.errorFree) {
+			if(expelsif.value != null) {
+				if ((boolean)expelsif.value) condicionSiempreTrue = true;
+				else cb.addComment("Condición if siempre FALSA, no se ha generado código");
+			}
+			
+			if (expelsif.value == null || condicionSiempreTrue) {
+				// Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
+				cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
+			}
+			
+		}
+	} ( cbInst = instruccion(sf) { cb.addBlock(cbInst); })+ {
+		if (Constants.errorFree) {
+			if (expelsif.value == null || condicionSiempreTrue) {
+				cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
+			}
+		}
+	} )*
+    (<tELSE> { cb.addLabel(nextLabel.toString()); } ( cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+)?
+    <tEND> <tIF>{ cb.addLabel(endLabel.toString()); return cb;}
 }
 
 
