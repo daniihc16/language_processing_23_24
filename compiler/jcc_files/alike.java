@@ -181,7 +181,7 @@ tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(1));
                 if (Constants.errorFree) {
                         cb.addComment("Storing constant character -> " + char_const.image.charAt(1));
                         cb.addInst(PCodeInstruction.OpCode.STC, (int)(char)tv.value);
-                        at.cbInst(Symbol.Types.CHAR, cb);
+                        //at.cbInst(Symbol.Types.CHAR, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -192,7 +192,7 @@ tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
                 if (Constants.errorFree) {
                         cb.addComment("Storing constant integer -> " + int_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
-                        at.cbInst(Symbol.Types.INT, cb);
+                        //at.cbInst(Symbol.Types.INT, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -204,7 +204,7 @@ tv = new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
                 if (Constants.errorFree) {
                         cb.addComment("Storing constant boolean -> " + bool_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (boolean)tv.value ? 1 : 0);
-                        at.cbInst(Symbol.Types.BOOL, cb);
+                        //at.cbInst(Symbol.Types.BOOL, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -314,7 +314,7 @@ if (Constants.errorFree) {
                                         System.out.println("Error escribiendo en " + outputFile);
                                 }
 
-                        } else System.err.println("***** No se ha generado c\u00f3digo *****");
+                        } else System.err.println("***** No se ha generado c\u00f3digo por problemas detectados *****");
     } catch (ParseException e) {
 System.err.println("SYNTAX_ERROR: " + e.getMessage());
                 Constants.errorFree = false;
@@ -379,11 +379,13 @@ System.err.println("SYNTAX_ERROR: " + e.getMessage());
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPROC:{
         cbInternal = declaracion_proc();
+System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
+                cb.addBlock(cbInternal);
         break;
         }
       case tFUNC:{
         cbInternal = declaracion_func();
-System.out.println(cbInternal.toString());
+System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
                 cb.addBlock(cbInternal);
         break;
         }
@@ -438,7 +440,7 @@ SemanticFunctions.newProcBlock(st, proc);
                         if (Constants.errorFree) {
                                 // JMP para saltar al código del procc/func actual, sino se ejecutaría el código
                                 // de los procedimientos y funciones declarados internamente, que es lo que se encuentra
-                                // debajo de la declaración de variables locales
+                                // debajo de la declaración de la recuperación de los valores de los parámetros
                                 cb.addInst(PCodeInstruction.OpCode.JMP, labelProc.toString());
                         }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -884,8 +886,11 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
   static final public CodeBlock inst_invocacion_o_asignacion() throws ParseException {TypeValue p = null, exp = null;
         Token asign = null;
         CodeBlock cb = new CodeBlock();
-        Attributes attrs = new Attributes(Attributes.State.EnInvocacion, Attributes.DequeueMethod.Remove);
-    p = invoc_o_asign_primario(attrs, cb);
+        Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+        Attributes attrsAsign = new Attributes(Attributes.State.EnAsignacion, Attributes.DequeueMethod.Peek);
+    // si ha sido invocación sin params, no habrá nada en el tope de la pila
+            // si es asignación, en la pila estará la @ de la variable a asignar y encima el resultado de evaluar la expresión -> haces un asg
+            p = invoc_o_asign_primario(attrsAsign, cb);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tASIGN:{
       asign = jj_consume_token(tASIGN);
@@ -901,6 +906,7 @@ SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
                         if (asign != null) System.out.println("Invocaci\u00f3n correcta en l\u00ednea: " + String.valueOf(asign.beginLine));
                         else System.out.println("Invocaci\u00f3n correcta");
                 }
+                if (Constants.errorFree && asign != null) cb.addInst(PCodeInstruction.OpCode.ASG);
                 {if ("" != null) return cb;}
     throw new Error("Missing return statement in function");
 }
@@ -1092,6 +1098,10 @@ if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n exit corre
           op = jj_consume_token(tAND);
           srel = relacion(at, cb);
 result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
+                if(Constants.verbose) System.out.println("Encontrada expresi\u00f3n AND correcta");
+                if(Constants.errorFree){
+                        cb.addInst(PCodeInstruction.OpCode.AND);
+                }
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tAND:{
             ;
@@ -1110,6 +1120,10 @@ result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
           op = jj_consume_token(tOR);
           srel = relacion(at, cb);
 result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
+                if(Constants.verbose) System.out.println("Encontrada expresi\u00f3n OR correcta");
+                if(Constants.errorFree){
+                        cb.addInst(PCodeInstruction.OpCode.OR);
+                }
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case tOR:{
             ;
@@ -1235,6 +1249,7 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
       ;
     }
     term = termino(at, cb);
+if (ops != null && ops.kind == tMINUS) cb.addInst(PCodeInstruction.OpCode.NGI);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tPLUS:
     case tMINUS:{
@@ -1259,7 +1274,15 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
       jj_la1[42] = jj_gen;
       ;
     }
-{if ("" != null) return SemanticFunctions.expresion_simple(ops, term, op, term_resultante, tPLUS, tMINUS);}
+TypeValue tv = SemanticFunctions.expresion_simple(ops, term, op, term_resultante, tPLUS, tMINUS);
+                if (op != null && Constants.errorFree) {
+                        if (op.kind == tMINUS) {
+                                cb.addInst(PCodeInstruction.OpCode.SBT);
+                        } else {
+                                cb.addInst(PCodeInstruction.OpCode.PLUS);
+                        }
+                }
+                {if ("" != null) return tv;}
     throw new Error("Missing return statement in function");
 }
 
@@ -1290,7 +1313,15 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
       jj_la1[44] = jj_gen;
       ;
     }
-{if ("" != null) return SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_resultante, tPLUS, tMINUS);}
+TypeValue tv = SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_resultante, tPLUS, tMINUS);
+                if (op != null && Constants.errorFree) {
+                        if (op.kind == tMINUS) {
+                                cb.addInst(PCodeInstruction.OpCode.SBT);
+                        } else {
+                                cb.addInst(PCodeInstruction.OpCode.PLUS);
+                        }
+                }
+                {if ("" != null) return tv;}
     throw new Error("Missing return statement in function");
 }
 
@@ -1309,7 +1340,18 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
       jj_la1[45] = jj_gen;
       ;
     }
-{if ("" != null) return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);}
+TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
+                if(Constants.errorFree){
+                        if (op != null) {
+                                cb.addComment("T\u00e9rmino " + op.image);
+                                switch(op.kind) {
+                                        case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
+                                        case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
+                                        case tMOD: cb.addInst(PCodeInstruction.OpCode.MOD); break;
+                                }
+                        }
+                }
+                {if ("" != null) return tv;}
     throw new Error("Missing return statement in function");
 }
 
@@ -1328,7 +1370,19 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
       jj_la1[46] = jj_gen;
       ;
     }
-{if ("" != null) return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);}
+TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
+                if(Constants.errorFree){
+                        if (op != null) {
+                                cb.addComment("T\u00e9rmino " + op.image);
+                                switch(op.kind) {
+                                        case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
+                                        case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
+                                        case tMOD: cb.addInst(PCodeInstruction.OpCode.MOD); break;
+                                }
+                        }
+                }
+
+                {if ("" != null) return tv;}
     throw new Error("Missing return statement in function");
 }
 
@@ -1374,7 +1428,13 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
     case tNOT:{
       not = jj_consume_token(tNOT);
       p = primario(at, cb);
-{if ("" != null) return SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);}
+TypeValue tv = SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);
+                if (Constants.errorFree) {
+                        cb.addComment("Negaci\u00f3n l\u00f3gica");
+                        cb.addInst(PCodeInstruction.OpCode.NGB);
+                }
+
+                {if ("" != null) return tv;}
       break;
       }
     default:
@@ -1403,7 +1463,8 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
 // System.out.println(exp.value);
     if (exp.type != Symbol.Types.INT) UnexpectedTypeException.getMessage(Symbol.Types.INT, exp.type, fnToken.beginLine, fnToken.beginColumn);
         // en gen. de código comprobar que el valor es mayor que 0 ?? 
-        {if ("" != null) return new TypeValue(Symbol.Types.CHAR, exp.value);}
+        TypeValue tv = new TypeValue(Symbol.Types.CHAR, exp.value);
+        {if ("" != null) return tv;}
       break;
       }
     case tCHAR2INT:{
@@ -1441,17 +1502,19 @@ if (exp.type != Symbol.Types.CHAR) UnexpectedTypeException.getMessage(Symbol.Typ
   static final public TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb) throws ParseException {TypeValue exp = null;
     Token id = null;
         ArrayList<TypeValue> exps = null;
+        Attributes attrsLocal = new Attributes(Attributes.State.EnInvocacion, Attributes.DequeueMethod.Remove);
     if (jj_2_2(2)) {
       id = jj_consume_token(tID);
       jj_consume_token(tAPAR);
-// distinguir si id es func/proc o array
+//!FALTA GENERAR CÓDIGO AQUÍ
+                // distinguir si id es func/proc o array
                 Symbol s = st.getSymbol(id.image);
-                if (s.type == Symbol.Types.FUNCTION) at.setQueue(((SymbolFunction) s).parList);
-                else if (s.type == Symbol.Types.PROCEDURE) at.setQueue(((SymbolProcedure) s).parList);
+                if (s.type == Symbol.Types.FUNCTION) attrsLocal.setQueue(((SymbolFunction) s).parList);
+                else if (s.type == Symbol.Types.PROCEDURE) attrsLocal.setQueue(((SymbolProcedure) s).parList);
                 // si es func/proc -> instanciar attributes a "EnInvocacion" + poner en attributes todos los parámetros y sus tipos (val/ref)
                 // si es array -> no hace falta, todo es por valor
 
-      exps = lista_una_o_mas_exps(at, cb);
+      exps = lista_una_o_mas_exps(attrsLocal, cb);
       jj_consume_token(tCPAR);
 TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, st);
                 // mirar ts con id.img para obtener el Symbol.dir
@@ -1472,28 +1535,30 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
 
                 // Es una variable por referencia si esta en una invocación de un proc/func y consumo de la cola si el parámetro
                 // que se está reconociendo es por referencia
-                boolean porRefEnInv = at.state == Attributes.State.EnInvocacion && at.consumeQueue();
+                // Attributes.State.EnInvocación significa que lo evaluado es un parámetro de una función o procedimiento que está
+                // siendo invocado y consumimos la cola de si el parámetro actual es por referencia o por valor
+                boolean expectsARefAsign = at.state == Attributes.State.EnAsignacion;
+                boolean expectsARefInv = !expectsARefAsign && at.state == Attributes.State.EnInvocacion && at.consumeQueue();
 
                 switch (s.type) {
                         case ARRAY:
-                        // si id es vector
+                                // si id es vector
 
-                                // si id es una ref -> srf + drf (ahora tienes @vector) + n*(srf + drf) (cargas todas las componentes con el offset en un bucle)
-                                // si no -> n*(srf + drf)
-                                if (porRefEnInv) {
-                                        // si se pasa por ref
+                                if (expectsARefInv || expectsARefAsign) {
+                                        //Si el resultado es una referencia
 
                                         if(s.parClass == Symbol.ParameterClass.REF) {
                                                 // si id es una ref -> srf + drf   Estás anidado y la variable ya era por ref
                                                 cb.addComment("Vector por referencia pasado a par\u00e1metro por referencia");
-                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         } else {
                                                 // si no, id valor es un valor pero pide una referencia -> srf
                                                 cb.addComment("Vector por valor pasado a par\u00e1metro por referencia");
-                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                         }
                                 } else {
+                                        // Si el resultado es un valor
                                         // O no está en una invocación a proc/func -> Se quiere el valor de la variable
                                         // O estás en invocación pero el parámetro es por valor -> Se quiere el valor de la variable
 
@@ -1502,8 +1567,8 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                                                 // si id es una ref -> srf + drf (ahora tienes @vector) + (n-1)*(srf + drf) (cargas todas las componentes con el offset en un bucle)
                                                 cb.addComment("Vector por referencia pasado a par\u00e1metro por valor");
                                                 // Ahora se tiene en la pila la dirección del vector pero como se espera el valor del mismo hay que apilar todas sus componentes
-                                                for (int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd; i++) {
-                                                        cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                for (int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd +1; i++) {
+                                                        cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                         cb.addInst(PCodeInstruction.OpCode.DRF);
                                                         cb.addInst(PCodeInstruction.OpCode.STC, i);
                                                         cb.addInst(PCodeInstruction.OpCode.PLUS); // @vector[i]
@@ -1513,8 +1578,8 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                                                 // Tenemos el valor del vector y hay que pasarlo por valor
                                                 // si no -> n*(srf + drf)
                                                 cb.addComment("Vector por valor pasado por par\u00e1metro por valor");
-                                                for(int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd; i++) {
-                                                        cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir + i);
+                                                for(int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd +1; i++) {
+                                                        cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir + i);
                                                         cb.addInst(PCodeInstruction.OpCode.DRF);
                                                 }
                                         }
@@ -1522,34 +1587,35 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                                 break;
                         case FUNCTION:
                                 // si id es funcion/proc -> osf
-                                cb.addOSFInst(st.level, st.level-s.nivel, ((SymbolFunction) s).label);
+                                cb.addOSFInst(st.dirBase, st.level-s.nivel, ((SymbolFunction) s).label);
                                 break;
 
                         case PROCEDURE:
                                 // si id es funcion/proc -> osf
-                                cb.addOSFInst(st.level, st.level-s.nivel, ((SymbolProcedure) s).label);
+                                cb.addOSFInst(st.dirBase, st.level-s.nivel, ((SymbolProcedure) s).label);
                                 break;
 
                         default: // Es escalar		
-                                // si se pasa por ref 
-                                if (porRefEnInv) {
-                                        // si id es una ref -> srf + drf
+                                if (expectsARefInv || expectsARefAsign) {
+                                        // Si se espera una referencia
                                         if (s.parClass == Symbol.ParameterClass.REF) {
                                                 // si id es una ref -> srf + drf
-                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         } else {
                                                 // si no -> srf
-                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                         }
                                 } else {
-                                        // si id es una ref -> srf + drf + drf
+                                        // si se espera un valor
                                         if ( s.parClass == Symbol.ParameterClass.REF) {
-                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                                // si id es una ref -> srf + drf + drf
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
-                                        } else { // si no -> srf + drf
-                                                cb.addInst(PCodeInstruction.OpCode.SRF, s.nivel, s.dir);
+                                        } else {
+                                                // si no -> srf + drf
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         }
                                 }
@@ -1559,7 +1625,7 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
 
                 // usada para cuando estas en inst get/put/put_line
                 // get -> Attributes.ioInst -> RD
-                //attrs.cbInst(type, cb);
+                //at.cbInst(s.type, cb);
                 {if ("" != null) return semanticResult;}
         break;
         }
@@ -1575,6 +1641,7 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
   static final public ArrayList<TypeValue> lista_una_o_mas_exps(Attributes at, CodeBlock cb) throws ParseException {ArrayList<TypeValue> exps = new ArrayList<TypeValue>();
     TypeValue exp;
     exp = expresion(at, cb);
+if (exp.type != Symbol.Types.STRING) at.cbInst(exp.type, cb);
     exps = lista_exps_ll(at, cb);
 exps.add(0, exp);
                 {if ("" != null) return exps;}
@@ -1587,6 +1654,7 @@ exps.add(0, exp);
     case tCOMA:{
       jj_consume_token(tCOMA);
       exp = expresion(at, cb);
+if (exp.type != Symbol.Types.STRING) at.cbInst(exp.type, cb);
       exps = lista_exps_ll(at, cb);
 exps.add(0, exp);
                 {if ("" != null) return exps;}

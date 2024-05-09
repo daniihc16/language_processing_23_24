@@ -30,7 +30,7 @@ public class SymbolTable {
     
     // No es una pila con cada dirección base de cada bloque por que alike no permite la declaración de variables
     // tras la declaración de un procedimiento o función
-    private int dirBase;
+    public int dirBase;
 
     public int level; //nivel actual
 

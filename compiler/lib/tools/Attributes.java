@@ -29,6 +29,7 @@ import lib.tools.codeGeneration.PCodeInstruction;
 public class Attributes {
     public static enum State {
         EnInvocacion, // Estamos en la invocación a un procedimiento o función
+        EnAsignacion,
         Normal
     }
 
@@ -51,7 +52,10 @@ public class Attributes {
 
     public void setQueue(ArrayList<Symbol> params) {
         this.paramIsRefInvocacion = new PriorityQueue<Boolean>();
-        for (Symbol param:params) this.paramIsRefInvocacion.add(param.parClass == Symbol.ParameterClass.REF);
+        for (Symbol param:params) {
+            //System.err.println("Setting to queue parClass -> " + param.parClass.toString());
+            this.paramIsRefInvocacion.add(param.parClass == Symbol.ParameterClass.REF);
+        }
     }
 
     public void setQueue(Symbol.ParameterClass param) {
@@ -68,8 +72,11 @@ public class Attributes {
     }
 
     public boolean consumeQueue() {
-        if (dequeueMethod == DequeueMethod.Remove) return removeFromQueue();
-        return peekQueue();
+        if (this.state != State.Normal) {
+            if (dequeueMethod == DequeueMethod.Remove) return removeFromQueue();
+            return peekQueue();
+        }
+        return false; // no se va a usar
     }
 
     // cbInst añade la instrucción de entrada/salida a un bloque de código
