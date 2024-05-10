@@ -46,5 +46,8 @@ begin
 
     proc_con_v_ref(v_array);
 
+    skip_line;
+    exit;
+
 
 end;

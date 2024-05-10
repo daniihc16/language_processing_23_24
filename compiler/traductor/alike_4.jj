@@ -62,7 +62,7 @@ public class alike {
 				parser = new alike(new java.io.FileInputStream(args[i]));
 			}
 			//Programa es el símbolo inicial de la gramática
-			parser.Programa(args[args.length - 1].split("\\.")[0] + "DL.pcode");
+			parser.Programa(args[args.length - 1].split("\\.")[0] + ".pcode");
 			//...
 			System.out.println("***** Análisis terminado con éxito *****");
 		}
@@ -297,6 +297,7 @@ void Programa(String outputFile) :
 		< EOF > { 
 			if (Constants.errorFree) {
 				try {
+					cb.addInst(PCodeInstruction.OpCode.LVP);
 					if (Constants.xmlOutput) cb.encloseXMLTags("ProcedimientoPrincipal");
 
 					BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
@@ -372,10 +373,10 @@ CodeBlock declaracion_procs_funcs() :
 }
 {
     ( cbInternal = declaracion_proc() {
-		System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
+		//System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
 		cb.addBlock(cbInternal);
 	} | cbInternal = declaracion_func() {
-		System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
+		//System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
 		cb.addBlock(cbInternal);
 	} )+ {
 		return cb;
@@ -441,10 +442,14 @@ CodeBlock declaracion_proc():
 		})+
 		<tEND>
 		<tPC>
-		{
+		{	
+			
 			if(Constants.verbose) System.out.println("Procedimiento reconocido: " + st.toString());
 			st.removeBlock();
-			if (Constants.errorFree && Constants.xmlOutput)	cb.encloseXMLTags("Procedimiento_" + proc.name);
+			if (Constants.errorFree && Constants.xmlOutput)	{
+				cb.addInst(PCodeInstruction.OpCode.CSF);
+				cb.encloseXMLTags("Procedimiento_" + proc.name);
+			}
 			return cb;
 		}
     } catch (ParseException e) {
@@ -786,31 +791,24 @@ CodeBlock inst_if(Symbol sf) :
 				if ((boolean)expif.value) condicionSiempreTrue = true;
 				else cb.addComment("Condición if siempre FALSA, no se ha generado código");
 				//! LA EXPRESIÓN YA ESTÁ APILADA EN LA PILA, HAY QUE QUITARLA
+				cb.addInst(PCodeInstruction.OpCode.POP);
 			}
 			
-			if (expif.value == null || condicionSiempreTrue) {
-				// Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
+			if (expif.value == null) {
+				// Saltas si la evaluación de la expresión es falsa
 				cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
 			}
 			
 		}
-	} (cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+ {
-		if (Constants.errorFree) {
+	} (cbInst = instruccion(sf) { if (expif.value == null || condicionSiempreTrue) cb.addBlock(cbInst); } )+ {
+		if (Constants.errorFree && (expif.value == null || condicionSiempreTrue)) {
 			// generas el código del else if !condicionSimpreTrue y si expif.value == null || expif.value == true
-			if (!condicionSiempreTrue && (expif.value == null || (boolean)expif.value)) {
-				if ((boolean)expif.value) {
-					condicionSiempreTrue = true;
-					cb.addComment("Condición if siempre VERDADERA, detectada");
-				}
-				cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
-			}
-
+			cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
 		}
 	}
 	
 	(elsif = <tELSIF>{
-		
-		cb.addLabel(nextLabel.toString());
+		cb.addLabel(nextLabel.toString() + ":");
 		nextLabel = new Label(CGUtils.newLabel("elseif_"));
 	} expelsif = expresion(attrs, cb) <tTHEN>  {
 		SemanticFunctions.inst_if(expelsif, elsif);
@@ -818,23 +816,29 @@ CodeBlock inst_if(Symbol sf) :
 			if(expelsif.value != null) {
 				if ((boolean)expelsif.value) condicionSiempreTrue = true;
 				else cb.addComment("Condición if siempre FALSA, no se ha generado código");
+				cb.addInst(PCodeInstruction.OpCode.POP);
 			}
 			
-			if (expelsif.value == null || condicionSiempreTrue) {
+			if (expelsif.value == null) {
 				// Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
 				cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
 			}
-			
+			System.err.println("OK expresion");
 		}
-	} ( cbInst = instruccion(sf) { cb.addBlock(cbInst); })+ {
+	} ( cbInst = instruccion(sf) { if (expelsif.value == null || condicionSiempreTrue) cb.addBlock(cbInst); })+ {
 		if (Constants.errorFree) {
 			if (expelsif.value == null || condicionSiempreTrue) {
 				cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
 			}
 		}
 	} )*
-    (<tELSE> { cb.addLabel(nextLabel.toString()); } ( cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+)?
-    <tEND> <tIF>{ cb.addLabel(endLabel.toString()); return cb;}
+    (<tELSE> { cb.addLabel(nextLabel.toString() + ":"); } ( cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+)?
+    <tEND> <tIF>{ 
+		cb.addLabel(endLabel.toString() + ":");
+		if(Constants.verbose) System.out.println("Encontrada instrucción if correcta en línea: " + String.valueOf(tif.beginLine));
+		if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("if");
+		return cb;
+	}
 }
 
 
@@ -844,11 +848,23 @@ CodeBlock inst_while(Symbol sf) :
 	Token twhile = null;
 	CodeBlock cb = new CodeBlock();
 	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+	Label whileLabel = new Label(CGUtils.newLabel("while"));
+	Label endLabel = new Label(CGUtils.newLabel("endWhile"));
+	CodeBlock cbInst = null;
 }
 {
-    twhile = <tWHILE> exp = expresion(attrs, cb) <tLOOP> (instruccion(sf))+ <tEND> <tLOOP> {
+    twhile = <tWHILE> {cb.addLabel(whileLabel.toString());} exp = expresion(attrs, cb) {
+		// exp | jmf end_if
+		cb.addInst(PCodeInstruction.OpCode.JMF, endLabel.toString());
+	} <tLOOP> (cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+ <tEND> <tLOOP>  {
 		SemanticFunctions.inst_while(exp, twhile);
 		if(Constants.verbose) System.out.println("Encontrada instrucción while correcta en línea: " + String.valueOf(twhile.beginLine));
+		if(Constants.errorFree){
+			// Saltamos al principio del bucle
+			cb.addInst(PCodeInstruction.OpCode.JMP, whileLabel.toString());
+			cb.addLabel(endLabel.toString() + ":");
+			cb.encloseXMLTags("while");
+		}
 		return cb; 
 	}
 }
@@ -865,6 +881,7 @@ CodeBlock inst_return(Symbol sf) :
 	treturn = <tRETURN> exp = expresion(attrs, cb) {
 		SemanticFunctions.inst_return(exp, sf, treturn);
 		if(Constants.verbose) System.out.println("Encontrada instrucción return correcta en línea: " + String.valueOf(treturn.beginLine));
+		if (Constants.errorFree) cb.addInst(PCodeInstruction.OpCode.CSF);
 		return cb;
 	}
 }
@@ -879,6 +896,8 @@ CodeBlock inst_exit() :
 {
 	texit = <tEXIT> {
 		if(Constants.verbose) System.out.println("Encontrada instrucción exit correcta en línea: " + String.valueOf(texit.beginLine));
+		if(Constants.errorFree) cb.addInst(PCodeInstruction.OpCode.LVP);
+		if(Constants.xmlOutput) cb.encloseXMLTags("exit");
 		return cb;
 	}
 }
@@ -888,9 +907,28 @@ CodeBlock inst_skipline() :
 {
 	CodeBlock cb = new CodeBlock();
 	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+	Label initLabel = new Label(CGUtils.newLabel("skipline"));
 }
 {
-	<tSKIPLINE> {return cb;}
+	//skip line salta caracteres de la entrada hasta que logra leer y saltar un new line
+	<tSKIPLINE> {
+		if (Constants.errorFree) {
+			// cte '\n' para comparar en el bucle
+			cb.addLabel(initLabel.toString() + ":");
+			cb.addInst(PCodeInstruction.OpCode.STC, 10);
+			// bucle
+			cb.addComment("bloque do-while skipline");
+			// comparación con la cte
+			cb.addInst(PCodeInstruction.OpCode.SRF, 0, st.getDirBase());
+			cb.addInst(PCodeInstruction.OpCode.RD, 0);
+			cb.addInst(PCodeInstruction.OpCode.SRF, 0, st.getDirBase());
+			cb.addInst(PCodeInstruction.OpCode.DRF);
+			cb.addInst(PCodeInstruction.OpCode.EQ);
+
+			cb.addInst(PCodeInstruction.OpCode.JMF, initLabel.toString());
+		}
+		return cb;
+	}
 }
 
 
@@ -899,17 +937,20 @@ TypeValue expresion(Attributes at, CodeBlock cb):
     TypeValue prel = null, srel = null;
     Token op = null;
 	TypeValue result = null;
+	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+	int tmCola = at.paramIsRefInvocacion.size();
 	// "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 }
 {
-	
-	prel = relacion(at, cb) ((op = <tAND> srel = relacion(at, cb) {
+	//f(a,b,c)
+	//    foo(a and b) or (c and d))
+	prel = relacion(at, cb) ((op = <tAND> srel = relacion(atLocal, cb) {
 		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
 		if(Constants.verbose) System.out.println("Encontrada expresión AND correcta");
 		if(Constants.errorFree){
 			cb.addInst(PCodeInstruction.OpCode.AND);
 		}
-	})+ 
+	})+
 	| (op = <tOR> srel = relacion(at, cb) {
 		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
 		if(Constants.verbose) System.out.println("Encontrada expresión OR correcta");
@@ -918,20 +959,22 @@ TypeValue expresion(Attributes at, CodeBlock cb):
 		}
 		
 	})+)? {
+		// si se ha desarrollado esta expresion (op != null) o si se ha desarrollado una por debajo y estás en invocación
+		if ((op != null || tamCola == at.paramIsRefInvocacion.size()) && at.State == Attributes.State.EnInvocacion) at.consumeQueue(); // consumes el parámetro de la función
 	 	return SemanticFunctions.expresion(prel, result, op, tAND, tOR);
     }
 }
-
 
 
 TypeValue relacion(Attributes at, CodeBlock cb):
 {
     TypeValue exp1 = null, exp2 = null;    
     Token op = null;
+	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
 	exp1 = expresion_simple(at, cb)
-	( op = operador_relacional() exp2 = expresion_simple(at, cb) )? {
+	( op = operador_relacional() exp2 = expresion_simple(atLocal, cb) )? {
 		if(Constants.verbose) System.out.println("Encontrada relación correcta");
 		if(Constants.errorFree){
 			if (op != null) {
@@ -946,7 +989,7 @@ TypeValue relacion(Attributes at, CodeBlock cb):
 				}
 			}
 			
-		} 
+		}
 		return SemanticFunctions.relacion(exp1, op, exp2, tEQ, tNE, tLT, tLE, tGT, tGE);
     }
 }
@@ -965,11 +1008,12 @@ TypeValue expresion_simple(Attributes at, CodeBlock cb):
 {
     TypeValue term = null, term_resultante = null;
     Token op = null, ops = null;
+	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
 	( ops = <tPLUS> | ops = <tMINUS> )? term = termino(at, cb) {
 		if (ops != null && ops.kind == tMINUS) cb.addInst(PCodeInstruction.OpCode.NGI);
-	} (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples(at, cb))? {
+	} (( op = <tPLUS> | op = <tMINUS> ) term_resultante = una_o_mas_expresiones_simples(atLocal, cb))? {
 		TypeValue tv = SemanticFunctions.expresion_simple(ops, term, op, term_resultante, tPLUS, tMINUS);
 		if (op != null && Constants.errorFree) {
 			if (op.kind == tMINUS) {
@@ -1007,9 +1051,10 @@ TypeValue termino(Attributes at, CodeBlock cb):
 {
     TypeValue fact = null, fact_resultante = null;
     Token op = null;
+	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
-    fact = factor(at, cb) ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(at, cb) )? {
+    fact = factor(at, cb) ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(atLocal, cb) )? {
 		TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
 		if(Constants.errorFree){
 			if (op != null) {
@@ -1063,12 +1108,13 @@ TypeValue factor(Attributes at, CodeBlock cb):
 {
     TypeValue p = null;
 	Token not = null;
+	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
     p = primario(at, cb) {
    	 return p;
     }
-    | not = <tNOT> p = primario(at, cb) {
+    | not = <tNOT> p = primario(atLocal, cb) {
 		TypeValue tv = SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);
 		if (Constants.errorFree) {
 			cb.addComment("Negación lógica");
@@ -1115,10 +1161,11 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 {
 	LOOKAHEAD(2) id = <tID> <tAPAR> {
 		//!FALTA GENERAR CÓDIGO AQUÍ
-		// distinguir si id es func/proc o array
+		// distinguir si id es func/proc o array f(a+b)
 		Symbol s = st.getSymbol(id.image);
 		if (s.type == Symbol.Types.FUNCTION) attrsLocal.setQueue(((SymbolFunction) s).parList);
 		else if (s.type == Symbol.Types.PROCEDURE) attrsLocal.setQueue(((SymbolProcedure) s).parList);
+		else attrsLocal.setQueue(Symbol.ParameterClass.VAL);
 		// si es func/proc -> instanciar attributes a "EnInvocacion" + poner en attributes todos los parámetros y sus tipos (val/ref)
 		// si es array -> no hace falta, todo es por valor
 	} exps = lista_una_o_mas_exps(attrsLocal, cb) <tCPAR> /*invoc. func. o comp. array*/ {
@@ -1192,12 +1239,12 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 				break;
 			case FUNCTION:
 				// si id es funcion/proc -> osf
-				cb.addOSFInst(st.dirBase, st.level-s.nivel, ((SymbolFunction) s).label);
+				cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolFunction) s).label);
 				break;
 
 			case PROCEDURE:
 				// si id es funcion/proc -> osf
-				cb.addOSFInst(st.dirBase, st.level-s.nivel, ((SymbolProcedure) s).label);
+				cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolProcedure) s).label);
 				break;
 
 			default: // Es escalar		

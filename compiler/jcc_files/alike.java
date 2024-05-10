@@ -49,7 +49,7 @@ public class alike implements alikeConstants {
                                 parser = new alike(new java.io.FileInputStream(args[i]));
                         }
                         //Programa es el símbolo inicial de la gramática
-                        parser.Programa(args[args.length - 1].split("\\.")[0] + "DL.pcode");
+                        parser.Programa(args[args.length - 1].split("\\.")[0] + ".pcode");
                         //...
                         System.out.println("***** An\u00e1lisis terminado con \u00e9xito *****");
                 }
@@ -304,6 +304,7 @@ cb.addBlock(insts);
       jj_consume_token(0);
 if (Constants.errorFree) {
                                 try {
+                                        cb.addInst(PCodeInstruction.OpCode.LVP);
                                         if (Constants.xmlOutput) cb.encloseXMLTags("ProcedimientoPrincipal");
 
                                         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
@@ -379,13 +380,13 @@ System.err.println("SYNTAX_ERROR: " + e.getMessage());
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tPROC:{
         cbInternal = declaracion_proc();
-System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
+//System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
                 cb.addBlock(cbInternal);
         break;
         }
       case tFUNC:{
         cbInternal = declaracion_func();
-System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
+//System.out.println("CodeBlock reconocido -> " + cbInternal.toString());
                 cb.addBlock(cbInternal);
         break;
         }
@@ -497,7 +498,10 @@ cb.addBlock(insts);
       jj_consume_token(tPC);
 if(Constants.verbose) System.out.println("Procedimiento reconocido: " + st.toString());
                         st.removeBlock();
-                        if (Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("Procedimiento_" + proc.name);
+                        if (Constants.errorFree && Constants.xmlOutput) {
+                                cb.addInst(PCodeInstruction.OpCode.CSF);
+                                cb.encloseXMLTags("Procedimiento_" + proc.name);
+                        }
                         {if ("" != null) return cb;}
     } catch (ParseException e) {
 System.err.println("SYNTAX ERROR: " + e.getMessage());
@@ -936,11 +940,12 @@ SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
                         if(expif.value != null) {
                                 if ((boolean)expif.value) condicionSiempreTrue = true;
                                 else cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
+                                //! LA EXPRESIÓN YA ESTÁ APILADA EN LA PILA, HAY QUE QUITARLA
+                                cb.addInst(PCodeInstruction.OpCode.POP);
                         }
 
-                        if (expif.value == null || condicionSiempreTrue) {
-                                // Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
-                                System.out.println("Ha llegado con expif.value = null");
+                        if (expif.value == null) {
+                                // Saltas si la evaluación de la expresión es falsa
                                 cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
                         }
 
@@ -948,7 +953,7 @@ SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
     label_6:
     while (true) {
       cbInst = instruccion(sf);
-cb.addBlock(cbInst);
+if (expif.value == null || condicionSiempreTrue) cb.addBlock(cbInst);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tNULL:
       case tRETURN:
@@ -968,16 +973,9 @@ cb.addBlock(cbInst);
         break label_6;
       }
     }
-if (Constants.errorFree) {
+if (Constants.errorFree && (expif.value == null || condicionSiempreTrue)) {
                         // generas el código del else if !condicionSimpreTrue y si expif.value == null || expif.value == true
-                        if (!condicionSiempreTrue && (expif.value == null || (boolean)expif.value)) {
-                                if ((boolean)expif.value) {
-                                        condicionSiempreTrue = true;
-                                        cb.addComment("Condici\u00f3n if siempre VERDADERA, detectada");
-                                }
-                                cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
-                        }
-
+                        cb.addInst(PCodeInstruction.OpCode.JMP, endLabel.toString());
                 }
     label_7:
     while (true) {
@@ -991,7 +989,7 @@ if (Constants.errorFree) {
         break label_7;
       }
       elsif = jj_consume_token(tELSIF);
-cb.addLabel(nextLabel.toString());
+cb.addLabel(nextLabel.toString() + ":");
                 nextLabel = new Label(CGUtils.newLabel("elseif_"));
       expelsif = expresion(attrs, cb);
       jj_consume_token(tTHEN);
@@ -1000,18 +998,19 @@ SemanticFunctions.inst_if(expelsif, elsif);
                         if(expelsif.value != null) {
                                 if ((boolean)expelsif.value) condicionSiempreTrue = true;
                                 else cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
+                                cb.addInst(PCodeInstruction.OpCode.POP);
                         }
 
-                        if (expelsif.value == null || condicionSiempreTrue) {
+                        if (expelsif.value == null) {
                                 // Si la condición no tiene un valor constante o si ese valor es verdadero se genera código
                                 cb.addInst(PCodeInstruction.OpCode.JMF, nextLabel.toString());
                         }
-
+                        System.err.println("OK expresion");
                 }
       label_8:
       while (true) {
         cbInst = instruccion(sf);
-cb.addBlock(cbInst);
+if (expelsif.value == null || condicionSiempreTrue) cb.addBlock(cbInst);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case tNULL:
         case tRETURN:
@@ -1040,7 +1039,7 @@ if (Constants.errorFree) {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tELSE:{
       jj_consume_token(tELSE);
-cb.addLabel(nextLabel.toString());
+cb.addLabel(nextLabel.toString() + ":");
       label_9:
       while (true) {
         cbInst = instruccion(sf);
@@ -1072,7 +1071,10 @@ cb.addBlock(cbInst);
     }
     jj_consume_token(tEND);
     jj_consume_token(tIF);
-cb.addLabel(endLabel.toString()); {if ("" != null) return cb;}
+cb.addLabel(endLabel.toString() + ":");
+                if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n if correcta en l\u00ednea: " + String.valueOf(tif.beginLine));
+                if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("if");
+                {if ("" != null) return cb;}
     throw new Error("Missing return statement in function");
 }
 
@@ -1080,12 +1082,19 @@ cb.addLabel(endLabel.toString()); {if ("" != null) return cb;}
         Token twhile = null;
         CodeBlock cb = new CodeBlock();
         Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+        Label whileLabel = new Label(CGUtils.newLabel("while"));
+        Label endLabel = new Label(CGUtils.newLabel("endWhile"));
+        CodeBlock cbInst = null;
     twhile = jj_consume_token(tWHILE);
+cb.addLabel(whileLabel.toString());
     exp = expresion(attrs, cb);
+// exp | jmf end_if
+                cb.addInst(PCodeInstruction.OpCode.JMF, endLabel.toString());
     jj_consume_token(tLOOP);
     label_10:
     while (true) {
-      instruccion(sf);
+      cbInst = instruccion(sf);
+cb.addBlock(cbInst);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tNULL:
       case tRETURN:
@@ -1109,6 +1118,12 @@ cb.addLabel(endLabel.toString()); {if ("" != null) return cb;}
     jj_consume_token(tLOOP);
 SemanticFunctions.inst_while(exp, twhile);
                 if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n while correcta en l\u00ednea: " + String.valueOf(twhile.beginLine));
+                if(Constants.errorFree){
+                        // Saltamos al principio del bucle
+                        cb.addInst(PCodeInstruction.OpCode.JMP, whileLabel.toString());
+                        cb.addLabel(endLabel.toString() + ":");
+                        cb.encloseXMLTags("while");
+                }
                 {if ("" != null) return cb;}
     throw new Error("Missing return statement in function");
 }
@@ -1121,6 +1136,7 @@ SemanticFunctions.inst_while(exp, twhile);
     exp = expresion(attrs, cb);
 SemanticFunctions.inst_return(exp, sf, treturn);
                 if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n return correcta en l\u00ednea: " + String.valueOf(treturn.beginLine));
+                if (Constants.errorFree) cb.addInst(PCodeInstruction.OpCode.CSF);
                 {if ("" != null) return cb;}
     throw new Error("Missing return statement in function");
 }
@@ -1130,14 +1146,32 @@ SemanticFunctions.inst_return(exp, sf, treturn);
         Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
     texit = jj_consume_token(tEXIT);
 if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n exit correcta en l\u00ednea: " + String.valueOf(texit.beginLine));
+                if(Constants.errorFree) cb.addInst(PCodeInstruction.OpCode.LVP);
+                if(Constants.xmlOutput) cb.encloseXMLTags("exit");
                 {if ("" != null) return cb;}
     throw new Error("Missing return statement in function");
 }
 
   static final public CodeBlock inst_skipline() throws ParseException {CodeBlock cb = new CodeBlock();
         Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
+        Label initLabel = new Label(CGUtils.newLabel("skipline"));
     jj_consume_token(tSKIPLINE);
-{if ("" != null) return cb;}
+if (Constants.errorFree) {
+                        // cte '\n' para comparar en el bucle
+                        cb.addLabel(initLabel.toString() + ":");
+                        cb.addInst(PCodeInstruction.OpCode.STC, 10);
+                        // bucle
+                        cb.addComment("bloque do-while skipline");
+                        // comparación con la cte
+                        cb.addInst(PCodeInstruction.OpCode.SRF, 0, st.getDirBase());
+                        cb.addInst(PCodeInstruction.OpCode.RD, 0);
+                        cb.addInst(PCodeInstruction.OpCode.SRF, 0, st.getDirBase());
+                        cb.addInst(PCodeInstruction.OpCode.DRF);
+                        cb.addInst(PCodeInstruction.OpCode.EQ);
+
+                        cb.addInst(PCodeInstruction.OpCode.JMF, initLabel.toString());
+                }
+                {if ("" != null) return cb;}
     throw new Error("Missing return statement in function");
 }
 
@@ -1646,12 +1680,12 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                                 break;
                         case FUNCTION:
                                 // si id es funcion/proc -> osf
-                                cb.addOSFInst(st.dirBase, st.level-s.nivel, ((SymbolFunction) s).label);
+                                cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolFunction) s).label);
                                 break;
 
                         case PROCEDURE:
                                 // si id es funcion/proc -> osf
-                                cb.addOSFInst(st.dirBase, st.level-s.nivel, ((SymbolProcedure) s).label);
+                                cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolProcedure) s).label);
                                 break;
 
                         default: // Es escalar		

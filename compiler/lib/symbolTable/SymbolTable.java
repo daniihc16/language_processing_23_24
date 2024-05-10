@@ -28,9 +28,9 @@ public class SymbolTable {
     private ArrayList<HashMap<String, Symbol>> st;
     private String mainProc;
     
-    // No es una pila con cada dirección base de cada bloque por que alike no permite la declaración de variables
-    // tras la declaración de un procedimiento o función
-    public int dirBase;
+    // Es una pila con el número de variables locales en cada bloque (necesario para la declaración de 
+    // variables locales en ensamblador y en el caso de poder declarar variables en varios lugares del código)
+    public int[] dirBase = new int[ST_SIZE]; //dirección base de cada bloque
 
     public int level; //nivel actual
 
@@ -44,7 +44,7 @@ public class SymbolTable {
     public void insertBlock() {
         st.add(new HashMap<String, Symbol>(HASH_SIZE));
         level++;
-        dirBase = 3;
+        dirBase[level] = 3;
     }
 
     //elimina un bloque
@@ -61,11 +61,12 @@ public class SymbolTable {
             throw new AlreadyDefinedSymbolException();
         } else {
             s.nivel = level;
-            s.dir = dirBase;
+            s.dir = dirBase[level];
             if (s.type == Symbol.Types.ARRAY) {
                 SymbolArray sar = (SymbolArray)s;
-                dirBase += sar.maxInd - sar.minInd;
-            } else if (s.type != Symbol.Types.PROCEDURE && s.type != Symbol.Types.FUNCTION) dirBase++;
+                dirBase[level] += sar.maxInd - sar.minInd;
+            } 
+            if (s.type != Symbol.Types.PROCEDURE && s.type != Symbol.Types.FUNCTION) dirBase[level]++;
             currentBlock.put(s.name.toLowerCase(), s);
         }
     }
@@ -102,6 +103,11 @@ public class SymbolTable {
         }
         return null; 
     }
+
+    public int getDirBase() {
+        return dirBase[level];
+    }
+
 
     //devuelve la tabla como un string
     public String toString() {

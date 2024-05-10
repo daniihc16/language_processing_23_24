@@ -1,0 +1,70 @@
+<ProcedimientoPrincipal>
+; --Entrada al programa
+  ENP L0
+<Procedimiento_whilerefs>
+  JMP L1
+L1:
+<while>
+while2
+  SRF  0  3
+  DRF
+  DRF
+  SRF  0  4
+  DRF
+  DRF
+; --Relación >
+  GT
+  JMF endWhile3
+  SRF  1  3
+  SRF  0  3
+  DRF
+  DRF
+  ASG
+  JMP while2
+endWhile3:
+</while>
+  CSF
+</Procedimiento_whilerefs>
+L0:
+<while>
+while4
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Relación >
+  GT
+  JMF endWhile5
+  SRF  0  3
+; --Storing constant integer -> 1
+  STC  1
+  ASG
+  JMP while4
+endWhile5:
+</while>
+<while>
+while6
+; --Storing constant boolean -> false
+  STC  0
+  JMF endWhile7
+  SRF  0  3
+; --Storing constant integer -> 4
+  STC  4
+  ASG
+  JMP while6
+endWhile7:
+</while>
+<while>
+while8
+; --Storing constant boolean -> true
+  STC  1
+  JMF endWhile9
+  SRF  0  3
+; --Storing constant integer -> 6
+  STC  6
+  ASG
+  JMP while8
+endWhile9:
+</while>
+  LVP
+</ProcedimientoPrincipal>

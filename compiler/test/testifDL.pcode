@@ -1,0 +1,46 @@
+<ProcedimientoPrincipal>
+; --Entrada al programa
+  ENP L0
+L0:
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Relación >
+  GT
+  JMF elseif_1
+  SRF  0  3
+; --Storing constant integer -> 1
+  STC  1
+  ASG
+  JMP endIf_2
+elseif_1:
+  SRF  0  4
+  DRF
+  SRF  0  3
+  DRF
+; --Relación >
+  GT
+  JMF elseif_3
+  SRF  0  3
+; --Storing constant integer -> 1
+  STC  1
+  ASG
+  JMP endIf_2
+elseif_3:
+  SRF  0  3
+; --Storing constant integer -> 1
+  STC  1
+  ASG
+endIf_2:
+; --Storing constant boolean -> false
+  STC  0
+; --Condición if siempre FALSA, no se ha generado código
+  NOP
+elseif_4:
+  SRF  0  4
+; --Storing constant integer -> 1
+  STC  1
+  ASG
+endIf_5:
+</ProcedimientoPrincipal>

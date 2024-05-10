@@ -28,8 +28,8 @@ import lib.tools.codeGeneration.PCodeInstruction;
 
 public class Attributes {
     public static enum State {
-        EnInvocacion, // Estamos en la invocación a un procedimiento o función
-        EnAsignacion,
+        EnInvocacion, // Estamos en la invocación a un procedimiento o función, tendrás que consumir la cola para ver si se espera una referencia
+        EnAsignacion, // Estamos en una asignación, se espera una referencia
         Normal
     }
 
@@ -43,7 +43,7 @@ public class Attributes {
     // para saber, a la hora de reconocer identificadores, si se han de pasar por valor o por referencia.
     // True -> parámetro por referencia
     // False -> caso contrario
-    private Queue<Boolean> paramIsRefInvocacion;
+    public Queue<Boolean> paramIsRefInvocacion;
     private DequeueMethod dequeueMethod;
     public PCodeInstruction.OpCode ioInst = null;
 
