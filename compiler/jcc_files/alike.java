@@ -1178,9 +1178,21 @@ if (Constants.errorFree) {
   static final public TypeValue expresion(Attributes at, CodeBlock cb) throws ParseException {TypeValue prel = null, srel = null;
     Token op = null;
         TypeValue result = null;
+
+        // Con Normal no se va a usar la cola, da igual el método de desencolado
+        Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Peek);
+
+        // Cambiamos el modo de consumición de la cola a peek para que en caso de que se esté en una invocación y se tenga una expresión(a+b o similar) que tenga que dejar un
+        // valor en la pila, no se consuma el parámetro, además si se tiene una expresión de este tipo significa que el parámetro es por valor, por lo que no importa que se haga peek
+        // Si por el contrario la expresión es un identificador o una constante, se consumirá el parámetro de la pila que puede ser una referencia
+        // y al volver de la invocación se consumirá el valor de la pila que se ha dejado en la invocación si el método anterior para consumir la pila era remove
+        Attributes atPeek = new Attributes(at.state, Attributes.DequeueMethod.Peek);
+        atPeek.paramIsRefInvocacion = at.paramIsRefInvocacion;
         // "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 
-    prel = relacion(at, cb);
+    //f(a,b,c)
+            //    foo(a and b) or (c and d))
+            prel = relacion(atPeek, cb);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tAND:
     case tOR:{
@@ -1189,7 +1201,7 @@ if (Constants.errorFree) {
         label_11:
         while (true) {
           op = jj_consume_token(tAND);
-          srel = relacion(at, cb);
+          srel = relacion(atLocal, cb);
 result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
                 if(Constants.verbose) System.out.println("Encontrada expresi\u00f3n AND correcta");
                 if(Constants.errorFree){
@@ -1246,6 +1258,7 @@ result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
 
   static final public TypeValue relacion(Attributes at, CodeBlock cb) throws ParseException {TypeValue exp1 = null, exp2 = null;
     Token op = null;
+        Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
     exp1 = expresion_simple(at, cb);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tLT:
@@ -1255,7 +1268,7 @@ result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
     case tLE:
     case tGE:{
       op = operador_relacional();
-      exp2 = expresion_simple(at, cb);
+      exp2 = expresion_simple(atLocal, cb);
       break;
       }
     default:
@@ -1318,6 +1331,7 @@ if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
 
   static final public TypeValue expresion_simple(Attributes at, CodeBlock cb) throws ParseException {TypeValue term = null, term_resultante = null;
     Token op = null, ops = null;
+        Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tPLUS:
     case tMINUS:{
@@ -1360,7 +1374,7 @@ if (ops != null && ops.kind == tMINUS) cb.addInst(PCodeInstruction.OpCode.NGI);
         jj_consume_token(-1);
         throw new ParseException();
       }
-      term_resultante = una_o_mas_expresiones_simples(at, cb);
+      term_resultante = una_o_mas_expresiones_simples(atLocal, cb);
       break;
       }
     default:
@@ -1420,13 +1434,14 @@ TypeValue tv = SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_re
 
   static final public TypeValue termino(Attributes at, CodeBlock cb) throws ParseException {TypeValue fact = null, fact_resultante = null;
     Token op = null;
+        Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
     fact = factor(at, cb);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tTIMES:
     case tDIV:
     case tMOD:{
       op = operador_multiplicativo();
-      fact_resultante = lista_una_o_mas_terminos(at, cb);
+      fact_resultante = lista_una_o_mas_terminos(atLocal, cb);
       break;
       }
     default:
@@ -1504,6 +1519,7 @@ TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV
 
   static final public TypeValue factor(Attributes at, CodeBlock cb) throws ParseException {TypeValue p = null;
         Token not = null;
+        Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tCHARCONST:
     case tINTCONST:
@@ -1520,7 +1536,7 @@ TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV
       }
     case tNOT:{
       not = jj_consume_token(tNOT);
-      p = primario(at, cb);
+      p = primario(atLocal, cb);
 TypeValue tv = SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);
                 if (Constants.errorFree) {
                         cb.addComment("Negaci\u00f3n l\u00f3gica");
@@ -1600,10 +1616,11 @@ if (exp.type != Symbol.Types.CHAR) UnexpectedTypeException.getMessage(Symbol.Typ
       id = jj_consume_token(tID);
       jj_consume_token(tAPAR);
 //!FALTA GENERAR CÓDIGO AQUÍ
-                // distinguir si id es func/proc o array
+                // distinguir si id es func/proc o array f(a+b)
                 Symbol s = st.getSymbol(id.image);
                 if (s.type == Symbol.Types.FUNCTION) attrsLocal.setQueue(((SymbolFunction) s).parList);
                 else if (s.type == Symbol.Types.PROCEDURE) attrsLocal.setQueue(((SymbolProcedure) s).parList);
+                else attrsLocal.setQueue(Symbol.ParameterClass.VAL);
                 // si es func/proc -> instanciar attributes a "EnInvocacion" + poner en attributes todos los parámetros y sus tipos (val/ref)
                 // si es array -> no hace falta, todo es por valor
 
@@ -1735,6 +1752,7 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
     TypeValue exp;
     exp = expresion(at, cb);
 if (exp.type != Symbol.Types.STRING) at.cbInst(exp.type, cb);
+                if (at.state == Attributes.State.EnInvocacion && at.dequeueMethod == Attributes.DequeueMethod.Remove) at.consumeQueue();
     exps = lista_exps_ll(at, cb);
 exps.add(0, exp);
                 {if ("" != null) return exps;}
@@ -1748,6 +1766,7 @@ exps.add(0, exp);
       jj_consume_token(tCOMA);
       exp = expresion(at, cb);
 if (exp.type != Symbol.Types.STRING) at.cbInst(exp.type, cb);
+                if (at.state == Attributes.State.EnInvocacion && at.dequeueMethod == Attributes.DequeueMethod.Remove) at.consumeQueue();
       exps = lista_exps_ll(at, cb);
 exps.add(0, exp);
                 {if ("" != null) return exps;}
@@ -1776,17 +1795,17 @@ exps.add(0, exp);
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_2()
- {
-    if (jj_scan_token(tID)) return true;
-    if (jj_scan_token(tAPAR)) return true;
-    return false;
-  }
-
   static private boolean jj_3_1()
  {
     if (jj_scan_token(tID)) return true;
     if (jj_scan_token(tCOMA)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2()
+ {
+    if (jj_scan_token(tID)) return true;
+    if (jj_scan_token(tAPAR)) return true;
     return false;
   }
 

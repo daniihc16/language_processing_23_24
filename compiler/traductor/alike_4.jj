@@ -484,9 +484,37 @@ CodeBlock declaracion_func():
 		func = cabecera_funcion(labelFunc) {
 			SemanticFunctions.newFuncBlock(st, func);
 			if (Constants.errorFree) {
-				cb.addComment("Procedimiento " + func.name);
+				cb.addComment("Funcion " + func.name);
 				cb.addInst(PCodeInstruction.OpCode.JMP, labelFunc.toString());
 				if (Constants.xmlOutput) cb.encloseXMLTags("Función " + func.name);
+
+				cb.addComment("Leyendo parámetros de la función");
+				// necesitas calcular la direccion en frames donde almacenar cada valor, con arrays como parametros intercalados
+				// no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
+				int dirBaseParametro = 2;
+				for (Symbol s:func.parList) {
+					if (s.type == Symbol.Types.ARRAY) {
+						SymbolArray sarr = (SymbolArray)s;
+						dirBaseParametro += sarr.maxInd - sarr.minInd;
+					}
+					dirBaseParametro++;
+				}
+				// Los parámetros vienen dados en orden inverso
+				for (int i=func.parList.size(); i>=0; i--) {
+					Symbol parameteri = func.parList.get(i);
+					if (parameteri.type == Symbol.Types.ARRAY) {
+						SymbolArray sarr = (SymbolArray)parameteri;
+						for (int j=sarr.minInd; j<=sarr.maxInd; j++) {
+							cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
+							cb.addInst(PCodeInstruction.OpCode.ASGI);
+							dirBaseParametro--;
+						}
+					} else {
+						cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
+						cb.addInst(PCodeInstruction.OpCode.ASGI);
+						dirBaseParametro--;
+					}
+				}
 			}
 		}
 		( vars = declaracion_variables() )? {
@@ -937,14 +965,22 @@ TypeValue expresion(Attributes at, CodeBlock cb):
     TypeValue prel = null, srel = null;
     Token op = null;
 	TypeValue result = null;
-	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
-	int tmCola = at.paramIsRefInvocacion.size();
+
+	// Con Normal no se va a usar la cola, da igual el método de desencolado
+	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Peek);
+	
+	// Cambiamos el modo de consumición de la cola a peek para que en caso de que se esté en una invocación y se tenga una expresión(a+b o similar) que tenga que dejar un
+	// valor en la pila, no se consuma el parámetro, además si se tiene una expresión de este tipo significa que el parámetro es por valor, por lo que no importa que se haga peek
+	// Si por el contrario la expresión es un identificador o una constante, se consumirá el parámetro de la pila que puede ser una referencia
+	// y al volver de la invocación se consumirá el valor de la pila que se ha dejado en la invocación si el método anterior para consumir la pila era remove
+	Attributes atPeek = new Attributes(at.state, Attributes.DequeueMethod.Peek);
+	atPeek.paramIsRefInvocacion = at.paramIsRefInvocacion;
 	// "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 }
 {
 	//f(a,b,c)
 	//    foo(a and b) or (c and d))
-	prel = relacion(at, cb) ((op = <tAND> srel = relacion(atLocal, cb) {
+	prel = relacion(atPeek, cb) ((op = <tAND> srel = relacion(atLocal, cb) {
 		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
 		if(Constants.verbose) System.out.println("Encontrada expresión AND correcta");
 		if(Constants.errorFree){
@@ -959,8 +995,6 @@ TypeValue expresion(Attributes at, CodeBlock cb):
 		}
 		
 	})+)? {
-		// si se ha desarrollado esta expresion (op != null) o si se ha desarrollado una por debajo y estás en invocación
-		if ((op != null || tamCola == at.paramIsRefInvocacion.size()) && at.State == Attributes.State.EnInvocacion) at.consumeQueue(); // consumes el parámetro de la función
 	 	return SemanticFunctions.expresion(prel, result, op, tAND, tOR);
     }
 }
@@ -1173,8 +1207,62 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 		// mirar ts con id.img para obtener el Symbol.dir
 		// si id es func/proc -> apilar + osf
 		// si id es comp. vector
+		switch (semanticResult.type) {
+			case ARRAY:
+				boolean expectsARefAsign = at.state == Attributes.State.EnAsignacion;
+				boolean expectsARefInv = !expectsARefAsign && at.state == Attributes.State.EnInvocacion && at.consumeQueue();
+				
+				// top_stack = ind
+                // top_stack -> ind - minInd
+                cb.addInst(PCodeInstruction.OpCode.STC, sarr.minInd > 0 ? sarr.minInd : -sarr.minInd);
+				if(sarr.minInd < 0) cb.addInst(PCodeInstruction.OpCode.NGI);
+                cb.addInst(PCodeInstruction.OpCode.SBT);
+
+				if (expectsARefInv || expectsARefAsign) {
+					// Si se espera una referencia
+					if (s.parClass == Symbol.ParameterClass.REF) {
+						// si id es una ref -> srf + drf
+						cb.addComment("Vector pasado a parámetro por referencia");
+						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+						cb.addInst(PCodeInstruction.OpCode.DRF);
+						cb.addInst(PCodeInstruction.OpCode.PLUS);	// Ya tendrás apilado el índice del vector
+					} else {
+						// si no -> srf
+						cb.addComment("Vector pasado a parámetro por valor");a
+						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+						cb.addInst(PCodeInstruction.OpCode.PLUS);
+					}
+				} else {
+					// si se espera un valor
+					if ( s.parClass == Symbol.ParameterClass.REF) {
+						// si id es una ref -> srf + drf + drf
+						cb.addComment("Componente de vector pasada por referencia");
+						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+						cb.addInst(PCodeInstruction.OpCode.DRF);
+						cb.addInst(PCodeInstruction.OpCode.PLUS);
+						cb.addInst(PCodeInstruction.OpCode.DRF);
+					} else { 
+						// si no -> srf + drf
+						cb.addComment("Componente de vector pasada por valor");
+						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+						cb.addInst(PCodeInstruction.OpCode.PLUS);
+						cb.addInst(PCodeInstruction.OpCode.DRF);
+					}
+				}
+
+				break;
+			case FUNCTION:
+				// Los parámetros ya estarán apilados
+				cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolFunction) s).label);
+				break;
+
+			case PROCEDURE:
+				//p Los parámetros ya estarán apilados
+				cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolProcedure) s).label);
+				break;
 			// si es por ref -> srf
 			// si no -> srf + drf
+		}
 		return semanticResult;
     }
 	|    
@@ -1291,6 +1379,7 @@ ArrayList<TypeValue> lista_una_o_mas_exps(Attributes at, CodeBlock cb) :
 {
     exp = expresion(at, cb) {
 		if (exp.type != Symbol.Types.STRING) at.cbInst(exp.type, cb);
+		if (at.state == Attributes.State.EnInvocacion && at.dequeueMethod == Attributes.DequeueMethod.Remove) at.consumeQueue();
 	} exps = lista_exps_ll(at, cb) {
 		exps.add(0, exp);
 		return exps;
@@ -1306,6 +1395,7 @@ ArrayList<TypeValue> lista_exps_ll(Attributes at, CodeBlock cb) :
 {
     <tCOMA> exp = expresion(at, cb) {
 		if (exp.type != Symbol.Types.STRING) at.cbInst(exp.type, cb);
+		if (at.state == Attributes.State.EnInvocacion && at.dequeueMethod == Attributes.DequeueMethod.Remove) at.consumeQueue();
 	} exps = lista_exps_ll(at, cb) {
 		exps.add(0, exp);
 		return exps;

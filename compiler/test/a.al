@@ -1,13 +1,13 @@
 procedure a is
 	var_a, var_b: integer;
 	enb: integer;
-    v_array: array(0..3) of integer;
+    v_array: array(-1..3) of integer;
     
-procedure proc_con_v(v: array(0..3) of integer) is
+procedure proc_con_v(v: array(-1..3) of integer) is
 begin 
     null;
 end;
-procedure proc_con_v_ref(v_por_ref: ref array(0..3) of integer) is
+procedure proc_con_v_ref(v_por_ref: ref array(-1..3) of integer) is
 begin
     proc_con_v(v_por_ref);
     --put_line("proc_con_v_ref");
@@ -24,6 +24,7 @@ begin
     b := a+c;
     proc_con_params(c,b, a);
     proc_con_params(b,a, c);
+    proc_con_params(c+b, a*b, a);
 end;
 ------------------------------------------------------
 begin
@@ -39,10 +40,10 @@ begin
 
     -- Un valor que tienes por referencia se lo pasas a una función que lo pida por valor
     -- Tiene que apilar todos los valores del vector original
-    -- v_array(0) := 1;
-    -- v_array(1) := 2;
-    -- v_array(2) := 3;
-    -- v_array(3) := 4;
+    v_array(0) := 1;
+    v_array(1) := 2;
+    v_array(2) := 3;
+    v_array(3) := 4;
 
     proc_con_v_ref(v_array);
 

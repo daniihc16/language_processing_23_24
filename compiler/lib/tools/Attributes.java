@@ -44,7 +44,7 @@ public class Attributes {
     // True -> parámetro por referencia
     // False -> caso contrario
     public Queue<Boolean> paramIsRefInvocacion;
-    private DequeueMethod dequeueMethod;
+    public DequeueMethod dequeueMethod;
     public PCodeInstruction.OpCode ioInst = null;
 
     public Attributes(State state_, DequeueMethod dequeueMethod_) {state = state_; dequeueMethod = dequeueMethod_;}

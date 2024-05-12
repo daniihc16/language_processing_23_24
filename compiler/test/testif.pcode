@@ -1,7 +1,10 @@
+<ProcedimientoPrincipal>
 ; --Entrada al programa
   ENP L0
+<Procedimiento_testifrefs>
   JMP L1
 L1:
+<if>
   SRF  0  3
   DRF
   DRF
@@ -24,7 +27,11 @@ elseif_2:
   DRF
   ASG
 endIf_3:
+</if>
+  CSF
+</Procedimiento_testifrefs>
 L0:
+<if>
   SRF  0  3
   DRF
   SRF  0  4
@@ -56,6 +63,8 @@ elseif_6:
   STC  3
   ASG
 endIf_5:
+</if>
+<if>
 ; --Storing constant boolean -> false
   STC  0
 ; --Condición if siempre FALSA, no se ha generado código
@@ -66,6 +75,8 @@ elseif_7:
   STC  5
   ASG
 endIf_8:
+</if>
+<if>
 ; --Storing constant boolean -> true
   STC  1
   POP
@@ -75,3 +86,6 @@ endIf_8:
   ASG
   JMP endIf_10
 endIf_10:
+</if>
+  LVP
+</ProcedimientoPrincipal>
