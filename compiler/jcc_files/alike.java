@@ -181,7 +181,6 @@ tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(1));
                 if (Constants.errorFree) {
                         cb.addComment("Storing constant character -> " + char_const.image.charAt(1));
                         cb.addInst(PCodeInstruction.OpCode.STC, (int)(char)tv.value);
-                        //at.cbInst(Symbol.Types.CHAR, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -192,7 +191,6 @@ tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
                 if (Constants.errorFree) {
                         cb.addComment("Storing constant integer -> " + int_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
-                        //at.cbInst(Symbol.Types.INT, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -204,7 +202,6 @@ tv = new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
                 if (Constants.errorFree) {
                         cb.addComment("Storing constant boolean -> " + bool_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (boolean)tv.value ? 1 : 0);
-                        //at.cbInst(Symbol.Types.BOOL, cb);
                 }
                 {if ("" != null) return tv;}
       break;
@@ -418,31 +415,41 @@ System.err.println("SYNTAX_ERROR: " + e.getMessage());
     ArrayList<Symbol> vars = null;
         CodeBlock cb = new CodeBlock();
         Label labelProc = new Label(CGUtils.newLabel());
+        Label labelProcInternal = new Label(CGUtils.newLabel());
         CodeBlock cbProcsFuncs = new CodeBlock();
         CodeBlock insts = new CodeBlock();
     try {
       proc = cabecera_procedimiento(labelProc);
 SemanticFunctions.newProcBlock(st, proc);
-                        // El lenguaje permite el uso de par´ametros escalares y de vectores, tanto por 
-                        // valor como por referencia en procedimientos y funciones
-                        // params
-                        // para cada param leyendo al revés
-                        //? Preguntar qué sentido tiene mover los valores de la pila principal al frame en lugar de tener punteros
-                        //? a la pila principal: mejor en caso de vectores por valor
-                        // void a(m, k: integer, z: array of integer)
-                        // a(x, y, z[]) -> push x (srf + drf); push y; push z  -> |					z3,z2,z1,y,x| -> push z..
-                                // si es por valor
-                                        // si es escalar -> srf + asgi
-                                        // si es vector -> n*(srf + asgi) (4n instrucciones entre apilar y desapilar) | 
-                                // si es por ref
-                                        // si es escalar -> srf + asgi
-                                        // si es vector -> srf + asgi
 
                         if (Constants.errorFree) {
+                                cb.addComment("Leyendo par\u00e1metros del procedimiento");
+                                // necesitas calcular la direccion en frames donde almacenar cada valor, con arrays como parametros intercalados
+                                // no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
+                                cb.addLabel(labelProc.toString() + ":");
+                                int dirBaseParametro = st.getDirBase()-1;
+
+                                // Los parámetros vienen dados en orden inverso
+                                for (int i=proc.parList.size()-1; i>=0; i--) {
+                                        Symbol parameteri = proc.parList.get(i);
+                                        if (parameteri.type == Symbol.Types.ARRAY && !(parameteri.parClass == Symbol.ParameterClass.REF)) {
+                                                SymbolArray sarr = (SymbolArray)parameteri;
+                                                for (int j=sarr.maxInd; j>=sarr.minInd; j--) {
+                                                        cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
+                                                        cb.addInst(PCodeInstruction.OpCode.ASGI);
+                                                        dirBaseParametro--;
+                                                }
+                                        } else {
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
+                                                cb.addInst(PCodeInstruction.OpCode.ASGI);
+                                                dirBaseParametro--;
+                                        }
+                                }
+
                                 // JMP para saltar al código del procc/func actual, sino se ejecutaría el código
                                 // de los procedimientos y funciones declarados internamente, que es lo que se encuentra
                                 // debajo de la declaración de la recuperación de los valores de los parámetros
-                                cb.addInst(PCodeInstruction.OpCode.JMP, labelProc.toString());
+                                cb.addInst(PCodeInstruction.OpCode.JMP, labelProcInternal.toString());
                         }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tID:{
@@ -470,7 +477,7 @@ cb.addBlock(cbProcsFuncs);
         ;
       }
       jj_consume_token(tBEGIN);
-cb.addLabel(labelProc.toString() + ":");
+cb.addLabel(labelProcInternal.toString() + ":");
       label_4:
       while (true) {
         insts = instruccion(proc);
@@ -524,15 +531,42 @@ System.err.println("SYNTAX ERROR: " + e.getMessage());
     SymbolFunction func = null;
         CodeBlock cb = new CodeBlock();
         Label labelFunc = new Label(CGUtils.newLabel());
+        Label labelFuncInternal = new Label(CGUtils.newLabel());
         CodeBlock cbProcsFuncs = new CodeBlock();
         CodeBlock insts = new CodeBlock();
     try {
       func = cabecera_funcion(labelFunc);
 SemanticFunctions.newFuncBlock(st, func);
                         if (Constants.errorFree) {
-                                cb.addComment("Procedimiento " + func.name);
-                                cb.addInst(PCodeInstruction.OpCode.JMP, labelFunc.toString());
+                                cb.addComment("Funcion " + func.name);
+
                                 if (Constants.xmlOutput) cb.encloseXMLTags("Funci\u00f3n " + func.name);
+
+                                cb.addComment("Leyendo par\u00e1metros de la funci\u00f3n");
+                                cb.addLabel(labelFunc.toString() + ":");
+                                // necesitas calcular la direccion en frames donde almacenar cada valor, con arrays como parametros intercalados
+                                // no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
+                                int dirBaseParametro = st.getDirBase()-1;
+
+                                // Los parámetros vienen dados en orden inverso
+                                if (func.parList != null) {
+                                        for (int i=func.parList.size()-1; i>=0; i--) {
+                                                Symbol parameteri = func.parList.get(i);
+                                                if (parameteri.type == Symbol.Types.ARRAY && !(parameteri.parClass == Symbol.ParameterClass.REF)) {
+                                                        SymbolArray sarr = (SymbolArray)parameteri;
+                                                        for (int j=sarr.maxInd; j>=sarr.minInd; j--) {
+                                                                cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
+                                                                cb.addInst(PCodeInstruction.OpCode.ASGI);
+                                                                dirBaseParametro--;
+                                                        }
+                                                } else {
+                                                        cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
+                                                        cb.addInst(PCodeInstruction.OpCode.ASGI);
+                                                        dirBaseParametro--;
+                                                }
+                                        }
+                                }
+                                cb.addInst(PCodeInstruction.OpCode.JMP, labelFuncInternal.toString());
                         }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tID:{
@@ -557,7 +591,7 @@ cb.addComment("Procedimientos y funciones internos");
         ;
       }
       jj_consume_token(tBEGIN);
-cb.addLabel(labelFunc.toString() + ":");
+cb.addLabel(labelFuncInternal.toString() + ":");
       label_5:
       while (true) {
         insts = instruccion(func);
@@ -922,8 +956,8 @@ SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
         CodeBlock cbInst = null;
         Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
         boolean condicionSiempreTrue = false;
-        Label nextLabel = new Label(CGUtils.newLabel("elseif_"));
-        Label endLabel = new Label(CGUtils.newLabel("endIf_"));
+        Label nextLabel = new Label(CGUtils.newLabel("elseif"));
+        Label endLabel = new Label(CGUtils.newLabel("endIf"));
     // if (exp) insts		-- (exp) | jmf  elsif0 | insts | jmp labelFinIf
             // else if (exp) insts  -- jmt  trueElsif0 (... jmt trueElsifx)
             // else insts			-- insts
@@ -990,7 +1024,7 @@ if (Constants.errorFree && (expif.value == null || condicionSiempreTrue)) {
       }
       elsif = jj_consume_token(tELSIF);
 cb.addLabel(nextLabel.toString() + ":");
-                nextLabel = new Label(CGUtils.newLabel("elseif_"));
+                nextLabel = new Label(CGUtils.newLabel("elseif"));
       expelsif = expresion(attrs, cb);
       jj_consume_token(tTHEN);
 SemanticFunctions.inst_if(expelsif, elsif);
@@ -1186,7 +1220,7 @@ if (Constants.errorFree) {
         // valor en la pila, no se consuma el parámetro, además si se tiene una expresión de este tipo significa que el parámetro es por valor, por lo que no importa que se haga peek
         // Si por el contrario la expresión es un identificador o una constante, se consumirá el parámetro de la pila que puede ser una referencia
         // y al volver de la invocación se consumirá el valor de la pila que se ha dejado en la invocación si el método anterior para consumir la pila era remove
-        Attributes atPeek = new Attributes(at.state, Attributes.DequeueMethod.Peek);
+        Attributes atPeek = new Attributes(at.state, Attributes.DequeueMethod.Peek, at.ioInst);
         atPeek.paramIsRefInvocacion = at.paramIsRefInvocacion;
         // "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 
@@ -1612,12 +1646,12 @@ if (exp.type != Symbol.Types.CHAR) UnexpectedTypeException.getMessage(Symbol.Typ
     Token id = null;
         ArrayList<TypeValue> exps = null;
         Attributes attrsLocal = new Attributes(Attributes.State.EnInvocacion, Attributes.DequeueMethod.Remove);
+        Symbol s = null;
     if (jj_2_2(2)) {
       id = jj_consume_token(tID);
       jj_consume_token(tAPAR);
-//!FALTA GENERAR CÓDIGO AQUÍ
-                // distinguir si id es func/proc o array f(a+b)
-                Symbol s = st.getSymbol(id.image);
+// distinguir si id es func/proc o array f(a+b)
+                s = st.getSymbol(id.image);
                 if (s.type == Symbol.Types.FUNCTION) attrsLocal.setQueue(((SymbolFunction) s).parList);
                 else if (s.type == Symbol.Types.PROCEDURE) attrsLocal.setQueue(((SymbolProcedure) s).parList);
                 else attrsLocal.setQueue(Symbol.ParameterClass.VAL);
@@ -1630,8 +1664,63 @@ TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, s
                 // mirar ts con id.img para obtener el Symbol.dir
                 // si id es func/proc -> apilar + osf
                 // si id es comp. vector
+                switch (s.type) {
+                        case ARRAY:
+                                boolean expectsARefAsign = at.state == Attributes.State.EnAsignacion;
+                                boolean expectsARefInv = !expectsARefAsign && at.state == Attributes.State.EnInvocacion && at.consumeQueue();
+
+                                // top_stack = ind
+                // top_stack -> ind - minInd
+                                SymbolArray sarr = (SymbolArray)s;
+                cb.addInst(PCodeInstruction.OpCode.STC, sarr.minInd > 0 ? sarr.minInd : -sarr.minInd);
+                                if(sarr.minInd < 0) cb.addInst(PCodeInstruction.OpCode.NGI);
+                cb.addInst(PCodeInstruction.OpCode.SBT);
+
+                                if (expectsARefInv || expectsARefAsign) {
+                                        // Si se espera una referencia
+                                        if (s.parClass == Symbol.ParameterClass.REF) {
+                                                // si id es una ref -> srf + drf
+                                                cb.addComment("Vector pasado a par\u00e1metro por referencia");
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                                cb.addInst(PCodeInstruction.OpCode.PLUS);       // Ya tendrás apilado el índice del vector
+                                        } else {
+                                                // si no -> srf
+                                                cb.addComment("Vector pasado a par\u00e1metro por valor");
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.PLUS);
+                                        }
+                                } else {
+                                        // si se espera un valor
+                                        if ( s.parClass == Symbol.ParameterClass.REF) {
+                                                // si id es una ref -> srf + drf + drf
+                                                cb.addComment("Componente de vector pasada por referencia");
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                                cb.addInst(PCodeInstruction.OpCode.PLUS);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                        } else {
+                                                // si no -> srf + drf
+                                                cb.addComment("Componente de vector pasada por valor");
+                                                cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
+                                                cb.addInst(PCodeInstruction.OpCode.PLUS);
+                                                cb.addInst(PCodeInstruction.OpCode.DRF);
+                                        }
+                                }
+
+                                break;
+                        case FUNCTION:
+                                // Los parámetros ya estarán apilados
+                                cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolFunction) s).label);
+                                break;
+
+                        case PROCEDURE:
+                                //p Los parámetros ya estarán apilados
+                                cb.addOSFInst(st.getDirBase(), st.level-s.nivel, ((SymbolProcedure) s).label);
+                                break;
                         // si es por ref -> srf
                         // si no -> srf + drf
+                }
                 {if ("" != null) return semanticResult;}
     } else {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1641,7 +1730,7 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                 // generar codigo
 
                 // mirar ts con id.img para obtener el Symbol.dir
-                Symbol s = st.getSymbol(id.image);
+                s = st.getSymbol(id.image);
 
                 // Es una variable por referencia si esta en una invocación de un proc/func y consumo de la cola si el parámetro
                 // que se está reconociendo es por referencia

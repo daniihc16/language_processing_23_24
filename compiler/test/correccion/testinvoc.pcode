@@ -1,0 +1,39 @@
+<ProcedimientoPrincipal>
+; --Entrada al programa
+  ENP L0
+<f>
+<Función f>
+; --Funcion f
+  JMP L1
+</Función f>
+; --Leyendo parámetros de la función
+  SRF  0 17
+  ASGI
+  SRF  0 16
+  ASGI
+  SRF  0 15
+  ASGI
+  SRF  0 14
+  ASGI
+  SRF  0 13
+  ASGI
+  SRF  0 12
+  ASGI
+  SRF  0 11
+  ASGI
+  SRF  0 10
+  ASGI
+  SRF  0  9
+  ASGI
+  SRF  0  8
+  ASGI
+  SRF  0  7
+  ASGI
+L1:
+; --Storing constant integer -> 1
+  STC  1
+  CSF
+</f>
+L0:
+  LVP
+</ProcedimientoPrincipal>

@@ -19,7 +19,7 @@ public class CodeBlock {
 	
 	public enum BlockMode {PLAIN, XML};
 	
-	public static BlockMode generationMode = BlockMode.XML; 
+	public static BlockMode generationMode = BlockMode.PLAIN; 
 	
 	ArrayList<CodeElement> code;
 	

@@ -22,10 +22,11 @@ public class SymbolFunction extends Symbol implements Cloneable {
     public String label;
 
     public SymbolFunction(String _name, ArrayList<Symbol> _parList, 
-                          Types _returnType, String label) {
+                          Types _returnType, String label_) {
     	super(_name, Types.FUNCTION, ParameterClass.NONE);
         parList = _parList;
         returnType = _returnType;
+        label = label_;
     }
 
     public String toString() {

@@ -1,10 +1,19 @@
-#/bin/bash
+#!/bin/bash
 # Script ejecutado desde ./compiler
-TARGET=$1
 
-TEST_CON_IMPUT=""
 PATH_TO_COMPILER="dist/alike_4.jar"
 PATH_TO_COMPILER_TEACHER="../alike/alike.jar"
+
+COMPILER=$PATH_TO_COMPILER
+if [ "$1" = "-t" ]; then
+    COMPILER=$PATH_TO_COMPILER_TEACHER 
+    TARGET=$2 
+else
+    TARGET="$1.al"
+fi
+
+TEST_CON_IMPUT=""
+
 PATH_TO_ENSAMBLADOR="../alike/pcode_tools/linux/ensamblador"
 PATH_TO_MAQUINAP="../alike/pcode_tools/linux/maquinap"
 
@@ -12,14 +21,22 @@ PATH_TO_MAQUINAP="../alike/pcode_tools/linux/maquinap"
 # java -jar ../alike/alike.jar -x   test/a
 #../alike/pcode_tools/linux/ensamblador test/a
 #../alike/pcode_tools/linux/maquinap test/a
-echo "Compilando TARGET con nuestro compilador"
-echo "java -jar $PATH_TO_COMPILER -x  "test/${TARGET}.al""
-java -jar $PATH_TO_COMPILER  "test/${TARGET}.al"
 
-# echo "Generando ensamblador"
-# echo "$PATH_TO_ENSAMBLADOR "test/${TARGET}""
-# $PATH_TO_ENSAMBLADOR "test/${TARGET}"
+if [ "$1" = "-t" ]; then
+echo "--------------------------------- Compilando con compilador PROFESORES ---------------------------------"
+else
+    echo "--------------------------------- Compilando TARGET con compilador ---------------------------------"
+fi
+echo "--------------------------------- Compilando TARGET con compilador ---------------------------------"
+echo "java -jar $COMPILER  "test/${TARGET}""
+java -jar $COMPILER  "test/${TARGET}"
 
-# echo "Ejecutando maquina_p"
-# echo "$PATH_TO_MAQUINAP "test/${TARGET}""
-# $PATH_TO_MAQUINAP "test/${TARGET}"
+TARGET=$(echo $TARGET | cut -d '.' -f1)
+
+echo "--------------------------------- Generando ensamblador ---------------------------------"
+echo "$PATH_TO_ENSAMBLADOR test/${TARGET}"
+$PATH_TO_ENSAMBLADOR "test/$TARGET"
+
+echo "--------------------------------- Ejecutando maquina_p ---------------------------------"
+echo "$PATH_TO_MAQUINAP test/${TARGET}"
+$PATH_TO_MAQUINAP "test/${TARGET}"
