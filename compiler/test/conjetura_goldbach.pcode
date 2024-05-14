@@ -4,20 +4,20 @@ L1:
 L2:
   SRF  0  3
   STC  0
-  ASG
-while3:
+  ASG 
+L3:
   SRF  0  3
-  DRF
+  DRF 
   STC  2
-  LTE
+  LTE 
   SRF  0  3
-  DRF
+  DRF 
   STC  2
-  MOD
+  MOD 
   STC  0
-  NEQ
-  OR
-  JMF endWhile4
+  NEQ 
+  OR 
+  JMF L4
   STC 68
   WRT  0
   STC 97
@@ -84,70 +84,72 @@ while3:
   WRT  0
   SRF  0  3
   RD  1
-  JMP while3
-endWhile4:
+  JMP L3
+L4:
   SRF  0  3
-  DRF
-  CSF
+  DRF 
+  CSF 
+  CSF 
 L5:
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L6
 L6:
   SRF  0  4
   STC  2
-  ASG
+  ASG 
   SRF  0  5
   STC  1
-  ASG
-while7:
+  ASG 
+L7:
   SRF  0  4
-  DRF
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  2
-  DIV
-  LTE
+  DIV 
+  LTE 
   SRF  0  5
-  DRF
-  AND
-  JMF endWhile8
+  DRF 
+  AND 
+  JMF L8
   SRF  0  5
   SRF  0  3
-  DRF
+  DRF 
   SRF  0  4
-  DRF
-  MOD
+  DRF 
+  MOD 
   STC  0
-  NEQ
-  ASG
+  NEQ 
+  ASG 
   SRF  0  4
   SRF  0  4
-  DRF
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while7
-endWhile8:
+  PLUS 
+  ASG 
+  JMP L7
+L8:
   SRF  0  5
-  DRF
-  CSF
+  DRF 
+  CSF 
+  CSF 
 L9:
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L10
 L10:
   SRF  0  6
   STC  2
-  ASG
+  ASG 
   SRF  0  7
   STC  2
-  ASG
+  ASG 
   SRF  0  5
   STC  0
-  ASG
+  ASG 
   SRF  0  3
-  DRF
+  DRF 
   WRT  1
   STC 32
   WRT  0
@@ -181,43 +183,43 @@ L10:
   WRT  0
   STC 32
   WRT  0
-while11:
+L11:
   SRF  0  6
-  DRF
+  DRF 
   SRF  0  3
-  DRF
-  LT
+  DRF 
+  LT 
   SRF  0  7
-  DRF
+  DRF 
   SRF  0  3
-  DRF
-  LT
-  AND
-  JMF endWhile12
+  DRF 
+  LT 
+  AND 
+  JMF L12
   SRF  0  6
-  DRF
+  DRF 
   OSF  8  1 L5
   SRF  0  7
-  DRF
+  DRF 
   OSF  8  1 L5
-  OR
+  OR 
   SRF  0  6
-  DRF
+  DRF 
   SRF  0  7
-  DRF
-  PLUS
+  DRF 
+  PLUS 
   SRF  0  3
-  DRF
-  EQ
-  OR
-  JMF elseif13
+  DRF 
+  EQ 
+  OR 
+  JMF L13
   SRF  0  6
-  DRF
+  DRF 
   WRT  1
   STC 43
   WRT  0
   SRF  0  7
-  DRF
+  DRF 
   WRT  1
   STC 44
   WRT  0
@@ -225,40 +227,38 @@ while11:
   WRT  0
   SRF  0  5
   SRF  0  5
-  DRF
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP endIf14
-endIf14:
+  PLUS 
+  ASG 
+L13:
   SRF  0  6
   SRF  0  6
-  DRF
+  DRF 
   STC  1
-  PLUS
-  ASG
+  PLUS 
+  ASG 
   SRF  0  6
-  DRF
+  DRF 
   SRF  0  3
-  DRF
-  EQ
-  JMF elseif15
+  DRF 
+  EQ 
+  JMF L14
   SRF  0  7
   SRF  0  7
-  DRF
+  DRF 
   STC  1
-  PLUS
-  ASG
+  PLUS 
+  ASG 
   SRF  0  6
   SRF  0  7
-  DRF
-  ASG
-  JMP endIf16
-endIf16:
-  JMP while11
-endWhile12:
+  DRF 
+  ASG 
+L14:
+  JMP L11
+L12:
   SRF  0  5
-  DRF
+  DRF 
   WRT  1
   STC 32
   WRT  0
@@ -321,10 +321,11 @@ endWhile12:
   STC 10
   WRT  0
   SRF  0  5
-  DRF
+  DRF 
   STC  0
-  GT
-  CSF
+  GT 
+  CSF 
+  CSF 
 L0:
   STC 67
   WRT  0
@@ -382,7 +383,9 @@ L0:
   WRT  0
   STC 110
   WRT  0
-  STC 250
+  STC -61
+  WRT  0
+  STC -70
   WRT  0
   STC 109
   WRT  0
@@ -496,7 +499,9 @@ L0:
   WRT  0
   STC 110
   WRT  0
-  STC 250
+  STC -61
+  WRT  0
+  STC -70
   WRT  0
   STC 109
   WRT  0
@@ -732,7 +737,9 @@ L0:
   WRT  0
   STC 110
   WRT  0
-  STC 250
+  STC -61
+  WRT  0
+  STC -70
   WRT  0
   STC 109
   WRT  0
@@ -780,22 +787,22 @@ L0:
   WRT  0
   SRF  0  3
   OSF  5  0 L1
-  ASG
+  ASG 
   SRF  0  4
   STC  4
-  ASG
-while17:
+  ASG 
+L15:
   SRF  0  4
-  DRF
+  DRF 
   SRF  0  3
-  DRF
-  LTE
-  JMF endWhile18
+  DRF 
+  LTE 
+  JMF L16
   SRF  0  4
-  DRF
+  DRF 
   OSF  5  0 L9
-  NGB
-  JMF elseif19
+  NGB 
+  JMF L17
   STC 76
   WRT  0
   STC 32
@@ -857,7 +864,7 @@ while17:
   STC 32
   WRT  0
   SRF  0  4
-  DRF
+  DRF 
   WRT  1
   STC 33
   WRT  0
@@ -943,14 +950,13 @@ while17:
   WRT  0
   STC 10
   WRT  0
-  JMP endIf20
-endIf20:
+L17:
   SRF  0  4
   SRF  0  4
-  DRF
+  DRF 
   STC  2
-  PLUS
-  ASG
-  JMP while17
-endWhile18:
-  LVP
+  PLUS 
+  ASG 
+  JMP L15
+L16:
+  LVP 

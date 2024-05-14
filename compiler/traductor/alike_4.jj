@@ -870,6 +870,7 @@ CodeBlock inst_if(Symbol sf) :
 	} )*
     (<tELSE> { cb.addLabel(nextLabel.toString() + ":"); } ( cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+)?
     <tEND> <tIF>{ 
+		cb.addLabel(nextLabel.toString() + ":");
 		cb.addLabel(endLabel.toString() + ":");
 		if(Constants.verbose) System.out.println("Encontrada instrucción if correcta en línea: " + String.valueOf(tif.beginLine));
 		if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("if");

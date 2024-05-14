@@ -1107,7 +1107,8 @@ cb.addBlock(cbInst);
     }
     jj_consume_token(tEND);
     jj_consume_token(tIF);
-cb.addLabel(endLabel.toString() + ":");
+cb.addLabel(nextLabel.toString() + ":");
+                cb.addLabel(endLabel.toString() + ":");
                 if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n if correcta en l\u00ednea: " + String.valueOf(tif.beginLine));
                 if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("if");
                 {if ("" != null) return cb;}
