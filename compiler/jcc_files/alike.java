@@ -1122,7 +1122,7 @@ cb.addLabel(endLabel.toString() + ":");
         Label endLabel = new Label(CGUtils.newLabel("endWhile"));
         CodeBlock cbInst = null;
     twhile = jj_consume_token(tWHILE);
-cb.addLabel(whileLabel.toString());
+cb.addLabel(whileLabel.toString() + ":");
     exp = expresion(attrs, cb);
 // exp | jmf end_if
                 cb.addInst(PCodeInstruction.OpCode.JMF, endLabel.toString());

@@ -889,7 +889,7 @@ CodeBlock inst_while(Symbol sf) :
 	CodeBlock cbInst = null;
 }
 {
-    twhile = <tWHILE> {cb.addLabel(whileLabel.toString());} exp = expresion(attrs, cb) {
+    twhile = <tWHILE> {cb.addLabel(whileLabel.toString() + ":");} exp = expresion(attrs, cb) {
 		// exp | jmf end_if
 		cb.addInst(PCodeInstruction.OpCode.JMF, endLabel.toString());
 	} <tLOOP> (cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+ <tEND> <tLOOP>  {
