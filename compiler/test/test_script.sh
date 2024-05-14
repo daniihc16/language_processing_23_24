@@ -3,11 +3,15 @@
 
 PATH_TO_COMPILER="dist/alike_4.jar"
 PATH_TO_COMPILER_TEACHER="../alike/alike.jar"
+COMMENT=""
 
 COMPILER=$PATH_TO_COMPILER
 if [ "$1" = "-t" ]; then
     COMPILER=$PATH_TO_COMPILER_TEACHER 
     TARGET=$2 
+elif [ "$1" = "-c" ]; then
+        COMMENT="$1"
+        TARGET="$2.al"
 else
     TARGET="$1.al"
 fi
@@ -28,8 +32,8 @@ else
     echo "--------------------------------- Compilando TARGET con compilador ---------------------------------"
 fi
 echo "--------------------------------- Compilando TARGET con compilador ---------------------------------"
-echo "java -jar $COMPILER  "test/${TARGET}""
-java -jar $COMPILER  "test/${TARGET}"
+echo "java -jar $COMPILER $COMMENT "test/${TARGET}""
+java -jar $COMPILER $COMMENT "test/${TARGET}"
 
 TARGET=$(echo $TARGET | cut -d '.' -f1)
 

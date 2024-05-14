@@ -30,6 +30,8 @@ public class alike implements alikeConstants {
                                 Constants.verbose = true;
                         } else if (args[i].equals("-x")) {
                                 Constants.xmlOutput = true;
+                        } else if (args[i].equals("-c")) {
+                                Constants.comments = true;
                         }
                         i++;
                 }
@@ -179,7 +181,7 @@ t = new SymbolInt("");
       char_const = jj_consume_token(tCHARCONST);
 tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(1));
                 if (Constants.errorFree) {
-                        cb.addComment("Storing constant character -> " + char_const.image.charAt(1));
+                        if(Constants.comments) cb.addComment("Storing constant character -> " + char_const.image.charAt(1));
                         cb.addInst(PCodeInstruction.OpCode.STC, (int)(char)tv.value);
                 }
                 {if ("" != null) return tv;}
@@ -189,7 +191,7 @@ tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(1));
       int_const = jj_consume_token(tINTCONST);
 tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
                 if (Constants.errorFree) {
-                        cb.addComment("Storing constant integer -> " + int_const.image);
+                        if(Constants.comments) cb.addComment("Storing constant integer -> " + int_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
                 }
                 {if ("" != null) return tv;}
@@ -200,7 +202,7 @@ tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
       bool_const = boolconst();
 tv = new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
                 if (Constants.errorFree) {
-                        cb.addComment("Storing constant boolean -> " + bool_const.image);
+                        if(Constants.comments) cb.addComment("Storing constant boolean -> " + bool_const.image);
                         cb.addInst(PCodeInstruction.OpCode.STC, (boolean)tv.value ? 1 : 0);
                 }
                 {if ("" != null) return tv;}
@@ -212,7 +214,7 @@ tv = new TypeValue(Symbol.Types.STRING, string_const.image);
                 if (Constants.errorFree) {
                         // Recorremos el string y lo vamos apilando de final a inicio
                         for (int i = 1; i < string_const.image.length() - 1; i++) {
-                                cb.addComment("Storing constant character -> " + string_const.image.charAt(i));
+                                if(Constants.comments) cb.addComment("Storing constant character -> " + string_const.image.charAt(i));
                                 cb.addInst(PCodeInstruction.OpCode.STC, (int)(string_const.image.charAt(i)));
                                 at.cbInst(Symbol.Types.CHAR, cb);
                         }
@@ -240,7 +242,7 @@ tv = new TypeValue(Symbol.Types.STRING, string_const.image);
 SemanticFunctions.insertSymbol(st, proc_main);
                         st.setMainProc(proc_main.name);
                         // generar etiqueta de procmain	
-                        cb.addComment("Entrada al programa");
+                        if(Constants.comments) cb.addComment("Entrada al programa");
                         cb.addInst(PCodeInstruction.OpCode.ENP, labelMain.toString());
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case tID:{
@@ -423,7 +425,7 @@ System.err.println("SYNTAX_ERROR: " + e.getMessage());
 SemanticFunctions.newProcBlock(st, proc);
 
                         if (Constants.errorFree) {
-                                cb.addComment("Leyendo par\u00e1metros del procedimiento");
+                                if(Constants.comments) cb.addComment("Leyendo par\u00e1metros del procedimiento");
                                 // necesitas calcular la direccion en frames donde almacenar cada valor, con arrays como parametros intercalados
                                 // no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
                                 cb.addLabel(labelProc.toString() + ":");
@@ -538,11 +540,11 @@ System.err.println("SYNTAX ERROR: " + e.getMessage());
       func = cabecera_funcion(labelFunc);
 SemanticFunctions.newFuncBlock(st, func);
                         if (Constants.errorFree) {
-                                cb.addComment("Funcion " + func.name);
+                                if(Constants.comments) cb.addComment("Funcion " + func.name);
 
                                 if (Constants.xmlOutput) cb.encloseXMLTags("Funci\u00f3n " + func.name);
 
-                                cb.addComment("Leyendo par\u00e1metros de la funci\u00f3n");
+                                if(Constants.comments) cb.addComment("Leyendo par\u00e1metros de la funci\u00f3n");
                                 cb.addLabel(labelFunc.toString() + ":");
                                 // necesitas calcular la direccion en frames donde almacenar cada valor, con arrays como parametros intercalados
                                 // no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
@@ -582,7 +584,7 @@ if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var
       case tPROC:
       case tFUNC:{
         cbProcsFuncs = declaracion_procs_funcs();
-cb.addComment("Procedimientos y funciones internos");
+if(Constants.comments) cb.addComment("Procedimientos y funciones internos");
                         cb.addBlock(cbProcsFuncs);
         break;
         }
@@ -908,7 +910,7 @@ SemanticFunctions.inst_escribir(exps, put.beginLine, put.beginColumn);
                 if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n put_line correcta");
                 if      (Constants.errorFree) {
                         // Añadir un salto de línea al final en la generación de código
-                        cb.addComment("Salto de l\u00ednea");
+                        if(Constants.comments) cb.addComment("Salto de l\u00ednea");
 
                         cb.addInst(PCodeInstruction.OpCode.STC, 13); // CR
                         cb.addInst(PCodeInstruction.OpCode.WRT, 0);
@@ -973,7 +975,7 @@ SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
                 if (Constants.errorFree) {
                         if(expif.value != null) {
                                 if ((boolean)expif.value) condicionSiempreTrue = true;
-                                else cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
+                                else if(Constants.comments) cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
                                 //! LA EXPRESIÓN YA ESTÁ APILADA EN LA PILA, HAY QUE QUITARLA
                                 cb.addInst(PCodeInstruction.OpCode.POP);
                         }
@@ -1031,7 +1033,7 @@ SemanticFunctions.inst_if(expelsif, elsif);
                 if (!condicionSiempreTrue && Constants.errorFree) {
                         if(expelsif.value != null) {
                                 if ((boolean)expelsif.value) condicionSiempreTrue = true;
-                                else cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
+                                else if(Constants.comments) cb.addComment("Condici\u00f3n if siempre FALSA, no se ha generado c\u00f3digo");
                                 cb.addInst(PCodeInstruction.OpCode.POP);
                         }
 
@@ -1195,7 +1197,7 @@ if (Constants.errorFree) {
                         cb.addLabel(initLabel.toString() + ":");
                         cb.addInst(PCodeInstruction.OpCode.STC, 10);
                         // bucle
-                        cb.addComment("bloque do-while skipline");
+                        if(Constants.comments) cb.addComment("bloque do-while skipline");
                         // comparación con la cte
                         cb.addInst(PCodeInstruction.OpCode.SRF, 0, st.getDirBase());
                         cb.addInst(PCodeInstruction.OpCode.RD, 0);
@@ -1312,7 +1314,7 @@ result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
 if(Constants.verbose) System.out.println("Encontrada relaci\u00f3n correcta");
                 if(Constants.errorFree){
                         if (op != null) {
-                                cb.addComment("Relaci\u00f3n " + op.image);
+                                if(Constants.comments) cb.addComment("Relaci\u00f3n " + op.image);
                                 switch(op.kind) {
                                         case tEQ: cb.addInst(PCodeInstruction.OpCode.EQ); break;
                                         case tNE: cb.addInst(PCodeInstruction.OpCode.NEQ); break;
@@ -1485,7 +1487,7 @@ TypeValue tv = SemanticFunctions.una_o_mas_expresiones_simples(term, op, term_re
 TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
                 if(Constants.errorFree){
                         if (op != null) {
-                                cb.addComment("T\u00e9rmino " + op.image);
+                                if(Constants.comments) cb.addComment("T\u00e9rmino " + op.image);
                                 switch(op.kind) {
                                         case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
                                         case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
@@ -1515,7 +1517,7 @@ TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV
 TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
                 if(Constants.errorFree){
                         if (op != null) {
-                                cb.addComment("T\u00e9rmino " + op.image);
+                                if(Constants.comments) cb.addComment("T\u00e9rmino " + op.image);
                                 switch(op.kind) {
                                         case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
                                         case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
@@ -1573,7 +1575,7 @@ TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV
       p = primario(atLocal, cb);
 TypeValue tv = SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);
                 if (Constants.errorFree) {
-                        cb.addComment("Negaci\u00f3n l\u00f3gica");
+                        if(Constants.comments) cb.addComment("Negaci\u00f3n l\u00f3gica");
                         cb.addInst(PCodeInstruction.OpCode.NGB);
                 }
 
@@ -1680,13 +1682,13 @@ TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, s
                                         // Si se espera una referencia
                                         if (s.parClass == Symbol.ParameterClass.REF) {
                                                 // si id es una ref -> srf + drf
-                                                cb.addComment("Vector pasado a par\u00e1metro por referencia");
+                                                if(Constants.comments) cb.addComment("Vector pasado a par\u00e1metro por referencia");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                                 cb.addInst(PCodeInstruction.OpCode.PLUS);       // Ya tendrás apilado el índice del vector
                                         } else {
                                                 // si no -> srf
-                                                cb.addComment("Vector pasado a par\u00e1metro por valor");
+                                                if(Constants.comments) cb.addComment("Vector pasado a par\u00e1metro por valor");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.PLUS);
                                         }
@@ -1694,14 +1696,14 @@ TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, s
                                         // si se espera un valor
                                         if ( s.parClass == Symbol.ParameterClass.REF) {
                                                 // si id es una ref -> srf + drf + drf
-                                                cb.addComment("Componente de vector pasada por referencia");
+                                                if(Constants.comments) cb.addComment("Componente de vector pasada por referencia");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                                 cb.addInst(PCodeInstruction.OpCode.PLUS);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         } else {
                                                 // si no -> srf + drf
-                                                cb.addComment("Componente de vector pasada por valor");
+                                                if(Constants.comments) cb.addComment("Componente de vector pasada por valor");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.PLUS);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
@@ -1748,12 +1750,12 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
 
                                         if(s.parClass == Symbol.ParameterClass.REF) {
                                                 // si id es una ref -> srf + drf   Estás anidado y la variable ya era por ref
-                                                cb.addComment("Vector por referencia pasado a par\u00e1metro por referencia");
+                                                if(Constants.comments) cb.addComment("Vector por referencia pasado a par\u00e1metro por referencia");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         } else {
                                                 // si no, id valor es un valor pero pide una referencia -> srf
-                                                cb.addComment("Vector por valor pasado a par\u00e1metro por referencia");
+                                                if(Constants.comments) cb.addComment("Vector por valor pasado a par\u00e1metro por referencia");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                         }
                                 } else {
@@ -1764,7 +1766,7 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                                         if(s.parClass == Symbol.ParameterClass.REF){
                                                 // Tenemos la referencia al vector que hay que pasar por valor
                                                 // si id es una ref -> srf + drf (ahora tienes @vector) + (n-1)*(srf + drf) (cargas todas las componentes con el offset en un bucle)
-                                                cb.addComment("Vector por referencia pasado a par\u00e1metro por valor");
+                                                if(Constants.comments) cb.addComment("Vector por referencia pasado a par\u00e1metro por valor");
                                                 // Ahora se tiene en la pila la dirección del vector pero como se espera el valor del mismo hay que apilar todas sus componentes
                                                 for (int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd +1; i++) {
                                                         cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
@@ -1776,7 +1778,7 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                                         }else {
                                                 // Tenemos el valor del vector y hay que pasarlo por valor
                                                 // si no -> n*(srf + drf)
-                                                cb.addComment("Vector por valor pasado por par\u00e1metro por valor");
+                                                if(Constants.comments) cb.addComment("Vector por valor pasado por par\u00e1metro por valor");
                                                 for(int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd +1; i++) {
                                                         cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir + i);
                                                         cb.addInst(PCodeInstruction.OpCode.DRF);

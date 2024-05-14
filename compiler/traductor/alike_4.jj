@@ -43,6 +43,8 @@ public class alike {
 				Constants.verbose = true;
 			} else if (args[i].equals("-x")) {
 				Constants.xmlOutput = true;
+			} else if (args[i].equals("-c")) {
+				Constants.comments = true;
 			}
 			i++;
 		}
@@ -218,21 +220,21 @@ TypeValue tipo_constante(Attributes at, CodeBlock cb):
     char_const = <tCHARCONST> {
    	 	tv = new TypeValue(Symbol.Types.CHAR, char_const.image.charAt(1));
 		if (Constants.errorFree) {
-			cb.addComment("Storing constant character -> " + char_const.image.charAt(1));
+			if(Constants.comments) cb.addComment("Storing constant character -> " + char_const.image.charAt(1));
 			cb.addInst(PCodeInstruction.OpCode.STC, (int)(char)tv.value);
 		}
 		return tv;
     } | int_const = <tINTCONST> {
 		tv = new TypeValue(Symbol.Types.INT, Integer.parseInt(int_const.image));
 		if (Constants.errorFree) {
-			cb.addComment("Storing constant integer -> " + int_const.image);
+			if(Constants.comments) cb.addComment("Storing constant integer -> " + int_const.image);
 			cb.addInst(PCodeInstruction.OpCode.STC, (int)tv.value);
 		}
 		return tv;
     } | bool_const = boolconst() {
 		tv = new TypeValue(Symbol.Types.BOOL, Boolean.parseBoolean(bool_const.image));
 		if (Constants.errorFree) {
-			cb.addComment("Storing constant boolean -> " + bool_const.image);
+			if(Constants.comments) cb.addComment("Storing constant boolean -> " + bool_const.image);
 			cb.addInst(PCodeInstruction.OpCode.STC, (boolean)tv.value ? 1 : 0);
 		}
 		return tv;
@@ -241,7 +243,7 @@ TypeValue tipo_constante(Attributes at, CodeBlock cb):
 		if (Constants.errorFree) {
 			// Recorremos el string y lo vamos apilando de final a inicio
 			for (int i = 1; i < string_const.image.length() - 1; i++) {
-				cb.addComment("Storing constant character -> " + string_const.image.charAt(i));
+				if(Constants.comments) cb.addComment("Storing constant character -> " + string_const.image.charAt(i));
 				cb.addInst(PCodeInstruction.OpCode.STC, (int)(string_const.image.charAt(i)));
 				at.cbInst(Symbol.Types.CHAR, cb);
 			}
@@ -267,7 +269,7 @@ void Programa(String outputFile) :
 			SemanticFunctions.insertSymbol(st, proc_main);
 			st.setMainProc(proc_main.name);
 			// generar etiqueta de procmain	
-			cb.addComment("Entrada al programa");
+			if(Constants.comments) cb.addComment("Entrada al programa");
 			cb.addInst(PCodeInstruction.OpCode.ENP, labelMain.toString());
 		}
 		( vars = declaracion_variables() )? {
@@ -402,7 +404,7 @@ CodeBlock declaracion_proc():
 			SemanticFunctions.newProcBlock(st, proc);
 			
 			if (Constants.errorFree) {
-				cb.addComment("Leyendo parámetros del procedimiento");
+				if(Constants.comments) cb.addComment("Leyendo parámetros del procedimiento");
 				// necesitas calcular la direccion en frames donde almacenar cada valor, con arrays como parametros intercalados
 				// no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
 				cb.addLabel(labelProc.toString() + ":");
@@ -492,11 +494,11 @@ CodeBlock declaracion_func():
 		func = cabecera_funcion(labelFunc) {
 			SemanticFunctions.newFuncBlock(st, func);
 			if (Constants.errorFree) {
-				cb.addComment("Funcion " + func.name);
+				if(Constants.comments) cb.addComment("Funcion " + func.name);
 				
 				if (Constants.xmlOutput) cb.encloseXMLTags("Función " + func.name);
 
-				cb.addComment("Leyendo parámetros de la función");
+				if(Constants.comments) cb.addComment("Leyendo parámetros de la función");
 				cb.addLabel(labelFunc.toString() + ":");
 				// necesitas calcular la direccion en frames donde almacenar cada valor, con arrays como parametros intercalados
 				// no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
@@ -527,7 +529,7 @@ CodeBlock declaracion_func():
 			if (vars != null) for (Symbol var : vars) SemanticFunctions.insertSymbol(st, var);
 		}
 		( cbProcsFuncs = declaracion_procs_funcs() {
-			cb.addComment("Procedimientos y funciones internos");
+			if(Constants.comments) cb.addComment("Procedimientos y funciones internos");
 			cb.addBlock(cbProcsFuncs);
 		})?
 		<tBEGIN>{cb.addLabel(labelFuncInternal.toString() + ":");}
@@ -758,7 +760,7 @@ CodeBlock inst_escribir_linea() :
 		if(Constants.verbose) System.out.println("Encontrada instrucción put_line correcta");
 		if	(Constants.errorFree) {
 			// Añadir un salto de línea al final en la generación de código
-			cb.addComment("Salto de línea");
+			if(Constants.comments) cb.addComment("Salto de línea");
 
 			cb.addInst(PCodeInstruction.OpCode.STC, 13); // CR
 			cb.addInst(PCodeInstruction.OpCode.WRT, 0);
@@ -823,7 +825,7 @@ CodeBlock inst_if(Symbol sf) :
 		if (Constants.errorFree) {
 			if(expif.value != null) {
 				if ((boolean)expif.value) condicionSiempreTrue = true;
-				else cb.addComment("Condición if siempre FALSA, no se ha generado código");
+				else if(Constants.comments) cb.addComment("Condición if siempre FALSA, no se ha generado código");
 				//! LA EXPRESIÓN YA ESTÁ APILADA EN LA PILA, HAY QUE QUITARLA
 				cb.addInst(PCodeInstruction.OpCode.POP);
 			}
@@ -849,7 +851,7 @@ CodeBlock inst_if(Symbol sf) :
 		if (!condicionSiempreTrue && Constants.errorFree) {
 			if(expelsif.value != null) {
 				if ((boolean)expelsif.value) condicionSiempreTrue = true;
-				else cb.addComment("Condición if siempre FALSA, no se ha generado código");
+				else if(Constants.comments) cb.addComment("Condición if siempre FALSA, no se ha generado código");
 				cb.addInst(PCodeInstruction.OpCode.POP);
 			}
 			
@@ -951,7 +953,7 @@ CodeBlock inst_skipline() :
 			cb.addLabel(initLabel.toString() + ":");
 			cb.addInst(PCodeInstruction.OpCode.STC, 10);
 			// bucle
-			cb.addComment("bloque do-while skipline");
+			if(Constants.comments) cb.addComment("bloque do-while skipline");
 			// comparación con la cte
 			cb.addInst(PCodeInstruction.OpCode.SRF, 0, st.getDirBase());
 			cb.addInst(PCodeInstruction.OpCode.RD, 0);
@@ -1018,7 +1020,7 @@ TypeValue relacion(Attributes at, CodeBlock cb):
 		if(Constants.verbose) System.out.println("Encontrada relación correcta");
 		if(Constants.errorFree){
 			if (op != null) {
-				cb.addComment("Relación " + op.image);
+				if(Constants.comments) cb.addComment("Relación " + op.image);
 				switch(op.kind) {
 					case tEQ: cb.addInst(PCodeInstruction.OpCode.EQ); break;
 					case tNE: cb.addInst(PCodeInstruction.OpCode.NEQ); break;
@@ -1098,7 +1100,7 @@ TypeValue termino(Attributes at, CodeBlock cb):
 		TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
 		if(Constants.errorFree){
 			if (op != null) {
-				cb.addComment("Término " + op.image);
+				if(Constants.comments) cb.addComment("Término " + op.image);
 				switch(op.kind) {
 					case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
 					case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
@@ -1121,7 +1123,7 @@ TypeValue lista_una_o_mas_terminos(Attributes at, CodeBlock cb):
 		TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
 		if(Constants.errorFree){
 			if (op != null) {
-				cb.addComment("Término " + op.image);
+				if(Constants.comments) cb.addComment("Término " + op.image);
 				switch(op.kind) {
 					case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
 					case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
@@ -1157,7 +1159,7 @@ TypeValue factor(Attributes at, CodeBlock cb):
     | not = <tNOT> p = primario(atLocal, cb) {
 		TypeValue tv = SemanticFunctions.not_primario(p, not.beginLine, not.beginColumn);
 		if (Constants.errorFree) {
-			cb.addComment("Negación lógica");
+			if(Constants.comments) cb.addComment("Negación lógica");
 			cb.addInst(PCodeInstruction.OpCode.NGB);
 		}
 
@@ -1229,13 +1231,13 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 					// Si se espera una referencia
 					if (s.parClass == Symbol.ParameterClass.REF) {
 						// si id es una ref -> srf + drf
-						cb.addComment("Vector pasado a parámetro por referencia");
+						if(Constants.comments) cb.addComment("Vector pasado a parámetro por referencia");
 						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
 						cb.addInst(PCodeInstruction.OpCode.DRF);
 						cb.addInst(PCodeInstruction.OpCode.PLUS);	// Ya tendrás apilado el índice del vector
 					} else {
 						// si no -> srf
-						cb.addComment("Vector pasado a parámetro por valor");
+						if(Constants.comments) cb.addComment("Vector pasado a parámetro por valor");
 						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
 						cb.addInst(PCodeInstruction.OpCode.PLUS);
 					}
@@ -1243,14 +1245,14 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 					// si se espera un valor
 					if ( s.parClass == Symbol.ParameterClass.REF) {
 						// si id es una ref -> srf + drf + drf
-						cb.addComment("Componente de vector pasada por referencia");
+						if(Constants.comments) cb.addComment("Componente de vector pasada por referencia");
 						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
 						cb.addInst(PCodeInstruction.OpCode.DRF);
 						cb.addInst(PCodeInstruction.OpCode.PLUS);
 						cb.addInst(PCodeInstruction.OpCode.DRF);
 					} else { 
 						// si no -> srf + drf
-						cb.addComment("Componente de vector pasada por valor");
+						if(Constants.comments) cb.addComment("Componente de vector pasada por valor");
 						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
 						cb.addInst(PCodeInstruction.OpCode.PLUS);
 						cb.addInst(PCodeInstruction.OpCode.DRF);
@@ -1296,12 +1298,12 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 					
 					if(s.parClass == Symbol.ParameterClass.REF) {
 						// si id es una ref -> srf + drf   Estás anidado y la variable ya era por ref
-						cb.addComment("Vector por referencia pasado a parámetro por referencia");
+						if(Constants.comments) cb.addComment("Vector por referencia pasado a parámetro por referencia");
 						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
 						cb.addInst(PCodeInstruction.OpCode.DRF);
 					} else {
 						// si no, id valor es un valor pero pide una referencia -> srf
-						cb.addComment("Vector por valor pasado a parámetro por referencia");			
+						if(Constants.comments) cb.addComment("Vector por valor pasado a parámetro por referencia");			
 						cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
 					}
 				} else {
@@ -1312,7 +1314,7 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 					if(s.parClass == Symbol.ParameterClass.REF){
 						// Tenemos la referencia al vector que hay que pasar por valor
 						// si id es una ref -> srf + drf (ahora tienes @vector) + (n-1)*(srf + drf) (cargas todas las componentes con el offset en un bucle)
-						cb.addComment("Vector por referencia pasado a parámetro por valor");
+						if(Constants.comments) cb.addComment("Vector por referencia pasado a parámetro por valor");
 						// Ahora se tiene en la pila la dirección del vector pero como se espera el valor del mismo hay que apilar todas sus componentes
 						for (int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd +1; i++) {
 							cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
@@ -1324,7 +1326,7 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 					}else {
 						// Tenemos el valor del vector y hay que pasarlo por valor
 						// si no -> n*(srf + drf)
-						cb.addComment("Vector por valor pasado por parámetro por valor");
+						if(Constants.comments) cb.addComment("Vector por valor pasado por parámetro por valor");
 						for(int i = 0; i < ((SymbolArray) s).maxInd - ((SymbolArray) s).minInd +1; i++) {
 							cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir + i);
 							cb.addInst(PCodeInstruction.OpCode.DRF);
