@@ -870,6 +870,8 @@ CodeBlock inst_if(Symbol sf) :
 	} )*
     (<tELSE> { cb.addLabel(nextLabel.toString() + ":"); } ( cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+)?
     <tEND> <tIF>{ 
+
+		//! PROBABLEMENTE EN LUGAR DE ESTO SE PODRÁ HACER CON LO DE BORRAR LA ÚLTIMA LÍNEA QUE HAS PUESTO EN EL CODEBLOCK
 		cb.addLabel(nextLabel.toString() + ":");
 		cb.addLabel(endLabel.toString() + ":");
 		if(Constants.verbose) System.out.println("Encontrada instrucción if correcta en línea: " + String.valueOf(tif.beginLine));

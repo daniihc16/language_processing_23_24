@@ -4,18 +4,18 @@ L1:
 L2:
   SRF  0  3
   STC  0
-  ASG
-while3:
+  ASG 
+L3:
   SRF  0  3
-  DRF
+  DRF 
   STC  1
-  LT
+  LT 
   SRF  0  3
-  DRF
+  DRF 
   STC 100
-  GT
-  OR
-  JMF endWhile4
+  GT 
+  OR 
+  JMF L4
   STC 68
   WRT  0
   STC 97
@@ -78,225 +78,226 @@ while3:
   WRT  0
   SRF  0  3
   RD  1
-  JMP while3
-endWhile4:
+  JMP L3
+L4:
   SRF  0  3
-  DRF
-  CSF
+  DRF 
+  CSF 
+  CSF 
 L5:
   SRF  0 103
-  ASGI
+  ASGI 
   SRF  0 102
-  ASGI
+  ASGI 
   SRF  0 101
-  ASGI
+  ASGI 
   SRF  0 100
-  ASGI
+  ASGI 
   SRF  0 99
-  ASGI
+  ASGI 
   SRF  0 98
-  ASGI
+  ASGI 
   SRF  0 97
-  ASGI
+  ASGI 
   SRF  0 96
-  ASGI
+  ASGI 
   SRF  0 95
-  ASGI
+  ASGI 
   SRF  0 94
-  ASGI
+  ASGI 
   SRF  0 93
-  ASGI
+  ASGI 
   SRF  0 92
-  ASGI
+  ASGI 
   SRF  0 91
-  ASGI
+  ASGI 
   SRF  0 90
-  ASGI
+  ASGI 
   SRF  0 89
-  ASGI
+  ASGI 
   SRF  0 88
-  ASGI
+  ASGI 
   SRF  0 87
-  ASGI
+  ASGI 
   SRF  0 86
-  ASGI
+  ASGI 
   SRF  0 85
-  ASGI
+  ASGI 
   SRF  0 84
-  ASGI
+  ASGI 
   SRF  0 83
-  ASGI
+  ASGI 
   SRF  0 82
-  ASGI
+  ASGI 
   SRF  0 81
-  ASGI
+  ASGI 
   SRF  0 80
-  ASGI
+  ASGI 
   SRF  0 79
-  ASGI
+  ASGI 
   SRF  0 78
-  ASGI
+  ASGI 
   SRF  0 77
-  ASGI
+  ASGI 
   SRF  0 76
-  ASGI
+  ASGI 
   SRF  0 75
-  ASGI
+  ASGI 
   SRF  0 74
-  ASGI
+  ASGI 
   SRF  0 73
-  ASGI
+  ASGI 
   SRF  0 72
-  ASGI
+  ASGI 
   SRF  0 71
-  ASGI
+  ASGI 
   SRF  0 70
-  ASGI
+  ASGI 
   SRF  0 69
-  ASGI
+  ASGI 
   SRF  0 68
-  ASGI
+  ASGI 
   SRF  0 67
-  ASGI
+  ASGI 
   SRF  0 66
-  ASGI
+  ASGI 
   SRF  0 65
-  ASGI
+  ASGI 
   SRF  0 64
-  ASGI
+  ASGI 
   SRF  0 63
-  ASGI
+  ASGI 
   SRF  0 62
-  ASGI
+  ASGI 
   SRF  0 61
-  ASGI
+  ASGI 
   SRF  0 60
-  ASGI
+  ASGI 
   SRF  0 59
-  ASGI
+  ASGI 
   SRF  0 58
-  ASGI
+  ASGI 
   SRF  0 57
-  ASGI
+  ASGI 
   SRF  0 56
-  ASGI
+  ASGI 
   SRF  0 55
-  ASGI
+  ASGI 
   SRF  0 54
-  ASGI
+  ASGI 
   SRF  0 53
-  ASGI
+  ASGI 
   SRF  0 52
-  ASGI
+  ASGI 
   SRF  0 51
-  ASGI
+  ASGI 
   SRF  0 50
-  ASGI
+  ASGI 
   SRF  0 49
-  ASGI
+  ASGI 
   SRF  0 48
-  ASGI
+  ASGI 
   SRF  0 47
-  ASGI
+  ASGI 
   SRF  0 46
-  ASGI
+  ASGI 
   SRF  0 45
-  ASGI
+  ASGI 
   SRF  0 44
-  ASGI
+  ASGI 
   SRF  0 43
-  ASGI
+  ASGI 
   SRF  0 42
-  ASGI
+  ASGI 
   SRF  0 41
-  ASGI
+  ASGI 
   SRF  0 40
-  ASGI
+  ASGI 
   SRF  0 39
-  ASGI
+  ASGI 
   SRF  0 38
-  ASGI
+  ASGI 
   SRF  0 37
-  ASGI
+  ASGI 
   SRF  0 36
-  ASGI
+  ASGI 
   SRF  0 35
-  ASGI
+  ASGI 
   SRF  0 34
-  ASGI
+  ASGI 
   SRF  0 33
-  ASGI
+  ASGI 
   SRF  0 32
-  ASGI
+  ASGI 
   SRF  0 31
-  ASGI
+  ASGI 
   SRF  0 30
-  ASGI
+  ASGI 
   SRF  0 29
-  ASGI
+  ASGI 
   SRF  0 28
-  ASGI
+  ASGI 
   SRF  0 27
-  ASGI
+  ASGI 
   SRF  0 26
-  ASGI
+  ASGI 
   SRF  0 25
-  ASGI
+  ASGI 
   SRF  0 24
-  ASGI
+  ASGI 
   SRF  0 23
-  ASGI
+  ASGI 
   SRF  0 22
-  ASGI
+  ASGI 
   SRF  0 21
-  ASGI
+  ASGI 
   SRF  0 20
-  ASGI
+  ASGI 
   SRF  0 19
-  ASGI
+  ASGI 
   SRF  0 18
-  ASGI
+  ASGI 
   SRF  0 17
-  ASGI
+  ASGI 
   SRF  0 16
-  ASGI
+  ASGI 
   SRF  0 15
-  ASGI
+  ASGI 
   SRF  0 14
-  ASGI
+  ASGI 
   SRF  0 13
-  ASGI
+  ASGI 
   SRF  0 12
-  ASGI
+  ASGI 
   SRF  0 11
-  ASGI
+  ASGI 
   SRF  0 10
-  ASGI
+  ASGI 
   SRF  0  9
-  ASGI
+  ASGI 
   SRF  0  8
-  ASGI
+  ASGI 
   SRF  0  7
-  ASGI
+  ASGI 
   SRF  0  6
-  ASGI
+  ASGI 
   SRF  0  5
-  ASGI
+  ASGI 
   SRF  0  4
-  ASGI
+  ASGI 
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L6
 L6:
   SRF  0 105
   STC  2
-  ASG
+  ASG 
   SRF  0 104
   STC  0
-  ASG
+  ASG 
   SRF  0 106
   STC  0
-  ASG
+  ASG 
   STC 13
   WRT  0
   STC 10
@@ -344,7 +345,7 @@ L6:
   STC 32
   WRT  0
   SRF  1  3
-  DRF
+  DRF 
   WRT  1
   STC 58
   WRT  0
@@ -358,32 +359,32 @@ L6:
   WRT  0
   STC 10
   WRT  0
-while7:
+L7:
   SRF  0 106
-  DRF
-  NGB
-  JMF endWhile8
+  DRF 
+  NGB 
+  JMF L8
   SRF  0 105
-  DRF
+  DRF 
   SRF  1  3
-  DRF
-  GT
-  JMF elseif9
+  DRF 
+  GT 
+  JMF L9
   SRF  0 106
   STC  1
-  ASG
-  JMP endIf10
-elseif9:
+  ASG 
+  JMP L10
+L9:
   SRF  0 105
-  DRF
+  DRF 
   STC  0
-  SBT
+  SBT 
   SRF  0  3
-  PLUS
-  DRF
-  JMF elseif11
+  PLUS 
+  DRF 
+  JMF L11
   SRF  0 105
-  DRF
+  DRF 
   WRT  1
   STC 32
   WRT  0
@@ -411,23 +412,20 @@ elseif9:
   WRT  0
   SRF  0 104
   SRF  0 104
-  DRF
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP endIf12
-elseif11:
-endIf12:
+  PLUS 
+  ASG 
+L11:
   SRF  0 105
   SRF  0 105
-  DRF
+  DRF 
   STC  1
-  PLUS
-  ASG
-elseif9:
-endIf10:
-  JMP while7
-endWhile8:
+  PLUS 
+  ASG 
+L10:
+  JMP L7
+L8:
   STC 13
   WRT  0
   STC 10
@@ -445,7 +443,7 @@ endWhile8:
   STC 32
   WRT  0
   SRF  1  3
-  DRF
+  DRF 
   WRT  1
   STC 32
   WRT  0
@@ -458,13 +456,15 @@ endWhile8:
   STC 32
   WRT  0
   SRF  0 104
-  DRF
+  DRF 
   WRT  1
   STC 32
   WRT  0
   STC 110
   WRT  0
-  STC 250
+  STC -61
+  WRT  0
+  STC -70
   WRT  0
   STC 109
   WRT  0
@@ -496,623 +496,625 @@ endWhile8:
   WRT  0
   STC 10
   WRT  0
+  CSF 
+L12:
+  SRF  0  3
+  ASGI 
+  JMP L13
 L13:
-  SRF  0 103
-  ASGI
-  JMP L14
+  SRF  0  4
+  STC  1
+  ASG 
 L14:
-  SRF  0 104
-  STC  1
-  ASG
-while15:
-  SRF  0 104
-  DRF
+  SRF  0  4
+  DRF 
   SRF  1  3
-  DRF
-  LTE
-  JMF endWhile16
-  SRF  0 104
-  DRF
+  DRF 
+  LTE 
+  JMF L15
+  SRF  0  4
+  DRF 
   STC  0
-  SBT
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
+  DRF 
+  PLUS 
   STC  1
-  ASG
-  SRF  0 104
-  SRF  0 104
-  DRF
+  ASG 
+  SRF  0  4
+  SRF  0  4
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while15
-endWhile16:
+  PLUS 
+  ASG 
+  JMP L14
+L15:
+  CSF 
+L16:
+  SRF  0  3
+  ASGI 
+  JMP L17
 L17:
-  SRF  0 103
-  ASGI
-  JMP L18
+  SRF  0  4
+  STC  2
+  ASG 
 L18:
-  SRF  0 104
-  STC  2
-  ASG
-while19:
-  SRF  0 104
-  DRF
+  SRF  0  4
+  DRF 
   SRF  1  3
-  DRF
+  DRF 
   STC  2
-  DIV
-  LTE
-  JMF endWhile20
-  SRF  0 104
-  DRF
+  DIV 
+  LTE 
+  JMF L19
+  SRF  0  4
+  DRF 
   STC  0
-  SBT
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-  JMF elseif21
-  SRF  0 105
+  DRF 
+  PLUS 
+  DRF 
+  JMF L20
+  SRF  0  5
   STC  2
-  SRF  0 104
-  DRF
-  TMS
-  ASG
-while23:
-  SRF  0 105
-  DRF
+  SRF  0  4
+  DRF 
+  TMS 
+  ASG 
+L21:
+  SRF  0  5
+  DRF 
   SRF  1  3
-  DRF
-  LTE
-  JMF endWhile24
-  SRF  0 105
-  DRF
+  DRF 
+  LTE 
+  JMF L22
+  SRF  0  5
+  DRF 
   STC  0
-  SBT
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
+  DRF 
+  PLUS 
   STC  0
-  ASG
-  SRF  0 105
-  SRF  0 105
-  DRF
-  SRF  0 104
-  DRF
-  PLUS
-  ASG
-  JMP while23
-endWhile24:
-  JMP endIf22
-elseif21:
-endIf22:
-  SRF  0 104
-  SRF  0 104
-  DRF
+  ASG 
+  SRF  0  5
+  SRF  0  5
+  DRF 
+  SRF  0  4
+  DRF 
+  PLUS 
+  ASG 
+  JMP L21
+L22:
+L20:
+  SRF  0  4
+  SRF  0  4
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while19
-endWhile20:
-L25:
-  SRF  0 103
-  ASGI
-  JMP L26
-L26:
+  PLUS 
+  ASG 
+  JMP L18
+L19:
+  CSF 
+L23:
   SRF  0  3
-  DRF
-  OSF 104  1 L13
+  ASGI 
+  JMP L24
+L24:
   SRF  0  3
-  DRF
-  OSF 104  1 L17
+  DRF 
+  OSF  4  1 L12
   SRF  0  3
-  DRF
+  DRF 
+  OSF  4  1 L16
+  SRF  0  3
+  DRF 
   STC  0
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  1
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  2
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  3
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  4
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  5
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  6
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  7
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  8
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC  9
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 10
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 11
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 12
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 13
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 14
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 15
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 16
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 17
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 18
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 19
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 20
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 21
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 22
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 23
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 24
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 25
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 26
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 27
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 28
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 29
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 30
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 31
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 32
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 33
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 34
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 35
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 36
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 37
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 38
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 39
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 40
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 41
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 42
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 43
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 44
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 45
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 46
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 47
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 48
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 49
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 50
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 51
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 52
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 53
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 54
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 55
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 56
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 57
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 58
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 59
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 60
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 61
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 62
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 63
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 64
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 65
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 66
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 67
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 68
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 69
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 70
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 71
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 72
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 73
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 74
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 75
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 76
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 77
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 78
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 79
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 80
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 81
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 82
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 83
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 84
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 85
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 86
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 87
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 88
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 89
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 90
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 91
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 92
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 93
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 94
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 95
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 96
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 97
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 98
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 99
-  PLUS
-  DRF
+  PLUS 
+  DRF 
   SRF  0  3
-  DRF
+  DRF 
   STC 100
-  PLUS
-  DRF
-  OSF 104  1 L5
+  PLUS 
+  DRF 
+  OSF  4  1 L5
+  CSF 
 L0:
   STC 67
   WRT  0
@@ -1140,7 +1142,9 @@ L0:
   WRT  0
   STC 116
   WRT  0
-  STC 243
+  STC -61
+  WRT  0
+  STC -77
   WRT  0
   STC 115
   WRT  0
@@ -1326,7 +1330,7 @@ L0:
   WRT  0
   SRF  0  3
   OSF 105  0 L1
-  ASG
+  ASG 
   SRF  0  4
-  OSF 105  0 L25
-  LVP
+  OSF 105  0 L23
+  LVP 
