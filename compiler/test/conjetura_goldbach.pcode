@@ -200,7 +200,7 @@ while11:
   SRF  0  7
   DRF
   OSF  8  1 L5
-  OR
+  AND
   SRF  0  6
   DRF
   SRF  0  7
@@ -209,7 +209,7 @@ while11:
   SRF  0  3
   DRF
   EQ
-  OR
+  AND
   JMF elseif13
   SRF  0  6
   DRF

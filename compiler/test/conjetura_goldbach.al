@@ -38,7 +38,7 @@ begin
     n := 0;
     put (k, " es la suma de: ");
     while (a < k) and (b < k) loop
-        if es_primo (a) or es_primo (b) or ((a + b) = k) then
+        if es_primo (a) and es_primo (b) and ((a + b) = k) then
             put(a, "+", b,", ");
             n := n + 1;
         end if;
