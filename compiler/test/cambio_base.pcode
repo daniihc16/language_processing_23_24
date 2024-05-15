@@ -1,7 +1,4 @@
-; --Entrada al programa
   ENP L0
-; --Funcion b_dec
-; --Leyendo parámetros de la función
 L1:
   SRF  0  4
   ASGI
@@ -11,12 +8,9 @@ L1:
 L2:
   SRF  0  3
   DRF
-; --Storing constant integer -> 0
   STC  0
-; --Relación =
   EQ
   JMF elseif3
-; --Storing constant integer -> 0
   STC  0
   CSF
   JMP endIf4
@@ -24,17 +18,13 @@ elseif3:
   SRF  0  5
   SRF  0  3
   DRF
-; --Storing constant integer -> 10
   STC 10
-; --Término mod
   MOD
   ASG
   SRF  0  6
   SRF  0  3
   DRF
-; --Storing constant integer -> 10
   STC 10
-; --Término /
   DIV
   SRF  0  4
   DRF
@@ -44,15 +34,12 @@ elseif3:
   DRF
   SRF  0  4
   DRF
-; --Término *
   TMS
   SRF  0  5
   DRF
   PLUS
   CSF
 endIf4:
-; --Funcion dec_b
-; --Leyendo parámetros de la función
 L5:
   SRF  0  4
   ASGI
@@ -64,7 +51,6 @@ L6:
   DRF
   SRF  0  4
   DRF
-; --Relación <
   LT
   JMF elseif7
   SRF  0  3
@@ -77,7 +63,6 @@ elseif7:
   DRF
   SRF  0  4
   DRF
-; --Término mod
   MOD
   ASG
   SRF  0  6
@@ -85,7 +70,6 @@ elseif7:
   DRF
   SRF  0  4
   DRF
-; --Término /
   DIV
   SRF  0  4
   DRF
@@ -93,9 +77,7 @@ elseif7:
   ASG
   SRF  0  6
   DRF
-; --Storing constant integer -> 10
   STC 10
-; --Término *
   TMS
   SRF  0  5
   DRF
@@ -104,287 +86,199 @@ elseif7:
 endIf8:
 L0:
   SRF  0  3
-; --Storing constant integer -> 4
   STC  4
   ASG
   SRF  0  4
-; --Storing constant integer -> 2
   STC  2
   ASG
-; --Storing constant character -> E
   STC 69
   WRT  0
-; --Storing constant character -> s
   STC 115
   WRT  0
-; --Storing constant character -> t
   STC 116
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> p
   STC 112
   WRT  0
-; --Storing constant character -> r
   STC 114
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character -> g
   STC 103
   WRT  0
-; --Storing constant character -> r
   STC 114
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> m
   STC 109
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> c
   STC 99
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> v
   STC 118
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> r
   STC 114
   WRT  0
-; --Storing constant character -> t
   STC 116
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> =
   STC 61
   WRT  0
   SRF  0  3
   DRF
   WRT  1
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> b
   STC 98
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> s
   STC 115
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> b
   STC 98
   WRT  0
-; --Storing constant character -> =
   STC 61
   WRT  0
   SRF  0  4
   DRF
   WRT  1
-; --Storing constant character -> ,
   STC 44
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> y
   STC 121
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> l
   STC 108
   WRT  0
-; --Storing constant character -> u
   STC 117
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> g
   STC 103
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> f
   STC 102
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> c
   STC 99
   WRT  0
-; --Storing constant character -> t
   STC 116
   WRT  0
-; --Storing constant character -> ú
   STC 250
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> l
   STC 108
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> c
   STC 99
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> v
   STC 118
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> r
   STC 114
   WRT  0
-; --Storing constant character -> s
   STC 115
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> ó
   STC 243
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> v
   STC 118
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> r
   STC 114
   WRT  0
-; --Storing constant character -> s
   STC 115
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> .
   STC 46
   WRT  0
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> :
   STC 58
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
   SRF  0  3
   DRF
   WRT  1
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
-; --Storing constant character -> b
   STC 98
   WRT  0
-; --Storing constant character -> :
   STC 58
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
   SRF  0  4
   DRF
   WRT  1
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
@@ -396,84 +290,63 @@ L0:
   DRF
   OSF  6  0 L5
   ASG
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> c
   STC 99
   WRT  0
-; --Storing constant character -> _
   STC 95
   WRT  0
-; --Storing constant character -> b
   STC 98
   WRT  0
-; --Storing constant character -> (
   STC 40
   WRT  0
   SRF  0  3
   DRF
   WRT  1
-; --Storing constant character -> ,
   STC 44
   WRT  0
   SRF  0  4
   DRF
   WRT  1
-; --Storing constant character -> )
   STC 41
   WRT  0
-; --Storing constant character -> :
   STC 58
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
   SRF  0  5
   DRF
   WRT  1
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
-; --Storing constant character -> b
   STC 98
   WRT  0
-; --Storing constant character -> _
   STC 95
   WRT  0
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> c
   STC 99
   WRT  0
-; --Storing constant character -> (
   STC 40
   WRT  0
   SRF  0  5
   DRF
   WRT  1
-; --Storing constant character -> ,
   STC 44
   WRT  0
   SRF  0  4
   DRF
   WRT  1
-; --Storing constant character -> )
   STC 41
   WRT  0
-; --Storing constant character -> :
   STC 58
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
   SRF  0  5
@@ -482,7 +355,6 @@ L0:
   DRF
   OSF  6  0 L1
   WRT  1
-; --Salto de línea
   STC 13
   WRT  0
   STC 10

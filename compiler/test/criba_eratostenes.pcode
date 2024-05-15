@@ -1,2647 +1,1336 @@
-; --- p-code instruction 0
   ENP L0
 L1:
-; --- p-code instruction 1
   JMP L2
 L2:
-; --- p-code instruction 2
   SRF  0  3
-; --- p-code instruction 3
   STC  0
-; --- p-code instruction 4
   ASG 
 L3:
-; --- p-code instruction 5
   SRF  0  3
-; --- p-code instruction 6
   DRF 
-; --- p-code instruction 7
   STC  1
-; --- p-code instruction 8
   LT 
-; --- p-code instruction 9
   SRF  0  3
-; --- p-code instruction 10
   DRF 
-; --- p-code instruction 11
   STC 100
-; --- p-code instruction 12
   GT 
-; --- p-code instruction 13
   OR 
-; --- p-code instruction 14
   JMF L4
-; --- p-code instruction 15
   STC 68
-; --- p-code instruction 16
   WRT  0
-; --- p-code instruction 17
   STC 97
-; --- p-code instruction 18
   WRT  0
-; --- p-code instruction 19
   STC 109
-; --- p-code instruction 20
   WRT  0
-; --- p-code instruction 21
   STC 101
-; --- p-code instruction 22
   WRT  0
-; --- p-code instruction 23
   STC 32
-; --- p-code instruction 24
   WRT  0
-; --- p-code instruction 25
   STC 117
-; --- p-code instruction 26
   WRT  0
-; --- p-code instruction 27
   STC 110
-; --- p-code instruction 28
   WRT  0
-; --- p-code instruction 29
   STC 32
-; --- p-code instruction 30
   WRT  0
-; --- p-code instruction 31
   STC 110
-; --- p-code instruction 32
   WRT  0
-; --- p-code instruction 33
   STC 117
-; --- p-code instruction 34
   WRT  0
-; --- p-code instruction 35
   STC 109
-; --- p-code instruction 36
   WRT  0
-; --- p-code instruction 37
   STC 101
-; --- p-code instruction 38
   WRT  0
-; --- p-code instruction 39
   STC 114
-; --- p-code instruction 40
   WRT  0
-; --- p-code instruction 41
   STC 111
-; --- p-code instruction 42
   WRT  0
-; --- p-code instruction 43
   STC 32
-; --- p-code instruction 44
   WRT  0
-; --- p-code instruction 45
   STC 101
-; --- p-code instruction 46
   WRT  0
-; --- p-code instruction 47
   STC 110
-; --- p-code instruction 48
   WRT  0
-; --- p-code instruction 49
   STC 116
-; --- p-code instruction 50
   WRT  0
-; --- p-code instruction 51
   STC 114
-; --- p-code instruction 52
   WRT  0
-; --- p-code instruction 53
   STC 101
-; --- p-code instruction 54
   WRT  0
-; --- p-code instruction 55
   STC 32
-; --- p-code instruction 56
   WRT  0
-; --- p-code instruction 57
   STC 49
-; --- p-code instruction 58
   WRT  0
-; --- p-code instruction 59
   STC 32
-; --- p-code instruction 60
   WRT  0
-; --- p-code instruction 61
   STC 121
-; --- p-code instruction 62
   WRT  0
-; --- p-code instruction 63
   STC 32
-; --- p-code instruction 64
   WRT  0
-; --- p-code instruction 65
   STC 49
-; --- p-code instruction 66
   WRT  0
-; --- p-code instruction 67
   STC 48
-; --- p-code instruction 68
   WRT  0
-; --- p-code instruction 69
   STC 48
-; --- p-code instruction 70
   WRT  0
-; --- p-code instruction 71
   STC 58
-; --- p-code instruction 72
   WRT  0
-; --- p-code instruction 73
   STC 32
-; --- p-code instruction 74
   WRT  0
-; --- p-code instruction 75
   SRF  0  3
-; --- p-code instruction 76
   RD  1
-; --- p-code instruction 77
   JMP L3
 L4:
-; --- p-code instruction 78
   SRF  0  3
-; --- p-code instruction 79
   DRF 
-; --- p-code instruction 80
   CSF 
-; --- p-code instruction 81
   CSF 
 L5:
-; --- p-code instruction 82
   SRF  0 103
-; --- p-code instruction 83
   ASGI 
-; --- p-code instruction 84
   SRF  0 102
-; --- p-code instruction 85
   ASGI 
-; --- p-code instruction 86
   SRF  0 101
-; --- p-code instruction 87
   ASGI 
-; --- p-code instruction 88
   SRF  0 100
-; --- p-code instruction 89
   ASGI 
-; --- p-code instruction 90
   SRF  0 99
-; --- p-code instruction 91
   ASGI 
-; --- p-code instruction 92
   SRF  0 98
-; --- p-code instruction 93
   ASGI 
-; --- p-code instruction 94
   SRF  0 97
-; --- p-code instruction 95
   ASGI 
-; --- p-code instruction 96
   SRF  0 96
-; --- p-code instruction 97
   ASGI 
-; --- p-code instruction 98
   SRF  0 95
-; --- p-code instruction 99
   ASGI 
-; --- p-code instruction 100
   SRF  0 94
-; --- p-code instruction 101
   ASGI 
-; --- p-code instruction 102
   SRF  0 93
-; --- p-code instruction 103
   ASGI 
-; --- p-code instruction 104
   SRF  0 92
-; --- p-code instruction 105
   ASGI 
-; --- p-code instruction 106
   SRF  0 91
-; --- p-code instruction 107
   ASGI 
-; --- p-code instruction 108
   SRF  0 90
-; --- p-code instruction 109
   ASGI 
-; --- p-code instruction 110
   SRF  0 89
-; --- p-code instruction 111
   ASGI 
-; --- p-code instruction 112
   SRF  0 88
-; --- p-code instruction 113
   ASGI 
-; --- p-code instruction 114
   SRF  0 87
-; --- p-code instruction 115
   ASGI 
-; --- p-code instruction 116
   SRF  0 86
-; --- p-code instruction 117
   ASGI 
-; --- p-code instruction 118
   SRF  0 85
-; --- p-code instruction 119
   ASGI 
-; --- p-code instruction 120
   SRF  0 84
-; --- p-code instruction 121
   ASGI 
-; --- p-code instruction 122
   SRF  0 83
-; --- p-code instruction 123
   ASGI 
-; --- p-code instruction 124
   SRF  0 82
-; --- p-code instruction 125
   ASGI 
-; --- p-code instruction 126
   SRF  0 81
-; --- p-code instruction 127
   ASGI 
-; --- p-code instruction 128
   SRF  0 80
-; --- p-code instruction 129
   ASGI 
-; --- p-code instruction 130
   SRF  0 79
-; --- p-code instruction 131
   ASGI 
-; --- p-code instruction 132
   SRF  0 78
-; --- p-code instruction 133
   ASGI 
-; --- p-code instruction 134
   SRF  0 77
-; --- p-code instruction 135
   ASGI 
-; --- p-code instruction 136
   SRF  0 76
-; --- p-code instruction 137
   ASGI 
-; --- p-code instruction 138
   SRF  0 75
-; --- p-code instruction 139
   ASGI 
-; --- p-code instruction 140
   SRF  0 74
-; --- p-code instruction 141
   ASGI 
-; --- p-code instruction 142
   SRF  0 73
-; --- p-code instruction 143
   ASGI 
-; --- p-code instruction 144
   SRF  0 72
-; --- p-code instruction 145
   ASGI 
-; --- p-code instruction 146
   SRF  0 71
-; --- p-code instruction 147
   ASGI 
-; --- p-code instruction 148
   SRF  0 70
-; --- p-code instruction 149
   ASGI 
-; --- p-code instruction 150
   SRF  0 69
-; --- p-code instruction 151
   ASGI 
-; --- p-code instruction 152
   SRF  0 68
-; --- p-code instruction 153
   ASGI 
-; --- p-code instruction 154
   SRF  0 67
-; --- p-code instruction 155
   ASGI 
-; --- p-code instruction 156
   SRF  0 66
-; --- p-code instruction 157
   ASGI 
-; --- p-code instruction 158
   SRF  0 65
-; --- p-code instruction 159
   ASGI 
-; --- p-code instruction 160
   SRF  0 64
-; --- p-code instruction 161
   ASGI 
-; --- p-code instruction 162
   SRF  0 63
-; --- p-code instruction 163
   ASGI 
-; --- p-code instruction 164
   SRF  0 62
-; --- p-code instruction 165
   ASGI 
-; --- p-code instruction 166
   SRF  0 61
-; --- p-code instruction 167
   ASGI 
-; --- p-code instruction 168
   SRF  0 60
-; --- p-code instruction 169
   ASGI 
-; --- p-code instruction 170
   SRF  0 59
-; --- p-code instruction 171
   ASGI 
-; --- p-code instruction 172
   SRF  0 58
-; --- p-code instruction 173
   ASGI 
-; --- p-code instruction 174
   SRF  0 57
-; --- p-code instruction 175
   ASGI 
-; --- p-code instruction 176
   SRF  0 56
-; --- p-code instruction 177
   ASGI 
-; --- p-code instruction 178
   SRF  0 55
-; --- p-code instruction 179
   ASGI 
-; --- p-code instruction 180
   SRF  0 54
-; --- p-code instruction 181
   ASGI 
-; --- p-code instruction 182
   SRF  0 53
-; --- p-code instruction 183
   ASGI 
-; --- p-code instruction 184
   SRF  0 52
-; --- p-code instruction 185
   ASGI 
-; --- p-code instruction 186
   SRF  0 51
-; --- p-code instruction 187
   ASGI 
-; --- p-code instruction 188
   SRF  0 50
-; --- p-code instruction 189
   ASGI 
-; --- p-code instruction 190
   SRF  0 49
-; --- p-code instruction 191
   ASGI 
-; --- p-code instruction 192
   SRF  0 48
-; --- p-code instruction 193
   ASGI 
-; --- p-code instruction 194
   SRF  0 47
-; --- p-code instruction 195
   ASGI 
-; --- p-code instruction 196
   SRF  0 46
-; --- p-code instruction 197
   ASGI 
-; --- p-code instruction 198
   SRF  0 45
-; --- p-code instruction 199
   ASGI 
-; --- p-code instruction 200
   SRF  0 44
-; --- p-code instruction 201
   ASGI 
-; --- p-code instruction 202
   SRF  0 43
-; --- p-code instruction 203
   ASGI 
-; --- p-code instruction 204
   SRF  0 42
-; --- p-code instruction 205
   ASGI 
-; --- p-code instruction 206
   SRF  0 41
-; --- p-code instruction 207
   ASGI 
-; --- p-code instruction 208
   SRF  0 40
-; --- p-code instruction 209
   ASGI 
-; --- p-code instruction 210
   SRF  0 39
-; --- p-code instruction 211
   ASGI 
-; --- p-code instruction 212
   SRF  0 38
-; --- p-code instruction 213
   ASGI 
-; --- p-code instruction 214
   SRF  0 37
-; --- p-code instruction 215
   ASGI 
-; --- p-code instruction 216
   SRF  0 36
-; --- p-code instruction 217
   ASGI 
-; --- p-code instruction 218
   SRF  0 35
-; --- p-code instruction 219
   ASGI 
-; --- p-code instruction 220
   SRF  0 34
-; --- p-code instruction 221
   ASGI 
-; --- p-code instruction 222
   SRF  0 33
-; --- p-code instruction 223
   ASGI 
-; --- p-code instruction 224
   SRF  0 32
-; --- p-code instruction 225
   ASGI 
-; --- p-code instruction 226
   SRF  0 31
-; --- p-code instruction 227
   ASGI 
-; --- p-code instruction 228
   SRF  0 30
-; --- p-code instruction 229
   ASGI 
-; --- p-code instruction 230
   SRF  0 29
-; --- p-code instruction 231
   ASGI 
-; --- p-code instruction 232
   SRF  0 28
-; --- p-code instruction 233
   ASGI 
-; --- p-code instruction 234
   SRF  0 27
-; --- p-code instruction 235
   ASGI 
-; --- p-code instruction 236
   SRF  0 26
-; --- p-code instruction 237
   ASGI 
-; --- p-code instruction 238
   SRF  0 25
-; --- p-code instruction 239
   ASGI 
-; --- p-code instruction 240
   SRF  0 24
-; --- p-code instruction 241
   ASGI 
-; --- p-code instruction 242
   SRF  0 23
-; --- p-code instruction 243
   ASGI 
-; --- p-code instruction 244
   SRF  0 22
-; --- p-code instruction 245
   ASGI 
-; --- p-code instruction 246
   SRF  0 21
-; --- p-code instruction 247
   ASGI 
-; --- p-code instruction 248
   SRF  0 20
-; --- p-code instruction 249
   ASGI 
-; --- p-code instruction 250
   SRF  0 19
-; --- p-code instruction 251
   ASGI 
-; --- p-code instruction 252
   SRF  0 18
-; --- p-code instruction 253
   ASGI 
-; --- p-code instruction 254
   SRF  0 17
-; --- p-code instruction 255
   ASGI 
-; --- p-code instruction 256
   SRF  0 16
-; --- p-code instruction 257
   ASGI 
-; --- p-code instruction 258
   SRF  0 15
-; --- p-code instruction 259
   ASGI 
-; --- p-code instruction 260
   SRF  0 14
-; --- p-code instruction 261
   ASGI 
-; --- p-code instruction 262
   SRF  0 13
-; --- p-code instruction 263
   ASGI 
-; --- p-code instruction 264
   SRF  0 12
-; --- p-code instruction 265
   ASGI 
-; --- p-code instruction 266
   SRF  0 11
-; --- p-code instruction 267
   ASGI 
-; --- p-code instruction 268
   SRF  0 10
-; --- p-code instruction 269
   ASGI 
-; --- p-code instruction 270
   SRF  0  9
-; --- p-code instruction 271
   ASGI 
-; --- p-code instruction 272
   SRF  0  8
-; --- p-code instruction 273
   ASGI 
-; --- p-code instruction 274
   SRF  0  7
-; --- p-code instruction 275
   ASGI 
-; --- p-code instruction 276
   SRF  0  6
-; --- p-code instruction 277
   ASGI 
-; --- p-code instruction 278
   SRF  0  5
-; --- p-code instruction 279
   ASGI 
-; --- p-code instruction 280
   SRF  0  4
-; --- p-code instruction 281
   ASGI 
-; --- p-code instruction 282
   SRF  0  3
-; --- p-code instruction 283
   ASGI 
-; --- p-code instruction 284
   JMP L6
 L6:
-; --- p-code instruction 285
   SRF  0 105
-; --- p-code instruction 286
   STC  2
-; --- p-code instruction 287
   ASG 
-; --- p-code instruction 288
   SRF  0 104
-; --- p-code instruction 289
   STC  0
-; --- p-code instruction 290
   ASG 
-; --- p-code instruction 291
   SRF  0 106
-; --- p-code instruction 292
   STC  0
-; --- p-code instruction 293
   ASG 
-; --- p-code instruction 294
   STC 13
-; --- p-code instruction 295
   WRT  0
-; --- p-code instruction 296
   STC 10
-; --- p-code instruction 297
   WRT  0
-; --- p-code instruction 298
   STC 78
-; --- p-code instruction 299
   WRT  0
-; --- p-code instruction 300
   STC 117
-; --- p-code instruction 301
   WRT  0
-; --- p-code instruction 302
   STC 109
-; --- p-code instruction 303
   WRT  0
-; --- p-code instruction 304
   STC 101
-; --- p-code instruction 305
   WRT  0
-; --- p-code instruction 306
   STC 114
-; --- p-code instruction 307
   WRT  0
-; --- p-code instruction 308
   STC 111
-; --- p-code instruction 309
   WRT  0
-; --- p-code instruction 310
   STC 115
-; --- p-code instruction 311
   WRT  0
-; --- p-code instruction 312
   STC 32
-; --- p-code instruction 313
   WRT  0
-; --- p-code instruction 314
   STC 112
-; --- p-code instruction 315
   WRT  0
-; --- p-code instruction 316
   STC 114
-; --- p-code instruction 317
   WRT  0
-; --- p-code instruction 318
   STC 105
-; --- p-code instruction 319
   WRT  0
-; --- p-code instruction 320
   STC 109
-; --- p-code instruction 321
   WRT  0
-; --- p-code instruction 322
   STC 111
-; --- p-code instruction 323
   WRT  0
-; --- p-code instruction 324
   STC 115
-; --- p-code instruction 325
   WRT  0
-; --- p-code instruction 326
   STC 32
-; --- p-code instruction 327
   WRT  0
-; --- p-code instruction 328
   STC 104
-; --- p-code instruction 329
   WRT  0
-; --- p-code instruction 330
   STC 97
-; --- p-code instruction 331
   WRT  0
-; --- p-code instruction 332
   STC 115
-; --- p-code instruction 333
   WRT  0
-; --- p-code instruction 334
   STC 116
-; --- p-code instruction 335
   WRT  0
-; --- p-code instruction 336
   STC 97
-; --- p-code instruction 337
   WRT  0
-; --- p-code instruction 338
   STC 32
-; --- p-code instruction 339
   WRT  0
-; --- p-code instruction 340
   SRF  1  3
-; --- p-code instruction 341
   DRF 
-; --- p-code instruction 342
   WRT  1
-; --- p-code instruction 343
   STC 58
-; --- p-code instruction 344
   WRT  0
-; --- p-code instruction 345
   STC 32
-; --- p-code instruction 346
   WRT  0
-; --- p-code instruction 347
   STC 13
-; --- p-code instruction 348
   WRT  0
-; --- p-code instruction 349
   STC 10
-; --- p-code instruction 350
   WRT  0
-; --- p-code instruction 351
   STC 13
-; --- p-code instruction 352
   WRT  0
-; --- p-code instruction 353
   STC 10
-; --- p-code instruction 354
   WRT  0
 L7:
-; --- p-code instruction 355
   SRF  0 106
-; --- p-code instruction 356
   DRF 
-; --- p-code instruction 357
   NGB 
-; --- p-code instruction 358
   JMF L8
-; --- p-code instruction 359
   SRF  0 105
-; --- p-code instruction 360
   DRF 
-; --- p-code instruction 361
   SRF  1  3
-; --- p-code instruction 362
   DRF 
-; --- p-code instruction 363
   GT 
-; --- p-code instruction 364
   JMF L9
-; --- p-code instruction 365
   SRF  0 106
-; --- p-code instruction 366
   STC  1
-; --- p-code instruction 367
   ASG 
-; --- p-code instruction 368
   JMP L10
 L9:
-; --- p-code instruction 369
   SRF  0 105
-; --- p-code instruction 370
   DRF 
-; --- p-code instruction 371
   STC  0
-; --- p-code instruction 372
   SBT 
-; --- p-code instruction 373
   SRF  0  3
-; --- p-code instruction 374
   PLUS 
-; --- p-code instruction 375
   DRF 
-; --- p-code instruction 376
   JMF L11
-; --- p-code instruction 377
   SRF  0 105
-; --- p-code instruction 378
   DRF 
-; --- p-code instruction 379
   WRT  1
-; --- p-code instruction 380
   STC 32
-; --- p-code instruction 381
   WRT  0
-; --- p-code instruction 382
   STC 101
-; --- p-code instruction 383
   WRT  0
-; --- p-code instruction 384
   STC 115
-; --- p-code instruction 385
   WRT  0
-; --- p-code instruction 386
   STC 32
-; --- p-code instruction 387
   WRT  0
-; --- p-code instruction 388
   STC 112
-; --- p-code instruction 389
   WRT  0
-; --- p-code instruction 390
   STC 114
-; --- p-code instruction 391
   WRT  0
-; --- p-code instruction 392
   STC 105
-; --- p-code instruction 393
   WRT  0
-; --- p-code instruction 394
   STC 109
-; --- p-code instruction 395
   WRT  0
-; --- p-code instruction 396
   STC 111
-; --- p-code instruction 397
   WRT  0
-; --- p-code instruction 398
   STC 46
-; --- p-code instruction 399
   WRT  0
-; --- p-code instruction 400
   STC 13
-; --- p-code instruction 401
   WRT  0
-; --- p-code instruction 402
   STC 10
-; --- p-code instruction 403
   WRT  0
-; --- p-code instruction 404
   SRF  0 104
-; --- p-code instruction 405
   SRF  0 104
-; --- p-code instruction 406
   DRF 
-; --- p-code instruction 407
   STC  1
-; --- p-code instruction 408
   PLUS 
-; --- p-code instruction 409
   ASG 
 L11:
-; --- p-code instruction 410
   SRF  0 105
-; --- p-code instruction 411
   SRF  0 105
-; --- p-code instruction 412
   DRF 
-; --- p-code instruction 413
   STC  1
-; --- p-code instruction 414
   PLUS 
-; --- p-code instruction 415
   ASG 
 L10:
-; --- p-code instruction 416
   JMP L7
 L8:
-; --- p-code instruction 417
   STC 13
-; --- p-code instruction 418
   WRT  0
-; --- p-code instruction 419
   STC 10
-; --- p-code instruction 420
   WRT  0
-; --- p-code instruction 421
   STC 72
-; --- p-code instruction 422
   WRT  0
-; --- p-code instruction 423
   STC 97
-; --- p-code instruction 424
   WRT  0
-; --- p-code instruction 425
   STC 115
-; --- p-code instruction 426
   WRT  0
-; --- p-code instruction 427
   STC 116
-; --- p-code instruction 428
   WRT  0
-; --- p-code instruction 429
   STC 97
-; --- p-code instruction 430
   WRT  0
-; --- p-code instruction 431
   STC 32
-; --- p-code instruction 432
   WRT  0
-; --- p-code instruction 433
   SRF  1  3
-; --- p-code instruction 434
   DRF 
-; --- p-code instruction 435
   WRT  1
-; --- p-code instruction 436
   STC 32
-; --- p-code instruction 437
   WRT  0
-; --- p-code instruction 438
   STC 104
-; --- p-code instruction 439
   WRT  0
-; --- p-code instruction 440
   STC 97
-; --- p-code instruction 441
   WRT  0
-; --- p-code instruction 442
   STC 121
-; --- p-code instruction 443
   WRT  0
-; --- p-code instruction 444
   STC 32
-; --- p-code instruction 445
   WRT  0
-; --- p-code instruction 446
   SRF  0 104
-; --- p-code instruction 447
   DRF 
-; --- p-code instruction 448
   WRT  1
-; --- p-code instruction 449
   STC 32
-; --- p-code instruction 450
   WRT  0
-; --- p-code instruction 451
   STC 110
-; --- p-code instruction 452
   WRT  0
-; --- p-code instruction 453
   STC -61
-; --- p-code instruction 454
   WRT  0
-; --- p-code instruction 455
   STC -70
-; --- p-code instruction 456
   WRT  0
-; --- p-code instruction 457
   STC 109
-; --- p-code instruction 458
   WRT  0
-; --- p-code instruction 459
   STC 101
-; --- p-code instruction 460
   WRT  0
-; --- p-code instruction 461
   STC 114
-; --- p-code instruction 462
   WRT  0
-; --- p-code instruction 463
   STC 111
-; --- p-code instruction 464
   WRT  0
-; --- p-code instruction 465
   STC 115
-; --- p-code instruction 466
   WRT  0
-; --- p-code instruction 467
   STC 32
-; --- p-code instruction 468
   WRT  0
-; --- p-code instruction 469
   STC 112
-; --- p-code instruction 470
   WRT  0
-; --- p-code instruction 471
   STC 114
-; --- p-code instruction 472
   WRT  0
-; --- p-code instruction 473
   STC 105
-; --- p-code instruction 474
   WRT  0
-; --- p-code instruction 475
   STC 109
-; --- p-code instruction 476
   WRT  0
-; --- p-code instruction 477
   STC 111
-; --- p-code instruction 478
   WRT  0
-; --- p-code instruction 479
   STC 115
-; --- p-code instruction 480
   WRT  0
-; --- p-code instruction 481
   STC 46
-; --- p-code instruction 482
   WRT  0
-; --- p-code instruction 483
   STC 13
-; --- p-code instruction 484
   WRT  0
-; --- p-code instruction 485
   STC 10
-; --- p-code instruction 486
   WRT  0
-; --- p-code instruction 487
   CSF 
 L12:
-; --- p-code instruction 488
   SRF  0  3
-; --- p-code instruction 489
   ASGI 
-; --- p-code instruction 490
   JMP L13
 L13:
-; --- p-code instruction 491
   SRF  0  4
-; --- p-code instruction 492
   STC  1
-; --- p-code instruction 493
   ASG 
 L14:
-; --- p-code instruction 494
   SRF  0  4
-; --- p-code instruction 495
   DRF 
-; --- p-code instruction 496
   SRF  1  3
-; --- p-code instruction 497
   DRF 
-; --- p-code instruction 498
   LTE 
-; --- p-code instruction 499
   JMF L15
-; --- p-code instruction 500
   SRF  0  4
-; --- p-code instruction 501
   DRF 
-; --- p-code instruction 502
   STC  0
-; --- p-code instruction 503
   SBT 
-; --- p-code instruction 504
   SRF  0  3
-; --- p-code instruction 505
   DRF 
-; --- p-code instruction 506
   PLUS 
-; --- p-code instruction 507
   STC  1
-; --- p-code instruction 508
   ASG 
-; --- p-code instruction 509
   SRF  0  4
-; --- p-code instruction 510
   SRF  0  4
-; --- p-code instruction 511
   DRF 
-; --- p-code instruction 512
   STC  1
-; --- p-code instruction 513
   PLUS 
-; --- p-code instruction 514
   ASG 
-; --- p-code instruction 515
   JMP L14
 L15:
-; --- p-code instruction 516
   CSF 
 L16:
-; --- p-code instruction 517
   SRF  0  3
-; --- p-code instruction 518
   ASGI 
-; --- p-code instruction 519
   JMP L17
 L17:
-; --- p-code instruction 520
   SRF  0  4
-; --- p-code instruction 521
   STC  2
-; --- p-code instruction 522
   ASG 
 L18:
-; --- p-code instruction 523
   SRF  0  4
-; --- p-code instruction 524
   DRF 
-; --- p-code instruction 525
   SRF  1  3
-; --- p-code instruction 526
   DRF 
-; --- p-code instruction 527
   STC  2
-; --- p-code instruction 528
   DIV 
-; --- p-code instruction 529
   LTE 
-; --- p-code instruction 530
   JMF L19
-; --- p-code instruction 531
   SRF  0  4
-; --- p-code instruction 532
   DRF 
-; --- p-code instruction 533
   STC  0
-; --- p-code instruction 534
   SBT 
-; --- p-code instruction 535
   SRF  0  3
-; --- p-code instruction 536
   DRF 
-; --- p-code instruction 537
   PLUS 
-; --- p-code instruction 538
   DRF 
-; --- p-code instruction 539
   JMF L20
-; --- p-code instruction 540
   SRF  0  5
-; --- p-code instruction 541
   STC  2
-; --- p-code instruction 542
   SRF  0  4
-; --- p-code instruction 543
   DRF 
-; --- p-code instruction 544
   TMS 
-; --- p-code instruction 545
   ASG 
 L21:
-; --- p-code instruction 546
   SRF  0  5
-; --- p-code instruction 547
   DRF 
-; --- p-code instruction 548
   SRF  1  3
-; --- p-code instruction 549
   DRF 
-; --- p-code instruction 550
   LTE 
-; --- p-code instruction 551
   JMF L22
-; --- p-code instruction 552
   SRF  0  5
-; --- p-code instruction 553
   DRF 
-; --- p-code instruction 554
   STC  0
-; --- p-code instruction 555
   SBT 
-; --- p-code instruction 556
   SRF  0  3
-; --- p-code instruction 557
   DRF 
-; --- p-code instruction 558
   PLUS 
-; --- p-code instruction 559
   STC  0
-; --- p-code instruction 560
   ASG 
-; --- p-code instruction 561
   SRF  0  5
-; --- p-code instruction 562
   SRF  0  5
-; --- p-code instruction 563
   DRF 
-; --- p-code instruction 564
   SRF  0  4
-; --- p-code instruction 565
   DRF 
-; --- p-code instruction 566
   PLUS 
-; --- p-code instruction 567
   ASG 
-; --- p-code instruction 568
   JMP L21
 L22:
 L20:
-; --- p-code instruction 569
   SRF  0  4
-; --- p-code instruction 570
   SRF  0  4
-; --- p-code instruction 571
   DRF 
-; --- p-code instruction 572
   STC  1
-; --- p-code instruction 573
   PLUS 
-; --- p-code instruction 574
   ASG 
-; --- p-code instruction 575
   JMP L18
 L19:
-; --- p-code instruction 576
   CSF 
 L23:
-; --- p-code instruction 577
   SRF  0  3
-; --- p-code instruction 578
   ASGI 
-; --- p-code instruction 579
   JMP L24
 L24:
-; --- p-code instruction 580
   SRF  0  3
-; --- p-code instruction 581
   DRF 
-; --- p-code instruction 582
   OSF  4  1 L12
-; --- p-code instruction 583
   SRF  0  3
-; --- p-code instruction 584
   DRF 
-; --- p-code instruction 585
   OSF  4  1 L16
-; --- p-code instruction 586
   SRF  0  3
-; --- p-code instruction 587
   DRF 
-; --- p-code instruction 588
   STC  0
-; --- p-code instruction 589
   PLUS 
-; --- p-code instruction 590
   DRF 
-; --- p-code instruction 591
   SRF  0  3
-; --- p-code instruction 592
   DRF 
-; --- p-code instruction 593
   STC  1
-; --- p-code instruction 594
   PLUS 
-; --- p-code instruction 595
   DRF 
-; --- p-code instruction 596
   SRF  0  3
-; --- p-code instruction 597
   DRF 
-; --- p-code instruction 598
   STC  2
-; --- p-code instruction 599
   PLUS 
-; --- p-code instruction 600
   DRF 
-; --- p-code instruction 601
   SRF  0  3
-; --- p-code instruction 602
   DRF 
-; --- p-code instruction 603
   STC  3
-; --- p-code instruction 604
   PLUS 
-; --- p-code instruction 605
   DRF 
-; --- p-code instruction 606
   SRF  0  3
-; --- p-code instruction 607
   DRF 
-; --- p-code instruction 608
   STC  4
-; --- p-code instruction 609
   PLUS 
-; --- p-code instruction 610
   DRF 
-; --- p-code instruction 611
   SRF  0  3
-; --- p-code instruction 612
   DRF 
-; --- p-code instruction 613
   STC  5
-; --- p-code instruction 614
   PLUS 
-; --- p-code instruction 615
   DRF 
-; --- p-code instruction 616
   SRF  0  3
-; --- p-code instruction 617
   DRF 
-; --- p-code instruction 618
   STC  6
-; --- p-code instruction 619
   PLUS 
-; --- p-code instruction 620
   DRF 
-; --- p-code instruction 621
   SRF  0  3
-; --- p-code instruction 622
   DRF 
-; --- p-code instruction 623
   STC  7
-; --- p-code instruction 624
   PLUS 
-; --- p-code instruction 625
   DRF 
-; --- p-code instruction 626
   SRF  0  3
-; --- p-code instruction 627
   DRF 
-; --- p-code instruction 628
   STC  8
-; --- p-code instruction 629
   PLUS 
-; --- p-code instruction 630
   DRF 
-; --- p-code instruction 631
   SRF  0  3
-; --- p-code instruction 632
   DRF 
-; --- p-code instruction 633
   STC  9
-; --- p-code instruction 634
   PLUS 
-; --- p-code instruction 635
   DRF 
-; --- p-code instruction 636
   SRF  0  3
-; --- p-code instruction 637
   DRF 
-; --- p-code instruction 638
   STC 10
-; --- p-code instruction 639
   PLUS 
-; --- p-code instruction 640
   DRF 
-; --- p-code instruction 641
   SRF  0  3
-; --- p-code instruction 642
   DRF 
-; --- p-code instruction 643
   STC 11
-; --- p-code instruction 644
   PLUS 
-; --- p-code instruction 645
   DRF 
-; --- p-code instruction 646
   SRF  0  3
-; --- p-code instruction 647
   DRF 
-; --- p-code instruction 648
   STC 12
-; --- p-code instruction 649
   PLUS 
-; --- p-code instruction 650
   DRF 
-; --- p-code instruction 651
   SRF  0  3
-; --- p-code instruction 652
   DRF 
-; --- p-code instruction 653
   STC 13
-; --- p-code instruction 654
   PLUS 
-; --- p-code instruction 655
   DRF 
-; --- p-code instruction 656
   SRF  0  3
-; --- p-code instruction 657
   DRF 
-; --- p-code instruction 658
   STC 14
-; --- p-code instruction 659
   PLUS 
-; --- p-code instruction 660
   DRF 
-; --- p-code instruction 661
   SRF  0  3
-; --- p-code instruction 662
   DRF 
-; --- p-code instruction 663
   STC 15
-; --- p-code instruction 664
   PLUS 
-; --- p-code instruction 665
   DRF 
-; --- p-code instruction 666
   SRF  0  3
-; --- p-code instruction 667
   DRF 
-; --- p-code instruction 668
   STC 16
-; --- p-code instruction 669
   PLUS 
-; --- p-code instruction 670
   DRF 
-; --- p-code instruction 671
   SRF  0  3
-; --- p-code instruction 672
   DRF 
-; --- p-code instruction 673
   STC 17
-; --- p-code instruction 674
   PLUS 
-; --- p-code instruction 675
   DRF 
-; --- p-code instruction 676
   SRF  0  3
-; --- p-code instruction 677
   DRF 
-; --- p-code instruction 678
   STC 18
-; --- p-code instruction 679
   PLUS 
-; --- p-code instruction 680
   DRF 
-; --- p-code instruction 681
   SRF  0  3
-; --- p-code instruction 682
   DRF 
-; --- p-code instruction 683
   STC 19
-; --- p-code instruction 684
   PLUS 
-; --- p-code instruction 685
   DRF 
-; --- p-code instruction 686
   SRF  0  3
-; --- p-code instruction 687
   DRF 
-; --- p-code instruction 688
   STC 20
-; --- p-code instruction 689
   PLUS 
-; --- p-code instruction 690
   DRF 
-; --- p-code instruction 691
   SRF  0  3
-; --- p-code instruction 692
   DRF 
-; --- p-code instruction 693
   STC 21
-; --- p-code instruction 694
   PLUS 
-; --- p-code instruction 695
   DRF 
-; --- p-code instruction 696
   SRF  0  3
-; --- p-code instruction 697
   DRF 
-; --- p-code instruction 698
   STC 22
-; --- p-code instruction 699
   PLUS 
-; --- p-code instruction 700
   DRF 
-; --- p-code instruction 701
   SRF  0  3
-; --- p-code instruction 702
   DRF 
-; --- p-code instruction 703
   STC 23
-; --- p-code instruction 704
   PLUS 
-; --- p-code instruction 705
   DRF 
-; --- p-code instruction 706
   SRF  0  3
-; --- p-code instruction 707
   DRF 
-; --- p-code instruction 708
   STC 24
-; --- p-code instruction 709
   PLUS 
-; --- p-code instruction 710
   DRF 
-; --- p-code instruction 711
   SRF  0  3
-; --- p-code instruction 712
   DRF 
-; --- p-code instruction 713
   STC 25
-; --- p-code instruction 714
   PLUS 
-; --- p-code instruction 715
   DRF 
-; --- p-code instruction 716
   SRF  0  3
-; --- p-code instruction 717
   DRF 
-; --- p-code instruction 718
   STC 26
-; --- p-code instruction 719
   PLUS 
-; --- p-code instruction 720
   DRF 
-; --- p-code instruction 721
   SRF  0  3
-; --- p-code instruction 722
   DRF 
-; --- p-code instruction 723
   STC 27
-; --- p-code instruction 724
   PLUS 
-; --- p-code instruction 725
   DRF 
-; --- p-code instruction 726
   SRF  0  3
-; --- p-code instruction 727
   DRF 
-; --- p-code instruction 728
   STC 28
-; --- p-code instruction 729
   PLUS 
-; --- p-code instruction 730
   DRF 
-; --- p-code instruction 731
   SRF  0  3
-; --- p-code instruction 732
   DRF 
-; --- p-code instruction 733
   STC 29
-; --- p-code instruction 734
   PLUS 
-; --- p-code instruction 735
   DRF 
-; --- p-code instruction 736
   SRF  0  3
-; --- p-code instruction 737
   DRF 
-; --- p-code instruction 738
   STC 30
-; --- p-code instruction 739
   PLUS 
-; --- p-code instruction 740
   DRF 
-; --- p-code instruction 741
   SRF  0  3
-; --- p-code instruction 742
   DRF 
-; --- p-code instruction 743
   STC 31
-; --- p-code instruction 744
   PLUS 
-; --- p-code instruction 745
   DRF 
-; --- p-code instruction 746
   SRF  0  3
-; --- p-code instruction 747
   DRF 
-; --- p-code instruction 748
   STC 32
-; --- p-code instruction 749
   PLUS 
-; --- p-code instruction 750
   DRF 
-; --- p-code instruction 751
   SRF  0  3
-; --- p-code instruction 752
   DRF 
-; --- p-code instruction 753
   STC 33
-; --- p-code instruction 754
   PLUS 
-; --- p-code instruction 755
   DRF 
-; --- p-code instruction 756
   SRF  0  3
-; --- p-code instruction 757
   DRF 
-; --- p-code instruction 758
   STC 34
-; --- p-code instruction 759
   PLUS 
-; --- p-code instruction 760
   DRF 
-; --- p-code instruction 761
   SRF  0  3
-; --- p-code instruction 762
   DRF 
-; --- p-code instruction 763
   STC 35
-; --- p-code instruction 764
   PLUS 
-; --- p-code instruction 765
   DRF 
-; --- p-code instruction 766
   SRF  0  3
-; --- p-code instruction 767
   DRF 
-; --- p-code instruction 768
   STC 36
-; --- p-code instruction 769
   PLUS 
-; --- p-code instruction 770
   DRF 
-; --- p-code instruction 771
   SRF  0  3
-; --- p-code instruction 772
   DRF 
-; --- p-code instruction 773
   STC 37
-; --- p-code instruction 774
   PLUS 
-; --- p-code instruction 775
   DRF 
-; --- p-code instruction 776
   SRF  0  3
-; --- p-code instruction 777
   DRF 
-; --- p-code instruction 778
   STC 38
-; --- p-code instruction 779
   PLUS 
-; --- p-code instruction 780
   DRF 
-; --- p-code instruction 781
   SRF  0  3
-; --- p-code instruction 782
   DRF 
-; --- p-code instruction 783
   STC 39
-; --- p-code instruction 784
   PLUS 
-; --- p-code instruction 785
   DRF 
-; --- p-code instruction 786
   SRF  0  3
-; --- p-code instruction 787
   DRF 
-; --- p-code instruction 788
   STC 40
-; --- p-code instruction 789
   PLUS 
-; --- p-code instruction 790
   DRF 
-; --- p-code instruction 791
   SRF  0  3
-; --- p-code instruction 792
   DRF 
-; --- p-code instruction 793
   STC 41
-; --- p-code instruction 794
   PLUS 
-; --- p-code instruction 795
   DRF 
-; --- p-code instruction 796
   SRF  0  3
-; --- p-code instruction 797
   DRF 
-; --- p-code instruction 798
   STC 42
-; --- p-code instruction 799
   PLUS 
-; --- p-code instruction 800
   DRF 
-; --- p-code instruction 801
   SRF  0  3
-; --- p-code instruction 802
   DRF 
-; --- p-code instruction 803
   STC 43
-; --- p-code instruction 804
   PLUS 
-; --- p-code instruction 805
   DRF 
-; --- p-code instruction 806
   SRF  0  3
-; --- p-code instruction 807
   DRF 
-; --- p-code instruction 808
   STC 44
-; --- p-code instruction 809
   PLUS 
-; --- p-code instruction 810
   DRF 
-; --- p-code instruction 811
   SRF  0  3
-; --- p-code instruction 812
   DRF 
-; --- p-code instruction 813
   STC 45
-; --- p-code instruction 814
   PLUS 
-; --- p-code instruction 815
   DRF 
-; --- p-code instruction 816
   SRF  0  3
-; --- p-code instruction 817
   DRF 
-; --- p-code instruction 818
   STC 46
-; --- p-code instruction 819
   PLUS 
-; --- p-code instruction 820
   DRF 
-; --- p-code instruction 821
   SRF  0  3
-; --- p-code instruction 822
   DRF 
-; --- p-code instruction 823
   STC 47
-; --- p-code instruction 824
   PLUS 
-; --- p-code instruction 825
   DRF 
-; --- p-code instruction 826
   SRF  0  3
-; --- p-code instruction 827
   DRF 
-; --- p-code instruction 828
   STC 48
-; --- p-code instruction 829
   PLUS 
-; --- p-code instruction 830
   DRF 
-; --- p-code instruction 831
   SRF  0  3
-; --- p-code instruction 832
   DRF 
-; --- p-code instruction 833
   STC 49
-; --- p-code instruction 834
   PLUS 
-; --- p-code instruction 835
   DRF 
-; --- p-code instruction 836
   SRF  0  3
-; --- p-code instruction 837
   DRF 
-; --- p-code instruction 838
   STC 50
-; --- p-code instruction 839
   PLUS 
-; --- p-code instruction 840
   DRF 
-; --- p-code instruction 841
   SRF  0  3
-; --- p-code instruction 842
   DRF 
-; --- p-code instruction 843
   STC 51
-; --- p-code instruction 844
   PLUS 
-; --- p-code instruction 845
   DRF 
-; --- p-code instruction 846
   SRF  0  3
-; --- p-code instruction 847
   DRF 
-; --- p-code instruction 848
   STC 52
-; --- p-code instruction 849
   PLUS 
-; --- p-code instruction 850
   DRF 
-; --- p-code instruction 851
   SRF  0  3
-; --- p-code instruction 852
   DRF 
-; --- p-code instruction 853
   STC 53
-; --- p-code instruction 854
   PLUS 
-; --- p-code instruction 855
   DRF 
-; --- p-code instruction 856
   SRF  0  3
-; --- p-code instruction 857
   DRF 
-; --- p-code instruction 858
   STC 54
-; --- p-code instruction 859
   PLUS 
-; --- p-code instruction 860
   DRF 
-; --- p-code instruction 861
   SRF  0  3
-; --- p-code instruction 862
   DRF 
-; --- p-code instruction 863
   STC 55
-; --- p-code instruction 864
   PLUS 
-; --- p-code instruction 865
   DRF 
-; --- p-code instruction 866
   SRF  0  3
-; --- p-code instruction 867
   DRF 
-; --- p-code instruction 868
   STC 56
-; --- p-code instruction 869
   PLUS 
-; --- p-code instruction 870
   DRF 
-; --- p-code instruction 871
   SRF  0  3
-; --- p-code instruction 872
   DRF 
-; --- p-code instruction 873
   STC 57
-; --- p-code instruction 874
   PLUS 
-; --- p-code instruction 875
   DRF 
-; --- p-code instruction 876
   SRF  0  3
-; --- p-code instruction 877
   DRF 
-; --- p-code instruction 878
   STC 58
-; --- p-code instruction 879
   PLUS 
-; --- p-code instruction 880
   DRF 
-; --- p-code instruction 881
   SRF  0  3
-; --- p-code instruction 882
   DRF 
-; --- p-code instruction 883
   STC 59
-; --- p-code instruction 884
   PLUS 
-; --- p-code instruction 885
   DRF 
-; --- p-code instruction 886
   SRF  0  3
-; --- p-code instruction 887
   DRF 
-; --- p-code instruction 888
   STC 60
-; --- p-code instruction 889
   PLUS 
-; --- p-code instruction 890
   DRF 
-; --- p-code instruction 891
   SRF  0  3
-; --- p-code instruction 892
   DRF 
-; --- p-code instruction 893
   STC 61
-; --- p-code instruction 894
   PLUS 
-; --- p-code instruction 895
   DRF 
-; --- p-code instruction 896
   SRF  0  3
-; --- p-code instruction 897
   DRF 
-; --- p-code instruction 898
   STC 62
-; --- p-code instruction 899
   PLUS 
-; --- p-code instruction 900
   DRF 
-; --- p-code instruction 901
   SRF  0  3
-; --- p-code instruction 902
   DRF 
-; --- p-code instruction 903
   STC 63
-; --- p-code instruction 904
   PLUS 
-; --- p-code instruction 905
   DRF 
-; --- p-code instruction 906
   SRF  0  3
-; --- p-code instruction 907
   DRF 
-; --- p-code instruction 908
   STC 64
-; --- p-code instruction 909
   PLUS 
-; --- p-code instruction 910
   DRF 
-; --- p-code instruction 911
   SRF  0  3
-; --- p-code instruction 912
   DRF 
-; --- p-code instruction 913
   STC 65
-; --- p-code instruction 914
   PLUS 
-; --- p-code instruction 915
   DRF 
-; --- p-code instruction 916
   SRF  0  3
-; --- p-code instruction 917
   DRF 
-; --- p-code instruction 918
   STC 66
-; --- p-code instruction 919
   PLUS 
-; --- p-code instruction 920
   DRF 
-; --- p-code instruction 921
   SRF  0  3
-; --- p-code instruction 922
   DRF 
-; --- p-code instruction 923
   STC 67
-; --- p-code instruction 924
   PLUS 
-; --- p-code instruction 925
   DRF 
-; --- p-code instruction 926
   SRF  0  3
-; --- p-code instruction 927
   DRF 
-; --- p-code instruction 928
   STC 68
-; --- p-code instruction 929
   PLUS 
-; --- p-code instruction 930
   DRF 
-; --- p-code instruction 931
   SRF  0  3
-; --- p-code instruction 932
   DRF 
-; --- p-code instruction 933
   STC 69
-; --- p-code instruction 934
   PLUS 
-; --- p-code instruction 935
   DRF 
-; --- p-code instruction 936
   SRF  0  3
-; --- p-code instruction 937
   DRF 
-; --- p-code instruction 938
   STC 70
-; --- p-code instruction 939
   PLUS 
-; --- p-code instruction 940
   DRF 
-; --- p-code instruction 941
   SRF  0  3
-; --- p-code instruction 942
   DRF 
-; --- p-code instruction 943
   STC 71
-; --- p-code instruction 944
   PLUS 
-; --- p-code instruction 945
   DRF 
-; --- p-code instruction 946
   SRF  0  3
-; --- p-code instruction 947
   DRF 
-; --- p-code instruction 948
   STC 72
-; --- p-code instruction 949
   PLUS 
-; --- p-code instruction 950
   DRF 
-; --- p-code instruction 951
   SRF  0  3
-; --- p-code instruction 952
   DRF 
-; --- p-code instruction 953
   STC 73
-; --- p-code instruction 954
   PLUS 
-; --- p-code instruction 955
   DRF 
-; --- p-code instruction 956
   SRF  0  3
-; --- p-code instruction 957
   DRF 
-; --- p-code instruction 958
   STC 74
-; --- p-code instruction 959
   PLUS 
-; --- p-code instruction 960
   DRF 
-; --- p-code instruction 961
   SRF  0  3
-; --- p-code instruction 962
   DRF 
-; --- p-code instruction 963
   STC 75
-; --- p-code instruction 964
   PLUS 
-; --- p-code instruction 965
   DRF 
-; --- p-code instruction 966
   SRF  0  3
-; --- p-code instruction 967
   DRF 
-; --- p-code instruction 968
   STC 76
-; --- p-code instruction 969
   PLUS 
-; --- p-code instruction 970
   DRF 
-; --- p-code instruction 971
   SRF  0  3
-; --- p-code instruction 972
   DRF 
-; --- p-code instruction 973
   STC 77
-; --- p-code instruction 974
   PLUS 
-; --- p-code instruction 975
   DRF 
-; --- p-code instruction 976
   SRF  0  3
-; --- p-code instruction 977
   DRF 
-; --- p-code instruction 978
   STC 78
-; --- p-code instruction 979
   PLUS 
-; --- p-code instruction 980
   DRF 
-; --- p-code instruction 981
   SRF  0  3
-; --- p-code instruction 982
   DRF 
-; --- p-code instruction 983
   STC 79
-; --- p-code instruction 984
   PLUS 
-; --- p-code instruction 985
   DRF 
-; --- p-code instruction 986
   SRF  0  3
-; --- p-code instruction 987
   DRF 
-; --- p-code instruction 988
   STC 80
-; --- p-code instruction 989
   PLUS 
-; --- p-code instruction 990
   DRF 
-; --- p-code instruction 991
   SRF  0  3
-; --- p-code instruction 992
   DRF 
-; --- p-code instruction 993
   STC 81
-; --- p-code instruction 994
   PLUS 
-; --- p-code instruction 995
   DRF 
-; --- p-code instruction 996
   SRF  0  3
-; --- p-code instruction 997
   DRF 
-; --- p-code instruction 998
   STC 82
-; --- p-code instruction 999
   PLUS 
-; --- p-code instruction 1000
   DRF 
-; --- p-code instruction 1001
   SRF  0  3
-; --- p-code instruction 1002
   DRF 
-; --- p-code instruction 1003
   STC 83
-; --- p-code instruction 1004
   PLUS 
-; --- p-code instruction 1005
   DRF 
-; --- p-code instruction 1006
   SRF  0  3
-; --- p-code instruction 1007
   DRF 
-; --- p-code instruction 1008
   STC 84
-; --- p-code instruction 1009
   PLUS 
-; --- p-code instruction 1010
   DRF 
-; --- p-code instruction 1011
   SRF  0  3
-; --- p-code instruction 1012
   DRF 
-; --- p-code instruction 1013
   STC 85
-; --- p-code instruction 1014
   PLUS 
-; --- p-code instruction 1015
   DRF 
-; --- p-code instruction 1016
   SRF  0  3
-; --- p-code instruction 1017
   DRF 
-; --- p-code instruction 1018
   STC 86
-; --- p-code instruction 1019
   PLUS 
-; --- p-code instruction 1020
   DRF 
-; --- p-code instruction 1021
   SRF  0  3
-; --- p-code instruction 1022
   DRF 
-; --- p-code instruction 1023
   STC 87
-; --- p-code instruction 1024
   PLUS 
-; --- p-code instruction 1025
   DRF 
-; --- p-code instruction 1026
   SRF  0  3
-; --- p-code instruction 1027
   DRF 
-; --- p-code instruction 1028
   STC 88
-; --- p-code instruction 1029
   PLUS 
-; --- p-code instruction 1030
   DRF 
-; --- p-code instruction 1031
   SRF  0  3
-; --- p-code instruction 1032
   DRF 
-; --- p-code instruction 1033
   STC 89
-; --- p-code instruction 1034
   PLUS 
-; --- p-code instruction 1035
   DRF 
-; --- p-code instruction 1036
   SRF  0  3
-; --- p-code instruction 1037
   DRF 
-; --- p-code instruction 1038
   STC 90
-; --- p-code instruction 1039
   PLUS 
-; --- p-code instruction 1040
   DRF 
-; --- p-code instruction 1041
   SRF  0  3
-; --- p-code instruction 1042
   DRF 
-; --- p-code instruction 1043
   STC 91
-; --- p-code instruction 1044
   PLUS 
-; --- p-code instruction 1045
   DRF 
-; --- p-code instruction 1046
   SRF  0  3
-; --- p-code instruction 1047
   DRF 
-; --- p-code instruction 1048
   STC 92
-; --- p-code instruction 1049
   PLUS 
-; --- p-code instruction 1050
   DRF 
-; --- p-code instruction 1051
   SRF  0  3
-; --- p-code instruction 1052
   DRF 
-; --- p-code instruction 1053
   STC 93
-; --- p-code instruction 1054
   PLUS 
-; --- p-code instruction 1055
   DRF 
-; --- p-code instruction 1056
   SRF  0  3
-; --- p-code instruction 1057
   DRF 
-; --- p-code instruction 1058
   STC 94
-; --- p-code instruction 1059
   PLUS 
-; --- p-code instruction 1060
   DRF 
-; --- p-code instruction 1061
   SRF  0  3
-; --- p-code instruction 1062
   DRF 
-; --- p-code instruction 1063
   STC 95
-; --- p-code instruction 1064
   PLUS 
-; --- p-code instruction 1065
   DRF 
-; --- p-code instruction 1066
   SRF  0  3
-; --- p-code instruction 1067
   DRF 
-; --- p-code instruction 1068
   STC 96
-; --- p-code instruction 1069
   PLUS 
-; --- p-code instruction 1070
   DRF 
-; --- p-code instruction 1071
   SRF  0  3
-; --- p-code instruction 1072
   DRF 
-; --- p-code instruction 1073
   STC 97
-; --- p-code instruction 1074
   PLUS 
-; --- p-code instruction 1075
   DRF 
-; --- p-code instruction 1076
   SRF  0  3
-; --- p-code instruction 1077
   DRF 
-; --- p-code instruction 1078
   STC 98
-; --- p-code instruction 1079
   PLUS 
-; --- p-code instruction 1080
   DRF 
-; --- p-code instruction 1081
   SRF  0  3
-; --- p-code instruction 1082
   DRF 
-; --- p-code instruction 1083
   STC 99
-; --- p-code instruction 1084
   PLUS 
-; --- p-code instruction 1085
   DRF 
-; --- p-code instruction 1086
   SRF  0  3
-; --- p-code instruction 1087
   DRF 
-; --- p-code instruction 1088
   STC 100
-; --- p-code instruction 1089
   PLUS 
-; --- p-code instruction 1090
   DRF 
-; --- p-code instruction 1091
   OSF  4  1 L5
-; --- p-code instruction 1092
   CSF 
 L0:
-; --- p-code instruction 1093
   STC 67
-; --- p-code instruction 1094
   WRT  0
-; --- p-code instruction 1095
   STC 114
-; --- p-code instruction 1096
   WRT  0
-; --- p-code instruction 1097
   STC 105
-; --- p-code instruction 1098
   WRT  0
-; --- p-code instruction 1099
   STC 98
-; --- p-code instruction 1100
   WRT  0
-; --- p-code instruction 1101
   STC 97
-; --- p-code instruction 1102
   WRT  0
-; --- p-code instruction 1103
   STC 32
-; --- p-code instruction 1104
   WRT  0
-; --- p-code instruction 1105
   STC 100
-; --- p-code instruction 1106
   WRT  0
-; --- p-code instruction 1107
   STC 101
-; --- p-code instruction 1108
   WRT  0
-; --- p-code instruction 1109
   STC 32
-; --- p-code instruction 1110
   WRT  0
-; --- p-code instruction 1111
   STC 69
-; --- p-code instruction 1112
   WRT  0
-; --- p-code instruction 1113
   STC 114
-; --- p-code instruction 1114
   WRT  0
-; --- p-code instruction 1115
   STC 97
-; --- p-code instruction 1116
   WRT  0
-; --- p-code instruction 1117
   STC 116
-; --- p-code instruction 1118
   WRT  0
-; --- p-code instruction 1119
   STC -61
-; --- p-code instruction 1120
   WRT  0
-; --- p-code instruction 1121
   STC -77
-; --- p-code instruction 1122
   WRT  0
-; --- p-code instruction 1123
   STC 115
-; --- p-code instruction 1124
   WRT  0
-; --- p-code instruction 1125
   STC 116
-; --- p-code instruction 1126
   WRT  0
-; --- p-code instruction 1127
   STC 101
-; --- p-code instruction 1128
   WRT  0
-; --- p-code instruction 1129
   STC 110
-; --- p-code instruction 1130
   WRT  0
-; --- p-code instruction 1131
   STC 101
-; --- p-code instruction 1132
   WRT  0
-; --- p-code instruction 1133
   STC 115
-; --- p-code instruction 1134
   WRT  0
-; --- p-code instruction 1135
   STC 58
-; --- p-code instruction 1136
   WRT  0
-; --- p-code instruction 1137
   STC 32
-; --- p-code instruction 1138
   WRT  0
-; --- p-code instruction 1139
   STC 112
-; --- p-code instruction 1140
   WRT  0
-; --- p-code instruction 1141
   STC 114
-; --- p-code instruction 1142
   WRT  0
-; --- p-code instruction 1143
   STC 105
-; --- p-code instruction 1144
   WRT  0
-; --- p-code instruction 1145
   STC 109
-; --- p-code instruction 1146
   WRT  0
-; --- p-code instruction 1147
   STC 111
-; --- p-code instruction 1148
   WRT  0
-; --- p-code instruction 1149
   STC 115
-; --- p-code instruction 1150
   WRT  0
-; --- p-code instruction 1151
   STC 32
-; --- p-code instruction 1152
   WRT  0
-; --- p-code instruction 1153
   STC 104
-; --- p-code instruction 1154
   WRT  0
-; --- p-code instruction 1155
   STC 97
-; --- p-code instruction 1156
   WRT  0
-; --- p-code instruction 1157
   STC 115
-; --- p-code instruction 1158
   WRT  0
-; --- p-code instruction 1159
   STC 116
-; --- p-code instruction 1160
   WRT  0
-; --- p-code instruction 1161
   STC 97
-; --- p-code instruction 1162
   WRT  0
-; --- p-code instruction 1163
   STC 32
-; --- p-code instruction 1164
   WRT  0
-; --- p-code instruction 1165
   STC 117
-; --- p-code instruction 1166
   WRT  0
-; --- p-code instruction 1167
   STC 110
-; --- p-code instruction 1168
   WRT  0
-; --- p-code instruction 1169
   STC 32
-; --- p-code instruction 1170
   WRT  0
-; --- p-code instruction 1171
   STC 110
-; --- p-code instruction 1172
   WRT  0
-; --- p-code instruction 1173
   STC 32
-; --- p-code instruction 1174
   WRT  0
-; --- p-code instruction 1175
   STC 100
-; --- p-code instruction 1176
   WRT  0
-; --- p-code instruction 1177
   STC 97
-; --- p-code instruction 1178
   WRT  0
-; --- p-code instruction 1179
   STC 100
-; --- p-code instruction 1180
   WRT  0
-; --- p-code instruction 1181
   STC 111
-; --- p-code instruction 1182
   WRT  0
-; --- p-code instruction 1183
   STC 13
-; --- p-code instruction 1184
   WRT  0
-; --- p-code instruction 1185
   STC 10
-; --- p-code instruction 1186
   WRT  0
-; --- p-code instruction 1187
   STC 104
-; --- p-code instruction 1188
   WRT  0
-; --- p-code instruction 1189
   STC 116
-; --- p-code instruction 1190
   WRT  0
-; --- p-code instruction 1191
   STC 116
-; --- p-code instruction 1192
   WRT  0
-; --- p-code instruction 1193
   STC 112
-; --- p-code instruction 1194
   WRT  0
-; --- p-code instruction 1195
   STC 115
-; --- p-code instruction 1196
   WRT  0
-; --- p-code instruction 1197
   STC 58
-; --- p-code instruction 1198
   WRT  0
-; --- p-code instruction 1199
   STC 47
-; --- p-code instruction 1200
   WRT  0
-; --- p-code instruction 1201
   STC 47
-; --- p-code instruction 1202
   WRT  0
-; --- p-code instruction 1203
   STC 101
-; --- p-code instruction 1204
   WRT  0
-; --- p-code instruction 1205
   STC 115
-; --- p-code instruction 1206
   WRT  0
-; --- p-code instruction 1207
   STC 46
-; --- p-code instruction 1208
   WRT  0
-; --- p-code instruction 1209
   STC 119
-; --- p-code instruction 1210
   WRT  0
-; --- p-code instruction 1211
   STC 105
-; --- p-code instruction 1212
   WRT  0
-; --- p-code instruction 1213
   STC 107
-; --- p-code instruction 1214
   WRT  0
-; --- p-code instruction 1215
   STC 105
-; --- p-code instruction 1216
   WRT  0
-; --- p-code instruction 1217
   STC 112
-; --- p-code instruction 1218
   WRT  0
-; --- p-code instruction 1219
   STC 101
-; --- p-code instruction 1220
   WRT  0
-; --- p-code instruction 1221
   STC 100
-; --- p-code instruction 1222
   WRT  0
-; --- p-code instruction 1223
   STC 105
-; --- p-code instruction 1224
   WRT  0
-; --- p-code instruction 1225
   STC 97
-; --- p-code instruction 1226
   WRT  0
-; --- p-code instruction 1227
   STC 46
-; --- p-code instruction 1228
   WRT  0
-; --- p-code instruction 1229
   STC 111
-; --- p-code instruction 1230
   WRT  0
-; --- p-code instruction 1231
   STC 114
-; --- p-code instruction 1232
   WRT  0
-; --- p-code instruction 1233
   STC 103
-; --- p-code instruction 1234
   WRT  0
-; --- p-code instruction 1235
   STC 47
-; --- p-code instruction 1236
   WRT  0
-; --- p-code instruction 1237
   STC 119
-; --- p-code instruction 1238
   WRT  0
-; --- p-code instruction 1239
   STC 105
-; --- p-code instruction 1240
   WRT  0
-; --- p-code instruction 1241
   STC 107
-; --- p-code instruction 1242
   WRT  0
-; --- p-code instruction 1243
   STC 105
-; --- p-code instruction 1244
   WRT  0
-; --- p-code instruction 1245
   STC 47
-; --- p-code instruction 1246
   WRT  0
-; --- p-code instruction 1247
   STC 67
-; --- p-code instruction 1248
   WRT  0
-; --- p-code instruction 1249
   STC 114
-; --- p-code instruction 1250
   WRT  0
-; --- p-code instruction 1251
   STC 105
-; --- p-code instruction 1252
   WRT  0
-; --- p-code instruction 1253
   STC 98
-; --- p-code instruction 1254
   WRT  0
-; --- p-code instruction 1255
   STC 97
-; --- p-code instruction 1256
   WRT  0
-; --- p-code instruction 1257
   STC 95
-; --- p-code instruction 1258
   WRT  0
-; --- p-code instruction 1259
   STC 100
-; --- p-code instruction 1260
   WRT  0
-; --- p-code instruction 1261
   STC 101
-; --- p-code instruction 1262
   WRT  0
-; --- p-code instruction 1263
   STC 95
-; --- p-code instruction 1264
   WRT  0
-; --- p-code instruction 1265
   STC 69
-; --- p-code instruction 1266
   WRT  0
-; --- p-code instruction 1267
   STC 114
-; --- p-code instruction 1268
   WRT  0
-; --- p-code instruction 1269
   STC 97
-; --- p-code instruction 1270
   WRT  0
-; --- p-code instruction 1271
   STC 116
-; --- p-code instruction 1272
   WRT  0
-; --- p-code instruction 1273
   STC 37
-; --- p-code instruction 1274
   WRT  0
-; --- p-code instruction 1275
   STC 67
-; --- p-code instruction 1276
   WRT  0
-; --- p-code instruction 1277
   STC 51
-; --- p-code instruction 1278
   WRT  0
-; --- p-code instruction 1279
   STC 37
-; --- p-code instruction 1280
   WRT  0
-; --- p-code instruction 1281
   STC 66
-; --- p-code instruction 1282
   WRT  0
-; --- p-code instruction 1283
   STC 51
-; --- p-code instruction 1284
   WRT  0
-; --- p-code instruction 1285
   STC 115
-; --- p-code instruction 1286
   WRT  0
-; --- p-code instruction 1287
   STC 116
-; --- p-code instruction 1288
   WRT  0
-; --- p-code instruction 1289
   STC 101
-; --- p-code instruction 1290
   WRT  0
-; --- p-code instruction 1291
   STC 110
-; --- p-code instruction 1292
   WRT  0
-; --- p-code instruction 1293
   STC 101
-; --- p-code instruction 1294
   WRT  0
-; --- p-code instruction 1295
   STC 115
-; --- p-code instruction 1296
   WRT  0
-; --- p-code instruction 1297
   STC 13
-; --- p-code instruction 1298
   WRT  0
-; --- p-code instruction 1299
   STC 10
-; --- p-code instruction 1300
   WRT  0
-; --- p-code instruction 1301
   STC 13
-; --- p-code instruction 1302
   WRT  0
-; --- p-code instruction 1303
   STC 10
-; --- p-code instruction 1304
   WRT  0
-; --- p-code instruction 1305
   SRF  0  3
-; --- p-code instruction 1306
   OSF 105  0 L1
-; --- p-code instruction 1307
   ASG 
-; --- p-code instruction 1308
   SRF  0  4
-; --- p-code instruction 1309
   OSF 105  0 L23
-; --- p-code instruction 1310
   LVP 

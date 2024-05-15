@@ -229,8 +229,7 @@ while11:
   STC  1
   PLUS
   ASG
-  JMP endIf14
-endIf14:
+elseif13:
   SRF  0  6
   SRF  0  6
   DRF
@@ -253,8 +252,7 @@ endIf14:
   SRF  0  7
   DRF
   ASG
-  JMP endIf16
-endIf16:
+elseif15:
   JMP while11
 endWhile12:
   SRF  0  5
@@ -943,8 +941,7 @@ while17:
   WRT  0
   STC 10
   WRT  0
-  JMP endIf20
-endIf20:
+elseif19:
   SRF  0  4
   SRF  0  4
   DRF
