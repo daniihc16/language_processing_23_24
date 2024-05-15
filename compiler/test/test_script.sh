@@ -27,11 +27,10 @@ PATH_TO_MAQUINAP="../alike/pcode_tools/linux/maquinap"
 #../alike/pcode_tools/linux/maquinap test/a
 
 if [ "$1" = "-t" ]; then
-echo "--------------------------------- Compilando con compilador PROFESORES ---------------------------------"
+    echo "--------------------------------- Compilando con compilador PROFESORES ---------------------------------"
 else
     echo "--------------------------------- Compilando TARGET con compilador ---------------------------------"
 fi
-echo "--------------------------------- Compilando TARGET con compilador ---------------------------------"
 echo "java -jar $COMPILER $COMMENT "test/${TARGET}""
 java -jar $COMPILER $COMMENT "test/${TARGET}"
 
