@@ -960,6 +960,7 @@ SemanticFunctions.inst_invocacion_o_asignacion(p, exp, asign);
         boolean condicionSiempreTrue = false;
         Label nextLabel = new Label(CGUtils.newLabel("elseif"));
         Label endLabel = new Label(CGUtils.newLabel("endIf"));
+        Token telse = null;
     // if (exp) insts		-- (exp) | jmf  elsif0 | insts | jmp labelFinIf
             // else if (exp) insts  -- jmt  trueElsif0 (... jmt trueElsifx)
             // else insts			-- insts
@@ -1074,7 +1075,7 @@ if (Constants.errorFree) {
     }
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case tELSE:{
-      jj_consume_token(tELSE);
+      telse = jj_consume_token(tELSE);
 cb.addLabel(nextLabel.toString() + ":");
       label_9:
       while (true) {
@@ -1107,8 +1108,13 @@ cb.addBlock(cbInst);
     }
     jj_consume_token(tEND);
     jj_consume_token(tIF);
-cb.addLabel(nextLabel.toString() + ":");
-                cb.addLabel(endLabel.toString() + ":");
+if (telse != null || elsif != null) cb.addLabel(endLabel.toString() + ":");
+                else {
+                        // elimina instruccion anterior
+                        cb.removeLastInst();
+                        // añade label de nextLabel
+                        cb.addLabel(nextLabel.toString() + ":");
+                }
                 if(Constants.verbose) System.out.println("Encontrada instrucci\u00f3n if correcta en l\u00ednea: " + String.valueOf(tif.beginLine));
                 if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("if");
                 {if ("" != null) return cb;}

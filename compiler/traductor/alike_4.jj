@@ -809,6 +809,7 @@ CodeBlock inst_if(Symbol sf) :
 	boolean condicionSiempreTrue = false;
 	Label nextLabel = new Label(CGUtils.newLabel("elseif"));
 	Label endLabel = new Label(CGUtils.newLabel("endIf"));
+	Token telse = null;
 }
 {
 	
@@ -868,12 +869,15 @@ CodeBlock inst_if(Symbol sf) :
 			}
 		}
 	} )*
-    (<tELSE> { cb.addLabel(nextLabel.toString() + ":"); } ( cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+)?
+    ( telse = <tELSE> { cb.addLabel(nextLabel.toString() + ":"); } ( cbInst = instruccion(sf) { cb.addBlock(cbInst); } )+)?
     <tEND> <tIF>{ 
-
-		//! PROBABLEMENTE EN LUGAR DE ESTO SE PODRÁ HACER CON LO DE BORRAR LA ÚLTIMA LÍNEA QUE HAS PUESTO EN EL CODEBLOCK
-		cb.addLabel(nextLabel.toString() + ":");
-		cb.addLabel(endLabel.toString() + ":");
+		if (telse != null || elsif != null) cb.addLabel(endLabel.toString() + ":");
+		else {
+			// elimina instruccion anterior
+			cb.removeLastInst();
+			// añade label de nextLabel
+			cb.addLabel(nextLabel.toString() + ":");
+		}
 		if(Constants.verbose) System.out.println("Encontrada instrucción if correcta en línea: " + String.valueOf(tif.beginLine));
 		if(Constants.errorFree && Constants.xmlOutput) cb.encloseXMLTags("if");
 		return cb;
