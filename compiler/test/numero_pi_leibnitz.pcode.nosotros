@@ -1036,6 +1036,41 @@ L27:
   ASGI
   JMP L28
 L28:
+; --Storing constant character -> D
+  STC 68
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0 105
+  DRF
+  WRT  1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
 ; --Variable i por valor pasada a parámetro por referencia
   SRF  0 106
 ; --Storing constant integer -> 0
@@ -1206,6 +1241,17 @@ endIf32:
   ASG
   JMP while29
 endWhile30:
+; --Storing constant integer -> 1
+  STC  1
+  STC  0
+  SBT
+; --Vector pasado a parámetro por referencia
+  SRF  0 104
+  DRF
+  PLUS
+; --Storing constant integer -> 1
+  STC  1
+  ASG
   CSF
 L0:
 ; --Storing constant character -> A
@@ -1547,6 +1593,15 @@ while33:
 ; --Relación <
   LT
   JMF endWhile34
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  3
+  DRF
+  WRT  1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
 ; --Vector por valor pasado por parámetro por valor
   SRF  0 107
   DRF
@@ -1750,429 +1805,638 @@ while33:
   DRF
   SRF  0 207
   DRF
-; --Vector por valor pasado a parámetro por referencia
+; --Vector por valor pasado por parámetro por valor
   SRF  0 208
+  DRF
+  SRF  0 209
+  DRF
+  SRF  0 210
+  DRF
+  SRF  0 211
+  DRF
+  SRF  0 212
+  DRF
+  SRF  0 213
+  DRF
+  SRF  0 214
+  DRF
+  SRF  0 215
+  DRF
+  SRF  0 216
+  DRF
+  SRF  0 217
+  DRF
+  SRF  0 218
+  DRF
+  SRF  0 219
+  DRF
+  SRF  0 220
+  DRF
+  SRF  0 221
+  DRF
+  SRF  0 222
+  DRF
+  SRF  0 223
+  DRF
+  SRF  0 224
+  DRF
+  SRF  0 225
+  DRF
+  SRF  0 226
+  DRF
+  SRF  0 227
+  DRF
+  SRF  0 228
+  DRF
+  SRF  0 229
+  DRF
+  SRF  0 230
+  DRF
+  SRF  0 231
+  DRF
+  SRF  0 232
+  DRF
+  SRF  0 233
+  DRF
+  SRF  0 234
+  DRF
+  SRF  0 235
+  DRF
+  SRF  0 236
+  DRF
+  SRF  0 237
+  DRF
+  SRF  0 238
+  DRF
+  SRF  0 239
+  DRF
+  SRF  0 240
+  DRF
+  SRF  0 241
+  DRF
+  SRF  0 242
+  DRF
+  SRF  0 243
+  DRF
+  SRF  0 244
+  DRF
+  SRF  0 245
+  DRF
+  SRF  0 246
+  DRF
+  SRF  0 247
+  DRF
+  SRF  0 248
+  DRF
+  SRF  0 249
+  DRF
+  SRF  0 250
+  DRF
+  SRF  0 251
+  DRF
+  SRF  0 252
+  DRF
+  SRF  0 253
+  DRF
+  SRF  0 254
+  DRF
+  SRF  0 255
+  DRF
+  SRF  0 256
+  DRF
+  SRF  0 257
+  DRF
+  SRF  0 258
+  DRF
+  SRF  0 259
+  DRF
+  SRF  0 260
+  DRF
+  SRF  0 261
+  DRF
+  SRF  0 262
+  DRF
+  SRF  0 263
+  DRF
+  SRF  0 264
+  DRF
+  SRF  0 265
+  DRF
+  SRF  0 266
+  DRF
+  SRF  0 267
+  DRF
+  SRF  0 268
+  DRF
+  SRF  0 269
+  DRF
+  SRF  0 270
+  DRF
+  SRF  0 271
+  DRF
+  SRF  0 272
+  DRF
+  SRF  0 273
+  DRF
+  SRF  0 274
+  DRF
+  SRF  0 275
+  DRF
+  SRF  0 276
+  DRF
+  SRF  0 277
+  DRF
+  SRF  0 278
+  DRF
+  SRF  0 279
+  DRF
+  SRF  0 280
+  DRF
+  SRF  0 281
+  DRF
+  SRF  0 282
+  DRF
+  SRF  0 283
+  DRF
+  SRF  0 284
+  DRF
+  SRF  0 285
+  DRF
+  SRF  0 286
+  DRF
+  SRF  0 287
+  DRF
+  SRF  0 288
+  DRF
+  SRF  0 289
+  DRF
+  SRF  0 290
+  DRF
+  SRF  0 291
+  DRF
+  SRF  0 292
+  DRF
+  SRF  0 293
+  DRF
+  SRF  0 294
+  DRF
+  SRF  0 295
+  DRF
+  SRF  0 296
+  DRF
+  SRF  0 297
+  DRF
+  SRF  0 298
+  DRF
+  SRF  0 299
+  DRF
+  SRF  0 300
+  DRF
+  SRF  0 301
+  DRF
+  SRF  0 302
+  DRF
+  SRF  0 303
+  DRF
+  SRF  0 304
+  DRF
+  SRF  0 305
+  DRF
+  SRF  0 306
+  DRF
+  SRF  0 307
+  DRF
+  SRF  0 308
+  DRF
+; --Variable n por valor pasada a parámetro por referencia
+  SRF  0  3
+  OSF 310  0 L27
 ; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
-  OSF 310  0 L27
+  WRT  1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
 ; --Variable sumo por valor pasada a parámetro por valor
   SRF  0 309
   DRF
   JMF elseif35
-; --Vector por valor pasado a parámetro por referencia
-  SRF  0  6
 ; --Vector por valor pasado por parámetro por valor
+  SRF  0  6
+  DRF
+  SRF  0  7
+  DRF
+  SRF  0  8
+  DRF
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  SRF  0 13
+  DRF
+  SRF  0 14
+  DRF
+  SRF  0 15
+  DRF
+  SRF  0 16
+  DRF
+  SRF  0 17
+  DRF
+  SRF  0 18
+  DRF
+  SRF  0 19
+  DRF
+  SRF  0 20
+  DRF
+  SRF  0 21
+  DRF
+  SRF  0 22
+  DRF
+  SRF  0 23
+  DRF
+  SRF  0 24
+  DRF
+  SRF  0 25
+  DRF
+  SRF  0 26
+  DRF
+  SRF  0 27
+  DRF
+  SRF  0 28
+  DRF
+  SRF  0 29
+  DRF
+  SRF  0 30
+  DRF
+  SRF  0 31
+  DRF
+  SRF  0 32
+  DRF
+  SRF  0 33
+  DRF
+  SRF  0 34
+  DRF
+  SRF  0 35
+  DRF
+  SRF  0 36
+  DRF
+  SRF  0 37
+  DRF
+  SRF  0 38
+  DRF
+  SRF  0 39
+  DRF
+  SRF  0 40
+  DRF
+  SRF  0 41
+  DRF
+  SRF  0 42
+  DRF
+  SRF  0 43
+  DRF
+  SRF  0 44
+  DRF
+  SRF  0 45
+  DRF
+  SRF  0 46
+  DRF
+  SRF  0 47
+  DRF
+  SRF  0 48
+  DRF
+  SRF  0 49
+  DRF
+  SRF  0 50
+  DRF
+  SRF  0 51
+  DRF
+  SRF  0 52
+  DRF
+  SRF  0 53
+  DRF
+  SRF  0 54
+  DRF
+  SRF  0 55
+  DRF
+  SRF  0 56
+  DRF
+  SRF  0 57
+  DRF
+  SRF  0 58
+  DRF
+  SRF  0 59
+  DRF
+  SRF  0 60
+  DRF
+  SRF  0 61
+  DRF
+  SRF  0 62
+  DRF
+  SRF  0 63
+  DRF
+  SRF  0 64
+  DRF
+  SRF  0 65
+  DRF
+  SRF  0 66
+  DRF
+  SRF  0 67
+  DRF
+  SRF  0 68
+  DRF
+  SRF  0 69
+  DRF
+  SRF  0 70
+  DRF
+  SRF  0 71
+  DRF
+  SRF  0 72
+  DRF
+  SRF  0 73
+  DRF
+  SRF  0 74
+  DRF
+  SRF  0 75
+  DRF
+  SRF  0 76
+  DRF
+  SRF  0 77
+  DRF
+  SRF  0 78
+  DRF
+  SRF  0 79
+  DRF
+  SRF  0 80
+  DRF
+  SRF  0 81
+  DRF
+  SRF  0 82
+  DRF
+  SRF  0 83
+  DRF
+  SRF  0 84
+  DRF
+  SRF  0 85
+  DRF
+  SRF  0 86
+  DRF
+  SRF  0 87
+  DRF
+  SRF  0 88
+  DRF
+  SRF  0 89
+  DRF
+  SRF  0 90
+  DRF
+  SRF  0 91
+  DRF
+  SRF  0 92
+  DRF
+  SRF  0 93
+  DRF
+  SRF  0 94
+  DRF
+  SRF  0 95
+  DRF
+  SRF  0 96
+  DRF
+  SRF  0 97
+  DRF
+  SRF  0 98
+  DRF
+  SRF  0 99
+  DRF
+  SRF  0 100
+  DRF
+  SRF  0 101
+  DRF
+  SRF  0 102
+  DRF
+  SRF  0 103
+  DRF
+  SRF  0 104
+  DRF
+  SRF  0 105
+  DRF
+  SRF  0 106
+  DRF
+; --Vector por valor pasado a parámetro por referencia
   SRF  0 208
-  DRF
-  SRF  0 209
-  DRF
-  SRF  0 210
-  DRF
-  SRF  0 211
-  DRF
-  SRF  0 212
-  DRF
-  SRF  0 213
-  DRF
-  SRF  0 214
-  DRF
-  SRF  0 215
-  DRF
-  SRF  0 216
-  DRF
-  SRF  0 217
-  DRF
-  SRF  0 218
-  DRF
-  SRF  0 219
-  DRF
-  SRF  0 220
-  DRF
-  SRF  0 221
-  DRF
-  SRF  0 222
-  DRF
-  SRF  0 223
-  DRF
-  SRF  0 224
-  DRF
-  SRF  0 225
-  DRF
-  SRF  0 226
-  DRF
-  SRF  0 227
-  DRF
-  SRF  0 228
-  DRF
-  SRF  0 229
-  DRF
-  SRF  0 230
-  DRF
-  SRF  0 231
-  DRF
-  SRF  0 232
-  DRF
-  SRF  0 233
-  DRF
-  SRF  0 234
-  DRF
-  SRF  0 235
-  DRF
-  SRF  0 236
-  DRF
-  SRF  0 237
-  DRF
-  SRF  0 238
-  DRF
-  SRF  0 239
-  DRF
-  SRF  0 240
-  DRF
-  SRF  0 241
-  DRF
-  SRF  0 242
-  DRF
-  SRF  0 243
-  DRF
-  SRF  0 244
-  DRF
-  SRF  0 245
-  DRF
-  SRF  0 246
-  DRF
-  SRF  0 247
-  DRF
-  SRF  0 248
-  DRF
-  SRF  0 249
-  DRF
-  SRF  0 250
-  DRF
-  SRF  0 251
-  DRF
-  SRF  0 252
-  DRF
-  SRF  0 253
-  DRF
-  SRF  0 254
-  DRF
-  SRF  0 255
-  DRF
-  SRF  0 256
-  DRF
-  SRF  0 257
-  DRF
-  SRF  0 258
-  DRF
-  SRF  0 259
-  DRF
-  SRF  0 260
-  DRF
-  SRF  0 261
-  DRF
-  SRF  0 262
-  DRF
-  SRF  0 263
-  DRF
-  SRF  0 264
-  DRF
-  SRF  0 265
-  DRF
-  SRF  0 266
-  DRF
-  SRF  0 267
-  DRF
-  SRF  0 268
-  DRF
-  SRF  0 269
-  DRF
-  SRF  0 270
-  DRF
-  SRF  0 271
-  DRF
-  SRF  0 272
-  DRF
-  SRF  0 273
-  DRF
-  SRF  0 274
-  DRF
-  SRF  0 275
-  DRF
-  SRF  0 276
-  DRF
-  SRF  0 277
-  DRF
-  SRF  0 278
-  DRF
-  SRF  0 279
-  DRF
-  SRF  0 280
-  DRF
-  SRF  0 281
-  DRF
-  SRF  0 282
-  DRF
-  SRF  0 283
-  DRF
-  SRF  0 284
-  DRF
-  SRF  0 285
-  DRF
-  SRF  0 286
-  DRF
-  SRF  0 287
-  DRF
-  SRF  0 288
-  DRF
-  SRF  0 289
-  DRF
-  SRF  0 290
-  DRF
-  SRF  0 291
-  DRF
-  SRF  0 292
-  DRF
-  SRF  0 293
-  DRF
-  SRF  0 294
-  DRF
-  SRF  0 295
-  DRF
-  SRF  0 296
-  DRF
-  SRF  0 297
-  DRF
-  SRF  0 298
-  DRF
-  SRF  0 299
-  DRF
-  SRF  0 300
-  DRF
-  SRF  0 301
-  DRF
-  SRF  0 302
-  DRF
-  SRF  0 303
-  DRF
-  SRF  0 304
-  DRF
-  SRF  0 305
-  DRF
-  SRF  0 306
-  DRF
-  SRF  0 307
-  DRF
-  SRF  0 308
-  DRF
   OSF 310  0 L11
   JMP endIf36
 elseif35:
-; --Vector por valor pasado a parámetro por referencia
-  SRF  0  6
 ; --Vector por valor pasado por parámetro por valor
+  SRF  0  6
+  DRF
+  SRF  0  7
+  DRF
+  SRF  0  8
+  DRF
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  SRF  0 13
+  DRF
+  SRF  0 14
+  DRF
+  SRF  0 15
+  DRF
+  SRF  0 16
+  DRF
+  SRF  0 17
+  DRF
+  SRF  0 18
+  DRF
+  SRF  0 19
+  DRF
+  SRF  0 20
+  DRF
+  SRF  0 21
+  DRF
+  SRF  0 22
+  DRF
+  SRF  0 23
+  DRF
+  SRF  0 24
+  DRF
+  SRF  0 25
+  DRF
+  SRF  0 26
+  DRF
+  SRF  0 27
+  DRF
+  SRF  0 28
+  DRF
+  SRF  0 29
+  DRF
+  SRF  0 30
+  DRF
+  SRF  0 31
+  DRF
+  SRF  0 32
+  DRF
+  SRF  0 33
+  DRF
+  SRF  0 34
+  DRF
+  SRF  0 35
+  DRF
+  SRF  0 36
+  DRF
+  SRF  0 37
+  DRF
+  SRF  0 38
+  DRF
+  SRF  0 39
+  DRF
+  SRF  0 40
+  DRF
+  SRF  0 41
+  DRF
+  SRF  0 42
+  DRF
+  SRF  0 43
+  DRF
+  SRF  0 44
+  DRF
+  SRF  0 45
+  DRF
+  SRF  0 46
+  DRF
+  SRF  0 47
+  DRF
+  SRF  0 48
+  DRF
+  SRF  0 49
+  DRF
+  SRF  0 50
+  DRF
+  SRF  0 51
+  DRF
+  SRF  0 52
+  DRF
+  SRF  0 53
+  DRF
+  SRF  0 54
+  DRF
+  SRF  0 55
+  DRF
+  SRF  0 56
+  DRF
+  SRF  0 57
+  DRF
+  SRF  0 58
+  DRF
+  SRF  0 59
+  DRF
+  SRF  0 60
+  DRF
+  SRF  0 61
+  DRF
+  SRF  0 62
+  DRF
+  SRF  0 63
+  DRF
+  SRF  0 64
+  DRF
+  SRF  0 65
+  DRF
+  SRF  0 66
+  DRF
+  SRF  0 67
+  DRF
+  SRF  0 68
+  DRF
+  SRF  0 69
+  DRF
+  SRF  0 70
+  DRF
+  SRF  0 71
+  DRF
+  SRF  0 72
+  DRF
+  SRF  0 73
+  DRF
+  SRF  0 74
+  DRF
+  SRF  0 75
+  DRF
+  SRF  0 76
+  DRF
+  SRF  0 77
+  DRF
+  SRF  0 78
+  DRF
+  SRF  0 79
+  DRF
+  SRF  0 80
+  DRF
+  SRF  0 81
+  DRF
+  SRF  0 82
+  DRF
+  SRF  0 83
+  DRF
+  SRF  0 84
+  DRF
+  SRF  0 85
+  DRF
+  SRF  0 86
+  DRF
+  SRF  0 87
+  DRF
+  SRF  0 88
+  DRF
+  SRF  0 89
+  DRF
+  SRF  0 90
+  DRF
+  SRF  0 91
+  DRF
+  SRF  0 92
+  DRF
+  SRF  0 93
+  DRF
+  SRF  0 94
+  DRF
+  SRF  0 95
+  DRF
+  SRF  0 96
+  DRF
+  SRF  0 97
+  DRF
+  SRF  0 98
+  DRF
+  SRF  0 99
+  DRF
+  SRF  0 100
+  DRF
+  SRF  0 101
+  DRF
+  SRF  0 102
+  DRF
+  SRF  0 103
+  DRF
+  SRF  0 104
+  DRF
+  SRF  0 105
+  DRF
+  SRF  0 106
+  DRF
+; --Vector por valor pasado a parámetro por referencia
   SRF  0 208
-  DRF
-  SRF  0 209
-  DRF
-  SRF  0 210
-  DRF
-  SRF  0 211
-  DRF
-  SRF  0 212
-  DRF
-  SRF  0 213
-  DRF
-  SRF  0 214
-  DRF
-  SRF  0 215
-  DRF
-  SRF  0 216
-  DRF
-  SRF  0 217
-  DRF
-  SRF  0 218
-  DRF
-  SRF  0 219
-  DRF
-  SRF  0 220
-  DRF
-  SRF  0 221
-  DRF
-  SRF  0 222
-  DRF
-  SRF  0 223
-  DRF
-  SRF  0 224
-  DRF
-  SRF  0 225
-  DRF
-  SRF  0 226
-  DRF
-  SRF  0 227
-  DRF
-  SRF  0 228
-  DRF
-  SRF  0 229
-  DRF
-  SRF  0 230
-  DRF
-  SRF  0 231
-  DRF
-  SRF  0 232
-  DRF
-  SRF  0 233
-  DRF
-  SRF  0 234
-  DRF
-  SRF  0 235
-  DRF
-  SRF  0 236
-  DRF
-  SRF  0 237
-  DRF
-  SRF  0 238
-  DRF
-  SRF  0 239
-  DRF
-  SRF  0 240
-  DRF
-  SRF  0 241
-  DRF
-  SRF  0 242
-  DRF
-  SRF  0 243
-  DRF
-  SRF  0 244
-  DRF
-  SRF  0 245
-  DRF
-  SRF  0 246
-  DRF
-  SRF  0 247
-  DRF
-  SRF  0 248
-  DRF
-  SRF  0 249
-  DRF
-  SRF  0 250
-  DRF
-  SRF  0 251
-  DRF
-  SRF  0 252
-  DRF
-  SRF  0 253
-  DRF
-  SRF  0 254
-  DRF
-  SRF  0 255
-  DRF
-  SRF  0 256
-  DRF
-  SRF  0 257
-  DRF
-  SRF  0 258
-  DRF
-  SRF  0 259
-  DRF
-  SRF  0 260
-  DRF
-  SRF  0 261
-  DRF
-  SRF  0 262
-  DRF
-  SRF  0 263
-  DRF
-  SRF  0 264
-  DRF
-  SRF  0 265
-  DRF
-  SRF  0 266
-  DRF
-  SRF  0 267
-  DRF
-  SRF  0 268
-  DRF
-  SRF  0 269
-  DRF
-  SRF  0 270
-  DRF
-  SRF  0 271
-  DRF
-  SRF  0 272
-  DRF
-  SRF  0 273
-  DRF
-  SRF  0 274
-  DRF
-  SRF  0 275
-  DRF
-  SRF  0 276
-  DRF
-  SRF  0 277
-  DRF
-  SRF  0 278
-  DRF
-  SRF  0 279
-  DRF
-  SRF  0 280
-  DRF
-  SRF  0 281
-  DRF
-  SRF  0 282
-  DRF
-  SRF  0 283
-  DRF
-  SRF  0 284
-  DRF
-  SRF  0 285
-  DRF
-  SRF  0 286
-  DRF
-  SRF  0 287
-  DRF
-  SRF  0 288
-  DRF
-  SRF  0 289
-  DRF
-  SRF  0 290
-  DRF
-  SRF  0 291
-  DRF
-  SRF  0 292
-  DRF
-  SRF  0 293
-  DRF
-  SRF  0 294
-  DRF
-  SRF  0 295
-  DRF
-  SRF  0 296
-  DRF
-  SRF  0 297
-  DRF
-  SRF  0 298
-  DRF
-  SRF  0 299
-  DRF
-  SRF  0 300
-  DRF
-  SRF  0 301
-  DRF
-  SRF  0 302
-  DRF
-  SRF  0 303
-  DRF
-  SRF  0 304
-  DRF
-  SRF  0 305
-  DRF
-  SRF  0 306
-  DRF
-  SRF  0 307
-  DRF
-  SRF  0 308
-  DRF
   OSF 310  0 L19
 endIf36:
 ; --Variable sumo por valor pasada a parámetro por referencia
@@ -2183,6 +2447,15 @@ endIf36:
 ; --Negación lógica
   NGB
   ASG
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  3
+  DRF
+  WRT  1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
 ; --Storing constant character -> P
   STC 80
   WRT  0
@@ -2306,6 +2579,15 @@ endIf36:
   STC  2
   PLUS
   ASG
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  3
+  DRF
+  WRT  1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
   JMP while33
 endWhile34:
 ; --Salto de línea

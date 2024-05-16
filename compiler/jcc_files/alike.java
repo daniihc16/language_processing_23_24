@@ -1236,7 +1236,7 @@ if (Constants.errorFree) {
         // y al volver de la invocación se consumirá el valor de la pila que se ha dejado en la invocación si el método anterior para consumir la pila era remove
         Attributes atPeek = new Attributes(at.state, Attributes.DequeueMethod.Peek, at.ioInst);
         if (at.paramIsRefInvocacion != null) {
-                atPeek.paramIsRefInvocacion = new PriorityQueue<Boolean>(at.paramIsRefInvocacion);
+                atPeek.paramIsRefInvocacion = new LinkedList<Boolean>(at.paramIsRefInvocacion);
         } else {
                 atPeek.setQueue(Symbol.ParameterClass.REF);
         }
@@ -1741,6 +1741,7 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                 boolean expectsARefAsign = at.state == Attributes.State.EnAsignacion;
                 boolean expectsARefInv = !expectsARefAsign && at.state == Attributes.State.EnInvocacion && at.consumeQueue();
 
+                //if (at.paramIsRefInvocacion != null) System.out.println(id.image +" -> "+ at.paramIsRefInvocacion.toString() );
                 switch (s.type) {
                         case ARRAY:
                                 // si id es vector
@@ -1801,21 +1802,25 @@ TypeValue semanticResult = SemanticFunctions.var_o_func_sin_params(id, st);
                                         // Si se espera una referencia
                                         if (s.parClass == Symbol.ParameterClass.REF) {
                                                 // si id es una ref -> srf + drf
+                                                if (Constants.comments) cb.addComment("Variable " + s.name + " por referencia pasada a par\u00e1metro por referencia");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         } else {
                                                 // si no -> srf
+                                                if (Constants.comments) cb.addComment("Variable " + s.name + " por valor pasada a par\u00e1metro por referencia");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                         }
                                 } else {
                                         // si se espera un valor
                                         if ( s.parClass == Symbol.ParameterClass.REF) {
                                                 // si id es una ref -> srf + drf + drf
+                                                if (Constants.comments) cb.addComment("Variable " + s.name + " por referencia pasada a par\u00e1metro por valor");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         } else {
                                                 // si no -> srf + drf
+                                                if (Constants.comments) cb.addComment("Variable " + s.name + " por valor pasada a par\u00e1metro por valor");
                                                 cb.addInst(PCodeInstruction.OpCode.SRF, st.level-s.nivel, s.dir);
                                                 cb.addInst(PCodeInstruction.OpCode.DRF);
                                         }

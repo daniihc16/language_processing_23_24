@@ -7,12 +7,14 @@ L1:
   ASGI
   JMP L2
 L2:
+; --Variable d por referencia pasada a parámetro por referencia
   SRF  0  3
   DRF
 ; --Storing constant integer -> 0
   STC  0
   ASG
 while3:
+; --Variable d por referencia pasada a parámetro por valor
   SRF  0  3
   DRF
   DRF
@@ -93,9 +95,11 @@ while3:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable d por referencia pasada a parámetro por referencia
   SRF  0  3
   DRF
   RD  1
+; --Variable d por referencia pasada a parámetro por valor
   SRF  0  3
   DRF
   DRF
@@ -193,17 +197,24 @@ L7:
   ASGI
   JMP L8
 L8:
+; --Variable j por valor pasada a parámetro por referencia
   SRF  0  6
+; --Variable a por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   ASG
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  7
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   ASG
+; --Variable i por valor pasada a parámetro por referencia
   SRF  0  5
+; --Variable a por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Término mod
@@ -211,6 +222,7 @@ L8:
 ; --Término mod
   ASG
 while9:
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 0
@@ -218,17 +230,24 @@ while9:
 ; --Relación /=
   NEQ
   JMF endWhile10
+; --Variable j por valor pasada a parámetro por referencia
   SRF  0  6
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  7
   DRF
   ASG
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  7
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  5
   DRF
   ASG
+; --Variable i por valor pasada a parámetro por referencia
   SRF  0  5
+; --Variable j por valor pasada a parámetro por valor
   SRF  0  6
   DRF
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  7
   DRF
 ; --Término mod
@@ -237,6 +256,7 @@ while9:
   ASG
   JMP while9
 endWhile10:
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  7
   DRF
   CSF
@@ -471,8 +491,10 @@ L0:
   WRT  0
   STC 10
   WRT  0
+; --Variable i por valor pasada a parámetro por referencia
   SRF  0  3
   OSF  5  0 L1
+; --Variable j por valor pasada a parámetro por referencia
   SRF  0  4
   OSF  5  0 L1
 ; --Salto de línea
@@ -492,12 +514,14 @@ L0:
 ; --Storing constant character -> (
   STC 40
   WRT  0
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   WRT  1
 ; --Storing constant character -> ,
   STC 44
   WRT  0
+; --Variable j por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   WRT  1
@@ -513,8 +537,10 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable j por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   OSF  5  0 L7

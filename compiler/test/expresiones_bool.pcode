@@ -13,11 +13,14 @@ L1:
   ASGI
   JMP L2
 L2:
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   JMF elseif3
+; --Variable numTrues por referencia pasada a parámetro por referencia
   SRF  0  5
   DRF
+; --Variable numTrues por referencia pasada a parámetro por valor
   SRF  0  5
   DRF
   DRF
@@ -26,8 +29,10 @@ L2:
   PLUS
   ASG
 elseif3:
+; --Variable numFormulas por referencia pasada a parámetro por referencia
   SRF  0  4
   DRF
+; --Variable numFormulas por referencia pasada a parámetro por valor
   SRF  0  4
   DRF
   DRF
@@ -201,54 +206,67 @@ L0:
   WRT  0
   STC 10
   WRT  0
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
 ; --Storing constant integer -> 0
   STC  0
   ASG
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
 ; --Storing constant integer -> 0
   STC  0
   ASG
+; --Variable b1 por valor pasada a parámetro por referencia
   SRF  0  9
 ; --Storing constant boolean -> true
   STC  1
   ASG
+; --Variable b2 por valor pasada a parámetro por referencia
   SRF  0 10
 ; --Storing constant boolean -> true
   STC  1
   ASG
+; --Variable b3 por valor pasada a parámetro por referencia
   SRF  0 11
 ; --Storing constant boolean -> true
   STC  1
   ASG
+; --Variable b4 por valor pasada a parámetro por referencia
   SRF  0 12
 ; --Storing constant boolean -> true
   STC  1
   ASG
+; --Variable b5 por valor pasada a parámetro por referencia
   SRF  0 13
 ; --Storing constant boolean -> true
   STC  1
   ASG
+; --Variable b6 por valor pasada a parámetro por referencia
   SRF  0 14
 ; --Storing constant boolean -> true
   STC  1
   ASG
+; --Variable i1 por valor pasada a parámetro por referencia
   SRF  0  3
 ; --Storing constant integer -> 1
   STC  1
   ASG
+; --Variable i2 por valor pasada a parámetro por referencia
   SRF  0  4
 ; --Storing constant integer -> 2
   STC  2
   ASG
+; --Variable i3 por valor pasada a parámetro por referencia
   SRF  0  5
 ; --Storing constant integer -> 3
   STC  3
   ASG
+; --Variable i4 por valor pasada a parámetro por referencia
   SRF  0  6
 ; --Storing constant integer -> 4
   STC  4
   ASG
+; --Variable i5 por valor pasada a parámetro por referencia
   SRF  0  7
 ; --Storing constant integer -> 5
   STC  5
@@ -483,200 +501,275 @@ L0:
 ; --Relación >
   GT
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
   OR
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
 ; --Negación lógica
   NGB
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   OR
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
   AND
+; --Variable b5 por valor pasada a parámetro por valor
   SRF  0 13
   DRF
+; --Variable b6 por valor pasada a parámetro por valor
   SRF  0 14
   DRF
   AND
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
+; --Variable b5 por valor pasada a parámetro por valor
   SRF  0 13
   DRF
 ; --Negación lógica
   NGB
   AND
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
 ; --Negación lógica
   NGB
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
 ; --Negación lógica
   NGB
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
 ; --Negación lógica
   NGB
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
 ; --Negación lógica
   NGB
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   AND
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
 ; --Negación lógica
   NGB
   OR
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
+; --Variable b5 por valor pasada a parámetro por valor
   SRF  0 13
   DRF
   AND
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
 ; --Negación lógica
   NGB
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
 ; --Negación lógica
   NGB
   AND
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
 ; --Relación =
   EQ
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   OR
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
 ; --Negación lógica
   NGB
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   OR
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
   AND
+; --Variable b5 por valor pasada a parámetro por valor
   SRF  0 13
   DRF
+; --Variable b6 por valor pasada a parámetro por valor
   SRF  0 14
   DRF
   OR
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
@@ -684,115 +777,158 @@ L0:
   EQ
 ; --Negación lógica
   NGB
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   OR
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
   OR
+; --Variable b5 por valor pasada a parámetro por valor
   SRF  0 13
   DRF
+; --Variable b6 por valor pasada a parámetro por valor
   SRF  0 14
   DRF
   OR
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   AND
 ; --Negación lógica
   NGB
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   OR
 ; --Negación lógica
   NGB
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   AND
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   AND
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   AND
 ; --Relación =
   EQ
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   OR
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
+; --Variable b4 por valor pasada a parámetro por valor
   SRF  0 12
   DRF
   OR
   AND
+; --Variable b5 por valor pasada a parámetro por valor
   SRF  0 13
   DRF
+; --Variable b6 por valor pasada a parámetro por valor
   SRF  0 14
   DRF
   OR
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable b1 por valor pasada a parámetro por valor
   SRF  0  9
   DRF
+; --Variable b2 por valor pasada a parámetro por valor
   SRF  0 10
   DRF
   OR
+; --Variable b3 por valor pasada a parámetro por valor
   SRF  0 11
   DRF
   OR
 ; --Negación lógica
   NGB
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 10
   STC 10
 ; --Relación >
   GT
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 5
@@ -800,11 +936,15 @@ L0:
 ; --Relación <=
   LTE
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   PLUS
@@ -813,22 +953,28 @@ L0:
 ; --Término *
   TMS
 ; --Término *
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
   SBT
 ; --Relación >=
   GTE
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 0
   STC  0
 ; --Relación >
   GT
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 100
@@ -836,6 +982,7 @@ L0:
 ; --Relación <
   LT
   AND
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 42
@@ -843,38 +990,49 @@ L0:
 ; --Relación =
   EQ
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Término *
   TMS
 ; --Término *
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
   PLUS
 ; --Relación =
   EQ
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 20
   STC 20
 ; --Relación >=
   GTE
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 5
   STC  5
 ; --Relación <
   LT
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 10
@@ -883,9 +1041,12 @@ L0:
   GTE
   OR
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 3
@@ -897,6 +1058,7 @@ L0:
   STC  0
 ; --Relación =
   EQ
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 2
@@ -909,9 +1071,12 @@ L0:
 ; --Relación =
   EQ
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 2
@@ -923,6 +1088,7 @@ L0:
   STC 10
 ; --Relación >
   GT
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 7
@@ -930,11 +1096,15 @@ L0:
 ; --Relación =
   EQ
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   SBT
@@ -942,8 +1112,10 @@ L0:
   STC  5
 ; --Relación >=
   GTE
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
   PLUS
@@ -952,9 +1124,12 @@ L0:
 ; --Relación <
   LT
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 5
@@ -962,6 +1137,7 @@ L0:
 ; --Término /
   DIV
 ; --Término /
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 2
@@ -971,6 +1147,7 @@ L0:
 ; --Término /
 ; --Relación =
   EQ
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 10
@@ -978,11 +1155,15 @@ L0:
 ; --Relación >
   GT
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 3
@@ -991,6 +1172,7 @@ L0:
   TMS
 ; --Término *
   PLUS
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 2
@@ -1000,6 +1182,7 @@ L0:
 ; --Término /
 ; --Relación >=
   GTE
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
 ; --Storing constant integer -> 7
@@ -1007,9 +1190,12 @@ L0:
 ; --Relación =
   EQ
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 10
@@ -1017,6 +1203,7 @@ L0:
 ; --Término /
   DIV
 ; --Término /
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 4
@@ -1026,6 +1213,7 @@ L0:
 ; --Término mod
 ; --Relación =
   EQ
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 20
@@ -1033,21 +1221,26 @@ L0:
 ; --Relación >
   GT
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
 ; --Storing constant integer -> 10
   STC 10
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Relación <=
   LTE
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 5
   STC  5
 ; --Relación <
   LT
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 15
@@ -1056,26 +1249,35 @@ L0:
   GTE
   OR
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Término *
   TMS
 ; --Término *
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
   PLUS
 ; --Relación >
   GT
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 0
@@ -1084,6 +1286,7 @@ L0:
   GTE
 ; --Negación lógica
   NGB
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Storing constant integer -> 100
@@ -1091,25 +1294,34 @@ L0:
 ; --Relación <
   LT
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Relación =
   EQ
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
 ; --Relación =
   EQ
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 2
@@ -1117,10 +1329,12 @@ L0:
 ; --Término /
   DIV
 ; --Término /
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Relación /=
   NEQ
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
 ; --Storing constant integer -> 5
@@ -1128,11 +1342,15 @@ L0:
 ; --Relación >
   GT
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   PLUS
@@ -1141,8 +1359,10 @@ L0:
 ; --Término mod
   MOD
 ; --Término mod
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
 ; --Término *
@@ -1155,6 +1375,7 @@ L0:
 ; --Término mod
 ; --Relación =
   EQ
+; --Variable i5 por valor pasada a parámetro por valor
   SRF  0  7
   DRF
 ; --Storing constant integer -> 3
@@ -1162,11 +1383,15 @@ L0:
 ; --Relación >=
   GTE
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   PLUS
@@ -1174,8 +1399,10 @@ L0:
   STC 50
 ; --Relación >
   GT
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
   PLUS
@@ -1184,23 +1411,31 @@ L0:
 ; --Relación <
   LT
   OR
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
+; --Variable i1 por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable i2 por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Relación =
   EQ
+; --Variable i3 por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable i4 por valor pasada a parámetro por valor
   SRF  0  6
   DRF
 ; --Relación >
   GT
   AND
+; --Variable numFormulas por valor pasada a parámetro por referencia
   SRF  0 15
+; --Variable numTrues por valor pasada a parámetro por referencia
   SRF  0 16
   OSF 17  0 L1
 ; --Storing constant character -> D
@@ -1528,6 +1763,7 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable numFormulas por valor pasada a parámetro por valor
   SRF  0 15
   DRF
   WRT  1
@@ -1578,6 +1814,7 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable numTrues por valor pasada a parámetro por valor
   SRF  0 16
   DRF
   WRT  1

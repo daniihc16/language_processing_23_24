@@ -51,7 +51,7 @@ public class Attributes {
     public Attributes(State state_, DequeueMethod dequeueMethod_, PCodeInstruction.OpCode ioInst_) {state = state_; dequeueMethod = dequeueMethod_; ioInst = ioInst_;}
 
     public void setQueue(ArrayList<Symbol> params) {
-        this.paramIsRefInvocacion = new PriorityQueue<Boolean>();
+        this.paramIsRefInvocacion = new LinkedList<Boolean>();
         for (Symbol param:params) {
             //System.err.println("Setting to queue parClass -> " + param.parClass.toString());
             this.paramIsRefInvocacion.add(param.parClass == Symbol.ParameterClass.REF);
@@ -64,7 +64,8 @@ public class Attributes {
     }
     
     private boolean removeFromQueue() {
-        return this.paramIsRefInvocacion.remove();
+        boolean ext = this.paramIsRefInvocacion.remove();
+        return ext;
     }
 
     private boolean peekQueue() {

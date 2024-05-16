@@ -1,42 +1,59 @@
+; --Entrada al programa
   ENP L0
+; --Leyendo parámetros del procedimiento
 L1:
+; --Leyendo parámetro t
   SRF  0  3
   ASGI
   JMP L2
 L2:
+; --Variable i por valor pasada a parámetro por referencia
   SRF  0  4
+; --Storing constant integer -> 0
   STC  0
   ASG
 while3:
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  4
   DRF
+; --Variable n por valor pasada a parámetro por valor
   SRF  1  3
   DRF
+; --Relación <
   LT
   JMF endWhile4
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   STC  0
   SBT
+; --Vector pasado a parámetro por referencia
   SRF  0  3
   DRF
   PLUS
+; --Variable n por valor pasada a parámetro por valor
   SRF  1  3
   DRF
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   SBT
   ASG
+; --Variable i por valor pasada a parámetro por referencia
   SRF  0  4
+; --Variable i por valor pasada a parámetro por valor
   SRF  0  4
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
   JMP while3
 endWhile4:
   CSF
+; --Leyendo parámetros del procedimiento
 L5:
+; --Leyendo parámetro t
   SRF  0 22
   ASGI
   SRF  0 21
@@ -79,260 +96,353 @@ L5:
   ASGI
   JMP L6
 L6:
+; --Variable i por valor pasada a parámetro por referencia
   SRF  0 23
+; --Storing constant integer -> 0
   STC  0
   ASG
 while7:
+; --Variable i por valor pasada a parámetro por valor
   SRF  0 23
   DRF
+; --Variable n por valor pasada a parámetro por valor
   SRF  1  3
   DRF
+; --Relación <
   LT
   JMF endWhile8
+; --Variable i por valor pasada a parámetro por valor
   SRF  0 23
   DRF
   STC  0
   SBT
+; --Componente de vector pasada por valor
   SRF  0  3
   PLUS
   DRF
   WRT  1
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable i por valor pasada a parámetro por referencia
   SRF  0 23
+; --Variable i por valor pasada a parámetro por valor
   SRF  0 23
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
   JMP while7
 endWhile8:
+; --Storing constant integer -> 13
   STC 13
   WRT  0
+; --Storing constant integer -> 10
   STC 10
   WRT  0
   CSF
+; --Leyendo parámetros del procedimiento
 L9:
+; --Leyendo parámetro j
   SRF  0  4
   ASGI
+; --Leyendo parámetro i
   SRF  0  3
   ASGI
   JMP L10
 L10:
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  5
+; --Variable i por referencia pasada a parámetro por valor
   SRF  0  3
   DRF
   DRF
   ASG
+; --Variable i por referencia pasada a parámetro por referencia
   SRF  0  3
   DRF
+; --Variable j por referencia pasada a parámetro por valor
   SRF  0  4
   DRF
   DRF
   ASG
+; --Variable j por referencia pasada a parámetro por referencia
   SRF  0  4
   DRF
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  5
   DRF
   ASG
   CSF
+; --Leyendo parámetros del procedimiento
 L11:
+; --Leyendo parámetro j
   SRF  0  4
   ASGI
+; --Leyendo parámetro i
   SRF  0  3
   ASGI
   JMP L12
 L12:
+; --Variable i por referencia pasada a parámetro por valor
   SRF  0  3
   DRF
   DRF
+; --Variable j por referencia pasada a parámetro por valor
   SRF  0  4
   DRF
   DRF
+; --Relación >
   GT
   JMF elseif13
+; --Variable i por referencia pasada a parámetro por referencia
   SRF  0  3
   DRF
+; --Variable j por referencia pasada a parámetro por referencia
   SRF  0  4
   DRF
   OSF  5  1 L9
 elseif13:
   CSF
+; --Leyendo parámetros del procedimiento
 L15:
+; --Leyendo parámetro me
   SRF  0  6
   ASGI
+; --Leyendo parámetro der
   SRF  0  5
   ASGI
+; --Leyendo parámetro izq
   SRF  0  4
   ASGI
+; --Leyendo parámetro t
   SRF  0  3
   ASGI
   JMP L16
 L16:
+; --Variable p por valor pasada a parámetro por referencia
   SRF  0  7
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   STC  0
   SBT
+; --Componente de vector pasada por referencia
   SRF  0  3
   DRF
   PLUS
   DRF
   ASG
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  8
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   ASG
+; --Variable me por referencia pasada a parámetro por referencia
   SRF  0  6
   DRF
+; --Variable der por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  8
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
 while17:
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
   STC  0
   SBT
+; --Componente de vector pasada por referencia
   SRF  0  3
   DRF
   PLUS
   DRF
+; --Variable p por valor pasada a parámetro por valor
   SRF  0  7
   DRF
+; --Relación <=
   LTE
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
+; --Variable der por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Relación <
   LT
   AND
   JMF endWhile18
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  8
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
   JMP while17
 endWhile18:
+; --Variable me por referencia pasada a parámetro por referencia
   SRF  0  6
   DRF
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
+; --Storing constant integer -> 1
   STC  1
   SBT
   ASG
 while19:
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
   STC  0
   SBT
+; --Componente de vector pasada por referencia
   SRF  0  3
   DRF
   PLUS
   DRF
+; --Variable p por valor pasada a parámetro por valor
   SRF  0  7
   DRF
+; --Relación >
   GT
   JMF endWhile20
+; --Variable me por referencia pasada a parámetro por referencia
   SRF  0  6
   DRF
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
+; --Storing constant integer -> 1
   STC  1
   SBT
   ASG
   JMP while19
 endWhile20:
 while21:
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
+; --Relación <
   LT
   JMF endWhile22
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
   STC  0
   SBT
+; --Vector pasado a parámetro por referencia
   SRF  0  3
   DRF
   PLUS
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
   STC  0
   SBT
+; --Vector pasado a parámetro por referencia
   SRF  0  3
   DRF
   PLUS
   OSF  9  1 L9
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  8
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
 while23:
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
   STC  0
   SBT
+; --Componente de vector pasada por referencia
   SRF  0  3
   DRF
   PLUS
   DRF
+; --Variable p por valor pasada a parámetro por valor
   SRF  0  7
   DRF
+; --Relación <=
   LTE
   JMF endWhile24
+; --Variable k por valor pasada a parámetro por referencia
   SRF  0  8
+; --Variable k por valor pasada a parámetro por valor
   SRF  0  8
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
   JMP while23
 endWhile24:
+; --Variable me por referencia pasada a parámetro por referencia
   SRF  0  6
   DRF
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
+; --Storing constant integer -> 1
   STC  1
   SBT
   ASG
 while25:
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
   STC  0
   SBT
+; --Componente de vector pasada por referencia
   SRF  0  3
   DRF
   PLUS
   DRF
+; --Variable p por valor pasada a parámetro por valor
   SRF  0  7
   DRF
+; --Relación >
   GT
   JMF endWhile26
+; --Variable me por referencia pasada a parámetro por referencia
   SRF  0  6
   DRF
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
+; --Storing constant integer -> 1
   STC  1
   SBT
   ASG
@@ -340,38 +450,50 @@ while25:
 endWhile26:
   JMP while21
 endWhile22:
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   STC  0
   SBT
+; --Vector pasado a parámetro por referencia
   SRF  0  3
   DRF
   PLUS
+; --Variable me por referencia pasada a parámetro por valor
   SRF  0  6
   DRF
   DRF
   STC  0
   SBT
+; --Vector pasado a parámetro por referencia
   SRF  0  3
   DRF
   PLUS
   OSF  9  1 L9
   CSF
+; --Leyendo parámetros del procedimiento
 L27:
+; --Leyendo parámetro der
   SRF  0  5
   ASGI
+; --Leyendo parámetro izq
   SRF  0  4
   ASGI
+; --Leyendo parámetro t
   SRF  0  3
   ASGI
   JMP L28
 L28:
+; --Variable der por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
+; --Relación >
   GT
   JMF elseif29
+; --Vector por referencia pasado a parámetro por valor
   SRF  0  3
   DRF
   STC  0
@@ -473,351 +595,83 @@ L28:
   PLUS
   DRF
   OSF  7  1 L5
+; --Variable der por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   SBT
+; --Storing constant integer -> 1
   STC  1
+; --Relación =
   EQ
   JMF elseif31
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   STC  0
   SBT
+; --Vector pasado a parámetro por referencia
   SRF  0  3
   DRF
   PLUS
+; --Variable der por valor pasada a parámetro por valor
   SRF  0  5
   DRF
   STC  0
   SBT
+; --Vector pasado a parámetro por referencia
   SRF  0  3
   DRF
   PLUS
   OSF  7  1 L11
   JMP endIf32
 elseif31:
+; --Vector por referencia pasado a parámetro por referencia
   SRF  0  3
   DRF
-  STC  0
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  1
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  2
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  3
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  4
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  5
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  6
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  7
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  8
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  9
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 10
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 11
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 12
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 13
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 14
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 15
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 16
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 17
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 18
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 19
-  PLUS
-  DRF
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
+; --Variable der por valor pasada a parámetro por valor
   SRF  0  5
+  DRF
+; --Variable me por valor pasada a parámetro por referencia
   SRF  0  6
   OSF  7  1 L15
+; --Vector por referencia pasado a parámetro por referencia
   SRF  0  3
   DRF
-  STC  0
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  1
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  2
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  3
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  4
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  5
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  6
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  7
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  8
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  9
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 10
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 11
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 12
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 13
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 14
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 15
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 16
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 17
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 18
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 19
-  PLUS
-  DRF
+; --Variable izq por valor pasada a parámetro por valor
   SRF  0  4
   DRF
+; --Variable me por valor pasada a parámetro por valor
   SRF  0  6
+  DRF
+; --Storing constant integer -> 1
   STC  1
   SBT
   OSF  7  1 L27
+; --Vector por referencia pasado a parámetro por referencia
   SRF  0  3
   DRF
-  STC  0
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  1
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  2
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  3
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  4
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  5
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  6
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  7
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  8
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  9
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 10
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 11
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 12
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 13
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 14
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 15
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 16
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 17
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 18
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 19
-  PLUS
-  DRF
+; --Variable me por valor pasada a parámetro por valor
   SRF  0  6
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
+; --Variable der por valor pasada a parámetro por valor
   SRF  0  5
+  DRF
   OSF  7  1 L27
+; --Variable iteraciones por valor pasada a parámetro por referencia
   SRF  1  4
+; --Variable iteraciones por valor pasada a parámetro por valor
   SRF  1  4
   DRF
+; --Storing constant integer -> 1
   STC  1
   PLUS
   ASG
@@ -825,258 +679,326 @@ endIf32:
 elseif29:
   CSF
 L0:
+; --Storing constant character -> I
   STC 73
   WRT  0
+; --Storing constant character -> l
   STC 108
   WRT  0
+; --Storing constant character -> u
   STC 117
   WRT  0
+; --Storing constant character -> s
   STC 115
   WRT  0
+; --Storing constant character -> t
   STC 116
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character -> a
   STC 97
   WRT  0
+; --Storing constant character -> c
   STC 99
   WRT  0
+; --Storing constant character -> i
   STC 105
   WRT  0
+; --Storing constant character -> ó
   STC 243
   WRT  0
+; --Storing constant character -> n
   STC 110
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> d
   STC 100
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> l
   STC 108
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> f
   STC 102
   WRT  0
+; --Storing constant character -> u
   STC 117
   WRT  0
+; --Storing constant character -> n
   STC 110
   WRT  0
+; --Storing constant character -> c
   STC 99
   WRT  0
+; --Storing constant character -> i
   STC 105
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character -> n
   STC 110
   WRT  0
+; --Storing constant character -> a
   STC 97
   WRT  0
+; --Storing constant character -> m
   STC 109
   WRT  0
+; --Storing constant character -> i
   STC 105
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> n
   STC 110
   WRT  0
+; --Storing constant character -> t
   STC 116
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> d
   STC 100
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> l
   STC 108
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> a
   STC 97
   WRT  0
+; --Storing constant character -> l
   STC 108
   WRT  0
+; --Storing constant character -> g
   STC 103
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character -> i
   STC 105
   WRT  0
+; --Storing constant character -> t
   STC 116
   WRT  0
+; --Storing constant character -> m
   STC 109
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> q
   STC 113
   WRT  0
+; --Storing constant character -> u
   STC 117
   WRT  0
+; --Storing constant character -> i
   STC 105
   WRT  0
+; --Storing constant character -> c
   STC 99
   WRT  0
+; --Storing constant character -> k
   STC 107
   WRT  0
+; --Storing constant character -> s
   STC 115
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character -> t
   STC 116
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> p
   STC 112
   WRT  0
+; --Storing constant character -> a
   STC 97
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character -> a
   STC 97
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character -> d
   STC 100
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> n
   STC 110
   WRT  0
+; --Storing constant character -> a
   STC 97
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> 2
   STC 50
   WRT  0
+; --Storing constant character -> 0
   STC 48
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> n
   STC 110
   WRT  0
+; --Storing constant character -> t
   STC 116
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character -> s
   STC 115
   WRT  0
+; --Storing constant character -> .
   STC 46
   WRT  0
+; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
+; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
+; --Variable n por valor pasada a parámetro por referencia
   SRF  0  3
+; --Storing constant integer -> 20
   STC 20
   ASG
+; --Variable iteraciones por valor pasada a parámetro por referencia
   SRF  0  4
+; --Storing constant integer -> 0
   STC  0
   ASG
+; --Vector por valor pasado a parámetro por referencia
   SRF  0  5
   OSF 25  0 L1
+; --Vector por valor pasado a parámetro por referencia
   SRF  0  5
-  DRF
-  SRF  0  6
-  DRF
-  SRF  0  7
-  DRF
-  SRF  0  8
-  DRF
-  SRF  0  9
-  DRF
-  SRF  0 10
-  DRF
-  SRF  0 11
-  DRF
-  SRF  0 12
-  DRF
-  SRF  0 13
-  DRF
-  SRF  0 14
-  DRF
-  SRF  0 15
-  DRF
-  SRF  0 16
-  DRF
-  SRF  0 17
-  DRF
-  SRF  0 18
-  DRF
-  SRF  0 19
-  DRF
-  SRF  0 20
-  DRF
-  SRF  0 21
-  DRF
-  SRF  0 22
-  DRF
-  SRF  0 23
-  DRF
-  SRF  0 24
-  DRF
+; --Storing constant integer -> 0
   STC  0
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
+  DRF
+; --Storing constant integer -> 1
   STC  1
   SBT
   OSF 25  0 L27
+; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
+; --Storing constant character -> I
   STC 73
   WRT  0
+; --Storing constant character -> t
   STC 116
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> r
   STC 114
   WRT  0
+; --Storing constant character -> a
   STC 97
   WRT  0
+; --Storing constant character -> c
   STC 99
   WRT  0
+; --Storing constant character -> i
   STC 105
   WRT  0
+; --Storing constant character -> o
   STC 111
   WRT  0
+; --Storing constant character -> n
   STC 110
   WRT  0
+; --Storing constant character -> e
   STC 101
   WRT  0
+; --Storing constant character -> s
   STC 115
   WRT  0
+; --Storing constant character -> :
   STC 58
   WRT  0
+; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable iteraciones por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   WRT  1
+; --Salto de línea
   STC 13
   WRT  0
   STC 10

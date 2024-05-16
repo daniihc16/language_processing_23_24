@@ -16,6 +16,7 @@ L3:
   ASGI
   JMP L4
 L4:
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 1
@@ -28,8 +29,10 @@ L4:
   CSF
   JMP endIf6
 elseif5:
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 1
@@ -42,6 +45,7 @@ elseif5:
   CSF
 endIf6:
 L2:
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   OSF  4  0 L3
@@ -119,8 +123,10 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable n por valor pasada a parámetro por referencia
   SRF  0  3
   RD  1
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   WRT  1
@@ -136,6 +142,7 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   OSF  4  0 L1

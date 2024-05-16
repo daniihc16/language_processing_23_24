@@ -11,6 +11,7 @@ L1:
   ASGI
   JMP L2
 L2:
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 0
@@ -23,7 +24,9 @@ L2:
   CSF
   JMP endIf4
 elseif3:
+; --Variable uc por valor pasada a parámetro por referencia
   SRF  0  5
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 10
@@ -32,7 +35,9 @@ elseif3:
   MOD
 ; --Término mod
   ASG
+; --Variable valRec por valor pasada a parámetro por referencia
   SRF  0  6
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
 ; --Storing constant integer -> 10
@@ -40,17 +45,21 @@ elseif3:
 ; --Término /
   DIV
 ; --Término /
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   OSF  7  1 L1
   ASG
+; --Variable valRec por valor pasada a parámetro por valor
   SRF  0  6
   DRF
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Término *
   TMS
 ; --Término *
+; --Variable uc por valor pasada a parámetro por valor
   SRF  0  5
   DRF
   PLUS
@@ -67,39 +76,50 @@ L5:
   ASGI
   JMP L6
 L6:
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Relación <
   LT
   JMF elseif7
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   CSF
   JMP endIf8
 elseif7:
+; --Variable resto por valor pasada a parámetro por referencia
   SRF  0  5
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Término mod
   MOD
 ; --Término mod
   ASG
+; --Variable valRec por valor pasada a parámetro por referencia
   SRF  0  6
+; --Variable n por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
 ; --Término /
   DIV
 ; --Término /
+; --Variable b por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   OSF  7  1 L5
   ASG
+; --Variable valRec por valor pasada a parámetro por valor
   SRF  0  6
   DRF
 ; --Storing constant integer -> 10
@@ -107,16 +127,19 @@ elseif7:
 ; --Término *
   TMS
 ; --Término *
+; --Variable resto por valor pasada a parámetro por valor
   SRF  0  5
   DRF
   PLUS
   CSF
 endIf8:
 L0:
+; --Variable num por valor pasada a parámetro por referencia
   SRF  0  3
 ; --Storing constant integer -> 4
   STC  4
   ASG
+; --Variable base por valor pasada a parámetro por referencia
   SRF  0  4
 ; --Storing constant integer -> 2
   STC  2
@@ -199,6 +222,7 @@ L0:
 ; --Storing constant character -> =
   STC 61
   WRT  0
+; --Variable num por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   WRT  1
@@ -232,6 +256,7 @@ L0:
 ; --Storing constant character -> =
   STC 61
   WRT  0
+; --Variable base por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   WRT  1
@@ -374,6 +399,7 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable num por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   WRT  1
@@ -391,6 +417,7 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable base por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   WRT  1
@@ -399,9 +426,12 @@ L0:
   WRT  0
   STC 10
   WRT  0
+; --Variable enb por valor pasada a parámetro por referencia
   SRF  0  5
+; --Variable num por valor pasada a parámetro por valor
   SRF  0  3
   DRF
+; --Variable base por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   OSF  6  0 L5
@@ -424,12 +454,14 @@ L0:
 ; --Storing constant character -> (
   STC 40
   WRT  0
+; --Variable num por valor pasada a parámetro por valor
   SRF  0  3
   DRF
   WRT  1
 ; --Storing constant character -> ,
   STC 44
   WRT  0
+; --Variable base por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   WRT  1
@@ -442,6 +474,7 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable enb por valor pasada a parámetro por valor
   SRF  0  5
   DRF
   WRT  1
@@ -468,12 +501,14 @@ L0:
 ; --Storing constant character -> (
   STC 40
   WRT  0
+; --Variable enb por valor pasada a parámetro por valor
   SRF  0  5
   DRF
   WRT  1
 ; --Storing constant character -> ,
   STC 44
   WRT  0
+; --Variable base por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   WRT  1
@@ -486,8 +521,10 @@ L0:
 ; --Storing constant character ->  
   STC 32
   WRT  0
+; --Variable enb por valor pasada a parámetro por valor
   SRF  0  5
   DRF
+; --Variable base por valor pasada a parámetro por valor
   SRF  0  4
   DRF
   OSF  6  0 L1

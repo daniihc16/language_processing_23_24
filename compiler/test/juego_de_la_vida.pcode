@@ -1,2367 +1,1503 @@
-; --Entrada al programa
   ENP L0
-; --Leyendo parámetros del procedimiento
 L1:
-; --Leyendo parámetro colonia
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L2
 L2:
   SRF  0  4
-; --Storing constant integer -> 1
   STC  1
-  ASG
-while3:
+  ASG 
+L3:
   SRF  0  4
-  DRF
+  DRF 
   SRF  1 85
-  DRF
-; --Relación <=
-  LTE
-  JMF endWhile4
+  DRF 
+  LTE 
+  JMF L4
   SRF  0  4
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Vector pasado a parámetro por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
+  DRF 
+  PLUS 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 20
+  DRF 
   STC 20
-; --Término mod
-  MOD
-; --Término mod
-; --Storing constant integer -> 0
+  MOD 
   STC  0
-; --Relación =
-  EQ
-  ASG
+  EQ 
+  ASG 
   SRF  0  4
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while3
-endWhile4:
-  CSF
-; --Leyendo parámetros del procedimiento
+  PLUS 
+  ASG 
+  JMP L3
+L4:
+  CSF 
 L5:
-; --Leyendo parámetro colonia
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L6
 L6:
   SRF  0  4
-; --Storing constant integer -> 1
   STC  1
-  ASG
-while7:
+  ASG 
+L7:
   SRF  0  4
-  DRF
-; --Storing constant integer -> 80
+  DRF 
   STC 80
-; --Relación <=
-  LTE
-  JMF endWhile8
+  LTE 
+  JMF L8
   SRF  0  4
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Vector pasado a parámetro por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
+  DRF 
+  PLUS 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 37
+  DRF 
   STC 37
-; --Relación >=
-  GTE
+  GTE 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 43
+  DRF 
   STC 43
-; --Relación <=
-  LTE
-  AND
-  ASG
+  LTE 
+  AND 
+  ASG 
   SRF  0  4
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while7
-endWhile8:
-  CSF
-; --Leyendo parámetros del procedimiento
+  PLUS 
+  ASG 
+  JMP L7
+L8:
+  CSF 
 L9:
-; --Leyendo parámetro siguiente
   SRF  0 83
-  ASGI
+  ASGI 
   SRF  0 82
-  ASGI
+  ASGI 
   SRF  0 81
-  ASGI
+  ASGI 
   SRF  0 80
-  ASGI
+  ASGI 
   SRF  0 79
-  ASGI
+  ASGI 
   SRF  0 78
-  ASGI
+  ASGI 
   SRF  0 77
-  ASGI
+  ASGI 
   SRF  0 76
-  ASGI
+  ASGI 
   SRF  0 75
-  ASGI
+  ASGI 
   SRF  0 74
-  ASGI
+  ASGI 
   SRF  0 73
-  ASGI
+  ASGI 
   SRF  0 72
-  ASGI
+  ASGI 
   SRF  0 71
-  ASGI
+  ASGI 
   SRF  0 70
-  ASGI
+  ASGI 
   SRF  0 69
-  ASGI
+  ASGI 
   SRF  0 68
-  ASGI
+  ASGI 
   SRF  0 67
-  ASGI
+  ASGI 
   SRF  0 66
-  ASGI
+  ASGI 
   SRF  0 65
-  ASGI
+  ASGI 
   SRF  0 64
-  ASGI
+  ASGI 
   SRF  0 63
-  ASGI
+  ASGI 
   SRF  0 62
-  ASGI
+  ASGI 
   SRF  0 61
-  ASGI
+  ASGI 
   SRF  0 60
-  ASGI
+  ASGI 
   SRF  0 59
-  ASGI
+  ASGI 
   SRF  0 58
-  ASGI
+  ASGI 
   SRF  0 57
-  ASGI
+  ASGI 
   SRF  0 56
-  ASGI
+  ASGI 
   SRF  0 55
-  ASGI
+  ASGI 
   SRF  0 54
-  ASGI
+  ASGI 
   SRF  0 53
-  ASGI
+  ASGI 
   SRF  0 52
-  ASGI
+  ASGI 
   SRF  0 51
-  ASGI
+  ASGI 
   SRF  0 50
-  ASGI
+  ASGI 
   SRF  0 49
-  ASGI
+  ASGI 
   SRF  0 48
-  ASGI
+  ASGI 
   SRF  0 47
-  ASGI
+  ASGI 
   SRF  0 46
-  ASGI
+  ASGI 
   SRF  0 45
-  ASGI
+  ASGI 
   SRF  0 44
-  ASGI
+  ASGI 
   SRF  0 43
-  ASGI
+  ASGI 
   SRF  0 42
-  ASGI
+  ASGI 
   SRF  0 41
-  ASGI
+  ASGI 
   SRF  0 40
-  ASGI
+  ASGI 
   SRF  0 39
-  ASGI
+  ASGI 
   SRF  0 38
-  ASGI
+  ASGI 
   SRF  0 37
-  ASGI
+  ASGI 
   SRF  0 36
-  ASGI
+  ASGI 
   SRF  0 35
-  ASGI
+  ASGI 
   SRF  0 34
-  ASGI
+  ASGI 
   SRF  0 33
-  ASGI
+  ASGI 
   SRF  0 32
-  ASGI
+  ASGI 
   SRF  0 31
-  ASGI
+  ASGI 
   SRF  0 30
-  ASGI
+  ASGI 
   SRF  0 29
-  ASGI
+  ASGI 
   SRF  0 28
-  ASGI
+  ASGI 
   SRF  0 27
-  ASGI
+  ASGI 
   SRF  0 26
-  ASGI
+  ASGI 
   SRF  0 25
-  ASGI
+  ASGI 
   SRF  0 24
-  ASGI
+  ASGI 
   SRF  0 23
-  ASGI
+  ASGI 
   SRF  0 22
-  ASGI
+  ASGI 
   SRF  0 21
-  ASGI
+  ASGI 
   SRF  0 20
-  ASGI
+  ASGI 
   SRF  0 19
-  ASGI
+  ASGI 
   SRF  0 18
-  ASGI
+  ASGI 
   SRF  0 17
-  ASGI
+  ASGI 
   SRF  0 16
-  ASGI
+  ASGI 
   SRF  0 15
-  ASGI
+  ASGI 
   SRF  0 14
-  ASGI
+  ASGI 
   SRF  0 13
-  ASGI
+  ASGI 
   SRF  0 12
-  ASGI
+  ASGI 
   SRF  0 11
-  ASGI
+  ASGI 
   SRF  0 10
-  ASGI
+  ASGI 
   SRF  0  9
-  ASGI
+  ASGI 
   SRF  0  8
-  ASGI
+  ASGI 
   SRF  0  7
-  ASGI
+  ASGI 
   SRF  0  6
-  ASGI
+  ASGI 
   SRF  0  5
-  ASGI
+  ASGI 
   SRF  0  4
-  ASGI
-; --Leyendo parámetro colonia
+  ASGI 
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L10
 L10:
   SRF  0 84
-; --Storing constant integer -> 1
   STC  1
-  ASG
-while11:
+  ASG 
+L11:
   SRF  0 84
-  DRF
+  DRF 
   SRF  1 85
-  DRF
-; --Relación <=
-  LTE
-  JMF endWhile12
+  DRF 
+  LTE 
+  JMF L12
   SRF  0 84
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Vector pasado a parámetro por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
+  DRF 
+  PLUS 
   SRF  0 84
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Componente de vector pasada por valor
+  SBT 
   SRF  0  4
-  PLUS
-  DRF
-  ASG
+  PLUS 
+  DRF 
+  ASG 
   SRF  0 84
   SRF  0 84
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while11
-endWhile12:
-  CSF
-; --Funcion vivira
-; --Leyendo parámetros de la función
+  PLUS 
+  ASG 
+  JMP L11
+L12:
+  CSF 
 L13:
-; --Leyendo parámetro i
   SRF  0  4
-  ASGI
-; --Leyendo parámetro colonia
+  ASGI 
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L14
 L14:
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-; --Relación =
-  EQ
-  JMF elseif15
-; --Storing constant boolean -> false
+  EQ 
+  JMF L15
   STC  0
-  CSF
-  JMP endIf16
-elseif15:
+  CSF 
+  JMP L16
+L15:
   SRF  0  4
-  DRF
+  DRF 
   SRF  1 85
-  DRF
-; --Relación =
-  EQ
-  JMF elseif17
-; --Storing constant boolean -> false
+  DRF 
+  EQ 
+  JMF L17
   STC  0
-  CSF
-  JMP endIf18
-elseif17:
+  CSF 
+  JMP L18
+L17:
   SRF  0  4
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-; --Negación lógica
-  NGB
+  DRF 
+  PLUS 
+  DRF 
+  NGB 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  SBT
+  SBT 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
+  DRF 
+  PLUS 
+  DRF 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
+  PLUS 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-; --Negación lógica
-  NGB
-  AND
+  DRF 
+  PLUS 
+  DRF 
+  NGB 
+  AND 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  SBT
+  SBT 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-; --Negación lógica
-  NGB
+  DRF 
+  PLUS 
+  DRF 
+  NGB 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
+  PLUS 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-  AND
-  OR
-  AND
-  CSF
-endIf18:
-endIf16:
-; --Funcion vivira2
-; --Leyendo parámetros de la función
+  DRF 
+  PLUS 
+  DRF 
+  AND 
+  OR 
+  AND 
+  CSF 
+L18:
+L16:
+  CSF 
 L19:
-; --Leyendo parámetro i
   SRF  0  4
-  ASGI
-; --Leyendo parámetro colonia
+  ASGI 
   SRF  0  3
-  ASGI
+  ASGI 
   JMP L20
 L20:
   SRF  0  5
-; --Storing constant integer -> 0
   STC  0
-  ASG
+  ASG 
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-; --Relación >
-  GT
-  JMF elseif21
+  GT 
+  JMF L21
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  SBT
+  SBT 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-  JMF elseif23
+  DRF 
+  PLUS 
+  DRF 
+  JMF L22
   SRF  0  5
   SRF  0  5
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-elseif23:
-elseif21:
+  PLUS 
+  ASG 
+L22:
+L21:
   SRF  0  4
-  DRF
-; --Storing constant integer -> 2
+  DRF 
   STC  2
-; --Relación >
-  GT
-  JMF elseif25
+  GT 
+  JMF L23
   SRF  0  4
-  DRF
-; --Storing constant integer -> 2
+  DRF 
   STC  2
-  SBT
+  SBT 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-  JMF elseif27
+  DRF 
+  PLUS 
+  DRF 
+  JMF L24
   SRF  0  5
   SRF  0  5
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-elseif27:
-elseif25:
+  PLUS 
+  ASG 
+L24:
+L23:
   SRF  0  4
-  DRF
-; --Storing constant integer -> 80
+  DRF 
   STC 80
-; --Relación <
-  LT
-  JMF elseif29
+  LT 
+  JMF L25
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
+  PLUS 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-  JMF elseif31
+  DRF 
+  PLUS 
+  DRF 
+  JMF L26
   SRF  0  5
   SRF  0  5
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-elseif31:
-elseif29:
+  PLUS 
+  ASG 
+L26:
+L25:
   SRF  0  4
-  DRF
-; --Storing constant integer -> 79
+  DRF 
   STC 79
-; --Relación <
-  LT
-  JMF elseif33
+  LT 
+  JMF L27
   SRF  0  4
-  DRF
-; --Storing constant integer -> 2
+  DRF 
   STC  2
-  PLUS
+  PLUS 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-  JMF elseif35
+  DRF 
+  PLUS 
+  DRF 
+  JMF L28
   SRF  0  5
   SRF  0  5
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-elseif35:
-elseif33:
+  PLUS 
+  ASG 
+L28:
+L27:
   SRF  0  4
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Componente de vector pasada por referencia
+  SBT 
   SRF  0  3
-  DRF
-  PLUS
-  DRF
-; --Negación lógica
-  NGB
-  JMF elseif37
+  DRF 
+  PLUS 
+  DRF 
+  NGB 
+  JMF L29
   SRF  0  5
-  DRF
-; --Storing constant integer -> 2
+  DRF 
   STC  2
-; --Relación =
-  EQ
+  EQ 
   SRF  0  5
-  DRF
-; --Storing constant integer -> 3
+  DRF 
   STC  3
-; --Relación =
-  EQ
-  OR
-  CSF
-  JMP endIf38
-elseif37:
+  EQ 
+  OR 
+  CSF 
+  JMP L30
+L29:
   SRF  0  5
-  DRF
-; --Storing constant integer -> 2
+  DRF 
   STC  2
-; --Relación =
-  EQ
+  EQ 
   SRF  0  5
-  DRF
-; --Storing constant integer -> 4
+  DRF 
   STC  4
-; --Relación =
-  EQ
-  OR
-  CSF
-endIf38:
-; --Leyendo parámetros del procedimiento
-L39:
-; --Leyendo parámetro colonia
+  EQ 
+  OR 
+  CSF 
+L30:
+  CSF 
+L31:
   SRF  0  3
-  ASGI
-  JMP L40
-L40:
+  ASGI 
+  JMP L32
+L32:
   SRF  0  4
-; --Storing constant integer -> 1
   STC  1
-  ASG
-while41:
+  ASG 
+L33:
   SRF  0  4
-  DRF
+  DRF 
   SRF  1 85
-  DRF
-; --Relación <=
-  LTE
-  JMF endWhile42
+  DRF 
+  LTE 
+  JMF L34
   SRF  0  4
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Vector pasado a parámetro por valor
+  SBT 
   SRF  0  5
-  PLUS
-; --Vector por referencia pasado a parámetro por valor
+  PLUS 
   SRF  0  3
-  DRF
-  STC  0
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  1
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  2
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  3
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  4
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  5
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  6
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  7
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  8
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  9
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 10
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 11
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 12
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 13
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 14
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 15
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 16
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 17
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 18
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 19
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 20
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 21
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 22
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 23
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 24
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 25
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 26
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 27
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 28
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 29
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 30
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 31
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 32
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 33
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 34
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 35
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 36
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 37
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 38
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 39
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 40
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 41
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 42
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 43
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 44
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 45
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 46
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 47
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 48
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 49
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 50
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 51
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 52
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 53
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 54
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 55
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 56
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 57
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 58
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 59
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 60
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 61
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 62
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 63
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 64
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 65
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 66
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 67
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 68
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 69
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 70
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 71
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 72
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 73
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 74
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 75
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 76
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 77
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 78
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 79
-  PLUS
-  DRF
+  DRF 
   SRF  0  4
+  DRF 
   OSF 85  1 L13
-  ASG
+  ASG 
   SRF  0  4
   SRF  0  4
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while41
-endWhile42:
-; --Vector por referencia pasado a parámetro por valor
-  SRF  0  3
-  DRF
-  STC  0
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  1
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  2
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  3
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  4
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  5
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  6
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  7
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  8
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC  9
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 10
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 11
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 12
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 13
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 14
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 15
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 16
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 17
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 18
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 19
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 20
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 21
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 22
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 23
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 24
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 25
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 26
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 27
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 28
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 29
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 30
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 31
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 32
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 33
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 34
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 35
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 36
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 37
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 38
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 39
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 40
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 41
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 42
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 43
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 44
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 45
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 46
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 47
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 48
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 49
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 50
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 51
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 52
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 53
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 54
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 55
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 56
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 57
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 58
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 59
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 60
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 61
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 62
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 63
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 64
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 65
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 66
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 67
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 68
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 69
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 70
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 71
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 72
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 73
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 74
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 75
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 76
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 77
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 78
-  PLUS
-  DRF
-  SRF  0  3
-  DRF
-  STC 79
-  PLUS
-  DRF
-; --Vector por valor pasado a parámetro por referencia
+  PLUS 
+  ASG 
+  JMP L33
+L34:
+  SRF  0  3
+  DRF 
   SRF  0  5
-  OSF 85  1 L9
-  CSF
-; --Leyendo parámetros del procedimiento
-L43:
-; --Leyendo parámetro colonia
-  SRF  0 82
-  ASGI
-  SRF  0 81
-  ASGI
-  SRF  0 80
-  ASGI
-  SRF  0 79
-  ASGI
-  SRF  0 78
-  ASGI
-  SRF  0 77
-  ASGI
-  SRF  0 76
-  ASGI
-  SRF  0 75
-  ASGI
-  SRF  0 74
-  ASGI
-  SRF  0 73
-  ASGI
-  SRF  0 72
-  ASGI
-  SRF  0 71
-  ASGI
-  SRF  0 70
-  ASGI
-  SRF  0 69
-  ASGI
-  SRF  0 68
-  ASGI
-  SRF  0 67
-  ASGI
-  SRF  0 66
-  ASGI
-  SRF  0 65
-  ASGI
-  SRF  0 64
-  ASGI
-  SRF  0 63
-  ASGI
-  SRF  0 62
-  ASGI
-  SRF  0 61
-  ASGI
-  SRF  0 60
-  ASGI
-  SRF  0 59
-  ASGI
-  SRF  0 58
-  ASGI
-  SRF  0 57
-  ASGI
-  SRF  0 56
-  ASGI
-  SRF  0 55
-  ASGI
-  SRF  0 54
-  ASGI
-  SRF  0 53
-  ASGI
-  SRF  0 52
-  ASGI
-  SRF  0 51
-  ASGI
-  SRF  0 50
-  ASGI
-  SRF  0 49
-  ASGI
-  SRF  0 48
-  ASGI
-  SRF  0 47
-  ASGI
-  SRF  0 46
-  ASGI
-  SRF  0 45
-  ASGI
-  SRF  0 44
-  ASGI
-  SRF  0 43
-  ASGI
-  SRF  0 42
-  ASGI
-  SRF  0 41
-  ASGI
-  SRF  0 40
-  ASGI
-  SRF  0 39
-  ASGI
-  SRF  0 38
-  ASGI
-  SRF  0 37
-  ASGI
-  SRF  0 36
-  ASGI
-  SRF  0 35
-  ASGI
-  SRF  0 34
-  ASGI
-  SRF  0 33
-  ASGI
-  SRF  0 32
-  ASGI
-  SRF  0 31
-  ASGI
-  SRF  0 30
-  ASGI
-  SRF  0 29
-  ASGI
-  SRF  0 28
-  ASGI
-  SRF  0 27
-  ASGI
-  SRF  0 26
-  ASGI
-  SRF  0 25
-  ASGI
-  SRF  0 24
-  ASGI
-  SRF  0 23
-  ASGI
-  SRF  0 22
-  ASGI
-  SRF  0 21
-  ASGI
-  SRF  0 20
-  ASGI
-  SRF  0 19
-  ASGI
-  SRF  0 18
-  ASGI
-  SRF  0 17
-  ASGI
-  SRF  0 16
-  ASGI
-  SRF  0 15
-  ASGI
-  SRF  0 14
-  ASGI
-  SRF  0 13
-  ASGI
-  SRF  0 12
-  ASGI
-  SRF  0 11
-  ASGI
-  SRF  0 10
-  ASGI
-  SRF  0  9
-  ASGI
-  SRF  0  8
-  ASGI
-  SRF  0  7
-  ASGI
+  DRF 
   SRF  0  6
-  ASGI
+  DRF 
+  SRF  0  7
+  DRF 
+  SRF  0  8
+  DRF 
+  SRF  0  9
+  DRF 
+  SRF  0 10
+  DRF 
+  SRF  0 11
+  DRF 
+  SRF  0 12
+  DRF 
+  SRF  0 13
+  DRF 
+  SRF  0 14
+  DRF 
+  SRF  0 15
+  DRF 
+  SRF  0 16
+  DRF 
+  SRF  0 17
+  DRF 
+  SRF  0 18
+  DRF 
+  SRF  0 19
+  DRF 
+  SRF  0 20
+  DRF 
+  SRF  0 21
+  DRF 
+  SRF  0 22
+  DRF 
+  SRF  0 23
+  DRF 
+  SRF  0 24
+  DRF 
+  SRF  0 25
+  DRF 
+  SRF  0 26
+  DRF 
+  SRF  0 27
+  DRF 
+  SRF  0 28
+  DRF 
+  SRF  0 29
+  DRF 
+  SRF  0 30
+  DRF 
+  SRF  0 31
+  DRF 
+  SRF  0 32
+  DRF 
+  SRF  0 33
+  DRF 
+  SRF  0 34
+  DRF 
+  SRF  0 35
+  DRF 
+  SRF  0 36
+  DRF 
+  SRF  0 37
+  DRF 
+  SRF  0 38
+  DRF 
+  SRF  0 39
+  DRF 
+  SRF  0 40
+  DRF 
+  SRF  0 41
+  DRF 
+  SRF  0 42
+  DRF 
+  SRF  0 43
+  DRF 
+  SRF  0 44
+  DRF 
+  SRF  0 45
+  DRF 
+  SRF  0 46
+  DRF 
+  SRF  0 47
+  DRF 
+  SRF  0 48
+  DRF 
+  SRF  0 49
+  DRF 
+  SRF  0 50
+  DRF 
+  SRF  0 51
+  DRF 
+  SRF  0 52
+  DRF 
+  SRF  0 53
+  DRF 
+  SRF  0 54
+  DRF 
+  SRF  0 55
+  DRF 
+  SRF  0 56
+  DRF 
+  SRF  0 57
+  DRF 
+  SRF  0 58
+  DRF 
+  SRF  0 59
+  DRF 
+  SRF  0 60
+  DRF 
+  SRF  0 61
+  DRF 
+  SRF  0 62
+  DRF 
+  SRF  0 63
+  DRF 
+  SRF  0 64
+  DRF 
+  SRF  0 65
+  DRF 
+  SRF  0 66
+  DRF 
+  SRF  0 67
+  DRF 
+  SRF  0 68
+  DRF 
+  SRF  0 69
+  DRF 
+  SRF  0 70
+  DRF 
+  SRF  0 71
+  DRF 
+  SRF  0 72
+  DRF 
+  SRF  0 73
+  DRF 
+  SRF  0 74
+  DRF 
+  SRF  0 75
+  DRF 
+  SRF  0 76
+  DRF 
+  SRF  0 77
+  DRF 
+  SRF  0 78
+  DRF 
+  SRF  0 79
+  DRF 
+  SRF  0 80
+  DRF 
+  SRF  0 81
+  DRF 
+  SRF  0 82
+  DRF 
+  SRF  0 83
+  DRF 
+  SRF  0 84
+  DRF 
+  OSF 85  1 L9
+  CSF 
+L35:
+  SRF  0 82
+  ASGI 
+  SRF  0 81
+  ASGI 
+  SRF  0 80
+  ASGI 
+  SRF  0 79
+  ASGI 
+  SRF  0 78
+  ASGI 
+  SRF  0 77
+  ASGI 
+  SRF  0 76
+  ASGI 
+  SRF  0 75
+  ASGI 
+  SRF  0 74
+  ASGI 
+  SRF  0 73
+  ASGI 
+  SRF  0 72
+  ASGI 
+  SRF  0 71
+  ASGI 
+  SRF  0 70
+  ASGI 
+  SRF  0 69
+  ASGI 
+  SRF  0 68
+  ASGI 
+  SRF  0 67
+  ASGI 
+  SRF  0 66
+  ASGI 
+  SRF  0 65
+  ASGI 
+  SRF  0 64
+  ASGI 
+  SRF  0 63
+  ASGI 
+  SRF  0 62
+  ASGI 
+  SRF  0 61
+  ASGI 
+  SRF  0 60
+  ASGI 
+  SRF  0 59
+  ASGI 
+  SRF  0 58
+  ASGI 
+  SRF  0 57
+  ASGI 
+  SRF  0 56
+  ASGI 
+  SRF  0 55
+  ASGI 
+  SRF  0 54
+  ASGI 
+  SRF  0 53
+  ASGI 
+  SRF  0 52
+  ASGI 
+  SRF  0 51
+  ASGI 
+  SRF  0 50
+  ASGI 
+  SRF  0 49
+  ASGI 
+  SRF  0 48
+  ASGI 
+  SRF  0 47
+  ASGI 
+  SRF  0 46
+  ASGI 
+  SRF  0 45
+  ASGI 
+  SRF  0 44
+  ASGI 
+  SRF  0 43
+  ASGI 
+  SRF  0 42
+  ASGI 
+  SRF  0 41
+  ASGI 
+  SRF  0 40
+  ASGI 
+  SRF  0 39
+  ASGI 
+  SRF  0 38
+  ASGI 
+  SRF  0 37
+  ASGI 
+  SRF  0 36
+  ASGI 
+  SRF  0 35
+  ASGI 
+  SRF  0 34
+  ASGI 
+  SRF  0 33
+  ASGI 
+  SRF  0 32
+  ASGI 
+  SRF  0 31
+  ASGI 
+  SRF  0 30
+  ASGI 
+  SRF  0 29
+  ASGI 
+  SRF  0 28
+  ASGI 
+  SRF  0 27
+  ASGI 
+  SRF  0 26
+  ASGI 
+  SRF  0 25
+  ASGI 
+  SRF  0 24
+  ASGI 
+  SRF  0 23
+  ASGI 
+  SRF  0 22
+  ASGI 
+  SRF  0 21
+  ASGI 
+  SRF  0 20
+  ASGI 
+  SRF  0 19
+  ASGI 
+  SRF  0 18
+  ASGI 
+  SRF  0 17
+  ASGI 
+  SRF  0 16
+  ASGI 
+  SRF  0 15
+  ASGI 
+  SRF  0 14
+  ASGI 
+  SRF  0 13
+  ASGI 
+  SRF  0 12
+  ASGI 
+  SRF  0 11
+  ASGI 
+  SRF  0 10
+  ASGI 
+  SRF  0  9
+  ASGI 
+  SRF  0  8
+  ASGI 
+  SRF  0  7
+  ASGI 
+  SRF  0  6
+  ASGI 
   SRF  0  5
-  ASGI
+  ASGI 
   SRF  0  4
-  ASGI
+  ASGI 
   SRF  0  3
-  ASGI
-  JMP L44
-L44:
+  ASGI 
+  JMP L36
+L36:
   SRF  0 83
-; --Storing constant integer -> 1
   STC  1
-  ASG
-while45:
+  ASG 
+L37:
   SRF  0 83
-  DRF
+  DRF 
   SRF  1 85
-  DRF
-; --Relación <=
-  LTE
-  JMF endWhile46
+  DRF 
+  LTE 
+  JMF L38
   SRF  0 83
-  DRF
+  DRF 
   STC  1
-  SBT
-; --Componente de vector pasada por valor
+  SBT 
   SRF  0  3
-  PLUS
-  DRF
-  JMF elseif47
-; --Storing constant character -> *
+  PLUS 
+  DRF 
+  JMF L39
   STC 42
   WRT  0
-  JMP endIf48
-elseif47:
-; --Storing constant character ->  
+  JMP L40
+L39:
   STC 32
   WRT  0
-endIf48:
+L40:
   SRF  0 83
   SRF  0 83
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while45
-endWhile46:
-; --Storing constant integer -> 13
+  PLUS 
+  ASG 
+  JMP L37
+L38:
   STC 13
   WRT  0
-; --Storing constant integer -> 10
   STC 10
   WRT  0
-  CSF
+  CSF 
 L0:
-; --Storing constant character -> I
   STC 73
   WRT  0
-; --Storing constant character -> m
   STC 109
   WRT  0
-; --Storing constant character -> p
   STC 112
   WRT  0
-; --Storing constant character -> l
   STC 108
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> m
   STC 109
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> t
   STC 116
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> c
   STC 99
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> ó
-  STC 243
+  STC -61
   WRT  0
-; --Storing constant character -> n
+  STC -77
+  WRT  0
   STC 110
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> l
   STC 108
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> v
   STC 118
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> r
   STC 114
   WRT  0
-; --Storing constant character -> s
   STC 115
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> ó
-  STC 243
+  STC -61
   WRT  0
-; --Storing constant character -> n
+  STC -77
+  WRT  0
   STC 110
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> 1
   STC 49
   WRT  0
-; --Storing constant character -> D
   STC 68
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> l
   STC 108
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> J
   STC 74
   WRT  0
-; --Storing constant character -> u
   STC 117
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> g
   STC 103
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> l
   STC 108
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> V
   STC 86
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character ->  
   STC 32
   WRT  0
-; --Storing constant character -> C
   STC 67
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> w
   STC 119
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> y
   STC 121
   WRT  0
-; --Storing constant character -> .
   STC 46
   WRT  0
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
-; --Storing constant character -> h
   STC 104
   WRT  0
-; --Storing constant character -> t
   STC 116
   WRT  0
-; --Storing constant character -> t
   STC 116
   WRT  0
-; --Storing constant character -> p
   STC 112
   WRT  0
-; --Storing constant character -> s
   STC 115
   WRT  0
-; --Storing constant character -> :
   STC 58
   WRT  0
-; --Storing constant character -> /
   STC 47
   WRT  0
-; --Storing constant character -> /
   STC 47
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> .
   STC 46
   WRT  0
-; --Storing constant character -> w
   STC 119
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> k
   STC 107
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> p
   STC 112
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> d
   STC 100
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> .
   STC 46
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character -> r
   STC 114
   WRT  0
-; --Storing constant character -> g
   STC 103
   WRT  0
-; --Storing constant character -> /
   STC 47
   WRT  0
-; --Storing constant character -> w
   STC 119
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> k
   STC 107
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> /
   STC 47
   WRT  0
-; --Storing constant character -> C
   STC 67
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character -> n
   STC 110
   WRT  0
-; --Storing constant character -> w
   STC 119
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> y
   STC 121
   WRT  0
-; --Storing constant character -> %
   STC 37
   WRT  0
-; --Storing constant character -> 2
   STC 50
   WRT  0
-; --Storing constant character -> 7
   STC 55
   WRT  0
-; --Storing constant character -> s
   STC 115
   WRT  0
-; --Storing constant character -> _
   STC 95
   WRT  0
-; --Storing constant character -> G
   STC 71
   WRT  0
-; --Storing constant character -> a
   STC 97
   WRT  0
-; --Storing constant character -> m
   STC 109
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Storing constant character -> _
   STC 95
   WRT  0
-; --Storing constant character -> o
   STC 111
   WRT  0
-; --Storing constant character -> f
   STC 102
   WRT  0
-; --Storing constant character -> _
   STC 95
   WRT  0
-; --Storing constant character -> L
   STC 76
   WRT  0
-; --Storing constant character -> i
   STC 105
   WRT  0
-; --Storing constant character -> f
   STC 102
   WRT  0
-; --Storing constant character -> e
   STC 101
   WRT  0
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
-; --Salto de línea
   STC 13
   WRT  0
   STC 10
   WRT  0
   SRF  0 85
-; --Storing constant integer -> 80
   STC 80
-  ASG
-; --Vector por valor pasado a parámetro por referencia
+  ASG 
   SRF  0  3
   OSF 86  0 L1
-; --Vector por valor pasado por parámetro por valor
   SRF  0  3
-  DRF
+  DRF 
   SRF  0  4
-  DRF
+  DRF 
   SRF  0  5
-  DRF
+  DRF 
   SRF  0  6
-  DRF
+  DRF 
   SRF  0  7
-  DRF
+  DRF 
   SRF  0  8
-  DRF
+  DRF 
   SRF  0  9
-  DRF
+  DRF 
   SRF  0 10
-  DRF
+  DRF 
   SRF  0 11
-  DRF
+  DRF 
   SRF  0 12
-  DRF
+  DRF 
   SRF  0 13
-  DRF
+  DRF 
   SRF  0 14
-  DRF
+  DRF 
   SRF  0 15
-  DRF
+  DRF 
   SRF  0 16
-  DRF
+  DRF 
   SRF  0 17
-  DRF
+  DRF 
   SRF  0 18
-  DRF
+  DRF 
   SRF  0 19
-  DRF
+  DRF 
   SRF  0 20
-  DRF
+  DRF 
   SRF  0 21
-  DRF
+  DRF 
   SRF  0 22
-  DRF
+  DRF 
   SRF  0 23
-  DRF
+  DRF 
   SRF  0 24
-  DRF
+  DRF 
   SRF  0 25
-  DRF
+  DRF 
   SRF  0 26
-  DRF
+  DRF 
   SRF  0 27
-  DRF
+  DRF 
   SRF  0 28
-  DRF
+  DRF 
   SRF  0 29
-  DRF
+  DRF 
   SRF  0 30
-  DRF
+  DRF 
   SRF  0 31
-  DRF
+  DRF 
   SRF  0 32
-  DRF
+  DRF 
   SRF  0 33
-  DRF
+  DRF 
   SRF  0 34
-  DRF
+  DRF 
   SRF  0 35
-  DRF
+  DRF 
   SRF  0 36
-  DRF
+  DRF 
   SRF  0 37
-  DRF
+  DRF 
   SRF  0 38
-  DRF
+  DRF 
   SRF  0 39
-  DRF
+  DRF 
   SRF  0 40
-  DRF
+  DRF 
   SRF  0 41
-  DRF
+  DRF 
   SRF  0 42
-  DRF
+  DRF 
   SRF  0 43
-  DRF
+  DRF 
   SRF  0 44
-  DRF
+  DRF 
   SRF  0 45
-  DRF
+  DRF 
   SRF  0 46
-  DRF
+  DRF 
   SRF  0 47
-  DRF
+  DRF 
   SRF  0 48
-  DRF
+  DRF 
   SRF  0 49
-  DRF
+  DRF 
   SRF  0 50
-  DRF
+  DRF 
   SRF  0 51
-  DRF
+  DRF 
   SRF  0 52
-  DRF
+  DRF 
   SRF  0 53
-  DRF
+  DRF 
   SRF  0 54
-  DRF
+  DRF 
   SRF  0 55
-  DRF
+  DRF 
   SRF  0 56
-  DRF
+  DRF 
   SRF  0 57
-  DRF
+  DRF 
   SRF  0 58
-  DRF
+  DRF 
   SRF  0 59
-  DRF
+  DRF 
   SRF  0 60
-  DRF
+  DRF 
   SRF  0 61
-  DRF
+  DRF 
   SRF  0 62
-  DRF
+  DRF 
   SRF  0 63
-  DRF
+  DRF 
   SRF  0 64
-  DRF
+  DRF 
   SRF  0 65
-  DRF
+  DRF 
   SRF  0 66
-  DRF
+  DRF 
   SRF  0 67
-  DRF
+  DRF 
   SRF  0 68
-  DRF
+  DRF 
   SRF  0 69
-  DRF
+  DRF 
   SRF  0 70
-  DRF
+  DRF 
   SRF  0 71
-  DRF
+  DRF 
   SRF  0 72
-  DRF
+  DRF 
   SRF  0 73
-  DRF
+  DRF 
   SRF  0 74
-  DRF
+  DRF 
   SRF  0 75
-  DRF
+  DRF 
   SRF  0 76
-  DRF
+  DRF 
   SRF  0 77
-  DRF
+  DRF 
   SRF  0 78
-  DRF
+  DRF 
   SRF  0 79
-  DRF
+  DRF 
   SRF  0 80
-  DRF
+  DRF 
   SRF  0 81
-  DRF
+  DRF 
   SRF  0 82
-  DRF
-  OSF 86  0 L43
+  DRF 
+  OSF 86  0 L35
   SRF  0 83
-; --Storing constant integer -> 1
   STC  1
-  ASG
+  ASG 
   SRF  0 84
-; --Storing constant integer -> 50
   STC 50
-  ASG
-while49:
+  ASG 
+L41:
   SRF  0 83
-  DRF
+  DRF 
   SRF  0 84
-  DRF
-; --Relación <=
-  LTE
-  JMF endWhile50
-; --Vector por valor pasado a parámetro por referencia
+  DRF 
+  LTE 
+  JMF L42
   SRF  0  3
-  OSF 86  0 L39
-; --Vector por valor pasado por parámetro por valor
+  OSF 86  0 L31
   SRF  0  3
-  DRF
+  DRF 
   SRF  0  4
-  DRF
+  DRF 
   SRF  0  5
-  DRF
+  DRF 
   SRF  0  6
-  DRF
+  DRF 
   SRF  0  7
-  DRF
+  DRF 
   SRF  0  8
-  DRF
+  DRF 
   SRF  0  9
-  DRF
+  DRF 
   SRF  0 10
-  DRF
+  DRF 
   SRF  0 11
-  DRF
+  DRF 
   SRF  0 12
-  DRF
+  DRF 
   SRF  0 13
-  DRF
+  DRF 
   SRF  0 14
-  DRF
+  DRF 
   SRF  0 15
-  DRF
+  DRF 
   SRF  0 16
-  DRF
+  DRF 
   SRF  0 17
-  DRF
+  DRF 
   SRF  0 18
-  DRF
+  DRF 
   SRF  0 19
-  DRF
+  DRF 
   SRF  0 20
-  DRF
+  DRF 
   SRF  0 21
-  DRF
+  DRF 
   SRF  0 22
-  DRF
+  DRF 
   SRF  0 23
-  DRF
+  DRF 
   SRF  0 24
-  DRF
+  DRF 
   SRF  0 25
-  DRF
+  DRF 
   SRF  0 26
-  DRF
+  DRF 
   SRF  0 27
-  DRF
+  DRF 
   SRF  0 28
-  DRF
+  DRF 
   SRF  0 29
-  DRF
+  DRF 
   SRF  0 30
-  DRF
+  DRF 
   SRF  0 31
-  DRF
+  DRF 
   SRF  0 32
-  DRF
+  DRF 
   SRF  0 33
-  DRF
+  DRF 
   SRF  0 34
-  DRF
+  DRF 
   SRF  0 35
-  DRF
+  DRF 
   SRF  0 36
-  DRF
+  DRF 
   SRF  0 37
-  DRF
+  DRF 
   SRF  0 38
-  DRF
+  DRF 
   SRF  0 39
-  DRF
+  DRF 
   SRF  0 40
-  DRF
+  DRF 
   SRF  0 41
-  DRF
+  DRF 
   SRF  0 42
-  DRF
+  DRF 
   SRF  0 43
-  DRF
+  DRF 
   SRF  0 44
-  DRF
+  DRF 
   SRF  0 45
-  DRF
+  DRF 
   SRF  0 46
-  DRF
+  DRF 
   SRF  0 47
-  DRF
+  DRF 
   SRF  0 48
-  DRF
+  DRF 
   SRF  0 49
-  DRF
+  DRF 
   SRF  0 50
-  DRF
+  DRF 
   SRF  0 51
-  DRF
+  DRF 
   SRF  0 52
-  DRF
+  DRF 
   SRF  0 53
-  DRF
+  DRF 
   SRF  0 54
-  DRF
+  DRF 
   SRF  0 55
-  DRF
+  DRF 
   SRF  0 56
-  DRF
+  DRF 
   SRF  0 57
-  DRF
+  DRF 
   SRF  0 58
-  DRF
+  DRF 
   SRF  0 59
-  DRF
+  DRF 
   SRF  0 60
-  DRF
+  DRF 
   SRF  0 61
-  DRF
+  DRF 
   SRF  0 62
-  DRF
+  DRF 
   SRF  0 63
-  DRF
+  DRF 
   SRF  0 64
-  DRF
+  DRF 
   SRF  0 65
-  DRF
+  DRF 
   SRF  0 66
-  DRF
+  DRF 
   SRF  0 67
-  DRF
+  DRF 
   SRF  0 68
-  DRF
+  DRF 
   SRF  0 69
-  DRF
+  DRF 
   SRF  0 70
-  DRF
+  DRF 
   SRF  0 71
-  DRF
+  DRF 
   SRF  0 72
-  DRF
+  DRF 
   SRF  0 73
-  DRF
+  DRF 
   SRF  0 74
-  DRF
+  DRF 
   SRF  0 75
-  DRF
+  DRF 
   SRF  0 76
-  DRF
+  DRF 
   SRF  0 77
-  DRF
+  DRF 
   SRF  0 78
-  DRF
+  DRF 
   SRF  0 79
-  DRF
+  DRF 
   SRF  0 80
-  DRF
+  DRF 
   SRF  0 81
-  DRF
+  DRF 
   SRF  0 82
-  DRF
-  OSF 86  0 L43
+  DRF 
+  OSF 86  0 L35
   SRF  0 83
   SRF  0 83
-  DRF
-; --Storing constant integer -> 1
+  DRF 
   STC  1
-  PLUS
-  ASG
-  JMP while49
-endWhile50:
-  LVP
+  PLUS 
+  ASG 
+  JMP L41
+L42:
+  LVP 
