@@ -1,0 +1,730 @@
+; --Entrada al programa
+  ENP L0
+; --Leyendo parámetros del procedimiento
+L1:
+; --Leyendo parámetro spare
+  SRF  0  6
+  ASGI
+; --Leyendo parámetro target
+  SRF  0  5
+  ASGI
+; --Leyendo parámetro source
+  SRF  0  4
+  ASGI
+; --Leyendo parámetro n
+  SRF  0  3
+  ASGI
+  JMP L2
+L2:
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 1
+  STC  1
+; --Relación =
+  EQ
+  JMF elseif3
+; --Storing constant character -> M
+  STC 77
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> k
+  STC 107
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> f
+  STC 102
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> w
+  STC 119
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Variable source por valor pasada a parámetro por valor
+  SRF  0  4
+  DRF
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> w
+  STC 119
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Variable target por valor pasada a parámetro por valor
+  SRF  0  5
+  DRF
+  WRT  0
+; --Storing constant character -> .
+  STC 46
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Variable steps por valor pasada a parámetro por referencia
+  SRF  1  3
+; --Variable steps por valor pasada a parámetro por valor
+  SRF  1  3
+  DRF
+; --Storing constant integer -> 1
+  STC  1
+  PLUS
+  ASG
+  JMP endIf4
+elseif3:
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 1
+  STC  1
+  SBT
+; --Variable source por valor pasada a parámetro por valor
+  SRF  0  4
+  DRF
+; --Variable spare por valor pasada a parámetro por valor
+  SRF  0  6
+  DRF
+; --Variable target por valor pasada a parámetro por valor
+  SRF  0  5
+  DRF
+  OSF  7  1 L1
+; --Storing constant integer -> 1
+  STC  1
+; --Variable source por valor pasada a parámetro por valor
+  SRF  0  4
+  DRF
+; --Variable target por valor pasada a parámetro por valor
+  SRF  0  5
+  DRF
+; --Variable spare por valor pasada a parámetro por valor
+  SRF  0  6
+  DRF
+  OSF  7  1 L1
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 1
+  STC  1
+  SBT
+; --Variable spare por valor pasada a parámetro por valor
+  SRF  0  6
+  DRF
+; --Variable target por valor pasada a parámetro por valor
+  SRF  0  5
+  DRF
+; --Variable source por valor pasada a parámetro por valor
+  SRF  0  4
+  DRF
+  OSF  7  1 L1
+endIf4:
+  CSF
+L0:
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Storing constant character -> R
+  STC 82
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> g
+  STC 103
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> h
+  STC 104
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> h
+  STC 104
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> H
+  STC 72
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> T
+  STC 84
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> w
+  STC 119
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> p
+  STC 112
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> b
+  STC 98
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character -> .
+  STC 46
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Storing constant character -> h
+  STC 104
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> p
+  STC 112
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> :
+  STC 58
+  WRT  0
+; --Storing constant character -> /
+  STC 47
+  WRT  0
+; --Storing constant character -> /
+  STC 47
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> .
+  STC 46
+  WRT  0
+; --Storing constant character -> w
+  STC 119
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> k
+  STC 107
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> p
+  STC 112
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> .
+  STC 46
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> g
+  STC 103
+  WRT  0
+; --Storing constant character -> /
+  STC 47
+  WRT  0
+; --Storing constant character -> w
+  STC 119
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> k
+  STC 107
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> /
+  STC 47
+  WRT  0
+; --Storing constant character -> T
+  STC 84
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> w
+  STC 119
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> _
+  STC 95
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> f
+  STC 102
+  WRT  0
+; --Storing constant character -> _
+  STC 95
+  WRT  0
+; --Storing constant character -> H
+  STC 72
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> #
+  STC 35
+  WRT  0
+; --Storing constant character -> R
+  STC 82
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> _
+  STC 95
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Variable steps por valor pasada a parámetro por referencia
+  SRF  0  3
+; --Storing constant integer -> 0
+  STC  0
+  ASG
+; --Variable n por valor pasada a parámetro por referencia
+  SRF  0  4
+; --Storing constant integer -> 3
+  STC  3
+  ASG
+; --Storing constant character -> S
+  STC 83
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> g
+  STC 103
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> f
+  STC 102
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  4
+  DRF
+  WRT  1
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> k
+  STC 107
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> .
+  STC 46
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Variable n por valor pasada a parámetro por valor
+  SRF  0  4
+  DRF
+; --Storing constant character -> A
+  STC 65
+; --Storing constant character -> C
+  STC 67
+; --Storing constant character -> B
+  STC 66
+  OSF  5  0 L1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Storing constant character -> F
+  STC 70
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> h
+  STC 104
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Variable steps por valor pasada a parámetro por valor
+  SRF  0  3
+  DRF
+  WRT  1
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> p
+  STC 112
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> .
+  STC 46
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+  LVP
