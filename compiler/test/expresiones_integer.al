@@ -6,11 +6,16 @@ procedure exps is
 	i1, i2, i3, i4, i5: integer;
 	arr: array(1..10) of integer;
 	numFormulas, numCorrectas: integer;
+	--results: array(0..21) of integer;
 ------------------------------------------------------------------------	
 procedure evalua(found, expected: integer; numFormulas, numTrues: ref integer) is
 begin
 	if found = expected then
 		numTrues := numTrues + 1;
+		--results(numFormulas) := 1;
+	--else
+	--	put_line("Expected: ", expected, " | found: ", found);
+	--	results(numFormulas) := 0;
 	end if;
 	numFormulas := numFormulas + 1;
 end;
@@ -31,8 +36,10 @@ begin
 	evalua(2 * 2 * 2 * 2, 16, numFormulas, numCorrectas);
 	evalua(10 * 10 + 2, 102, numFormulas, numCorrectas);
 	evalua(2 + 10 * 10, 102, numFormulas, numCorrectas);
+
 	evalua(-2 + 5 / 5 * 2, 0, numFormulas, numCorrectas);
 	evalua(6 / 2 * 4 / 2, 6, numFormulas, numCorrectas);
+
 	evalua((2 + 2) / 3, 1, numFormulas, numCorrectas);
 	evalua(-5 + (1 * (4 / 2)), -3, numFormulas, numCorrectas);
 	
@@ -57,4 +64,9 @@ begin
 	put_line("Debería haber llegado aquí sin problemas léxicos o sintácticos.");
 	put_line("De las ", numFormulas, " fórmulas, ", numCorrectas,
 			" han dado el resultado correcto.");
+	--while (numFormulas > 0) loop
+	--	put(results(22-numFormulas));
+	--	put(", ");
+	--	numFormulas := numFormulas-1;
+	--end loop;
 end;

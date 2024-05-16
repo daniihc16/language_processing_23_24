@@ -46,6 +46,7 @@ public class alike {
 			} else if (args[i].equals("-c")) {
 				Constants.comments = true;
 			}
+			CodeBlock.generationMode = Constants.xmlOutput ? CodeBlock.BlockMode.XML : CodeBlock.BlockMode.PLAIN;
 			i++;
 		}
 		// Si no se ha especificado un fichero de entrada se da error, se usa el nombre del fichero de entrada	
@@ -409,23 +410,26 @@ CodeBlock declaracion_proc():
 				// no sabrás donde dejar cada parametro si no tienes la referencia asbsoluta;
 				cb.addLabel(labelProc.toString() + ":");
 				int dirBaseParametro = st.getDirBase()-1;
-				
 				// Los parámetros vienen dados en orden inverso
-				for (int i=proc.parList.size()-1; i>=0; i--) {
-					Symbol parameteri = proc.parList.get(i);
-					if (parameteri.type == Symbol.Types.ARRAY && !(parameteri.parClass == Symbol.ParameterClass.REF)) {
-						SymbolArray sarr = (SymbolArray)parameteri;
-						for (int j=sarr.maxInd; j>=sarr.minInd; j--) {
+				if (proc.parList != null) {
+					for (int i=proc.parList.size()-1; i>=0; i--) {
+						Symbol parameteri = proc.parList.get(i);
+						if(Constants.comments) cb.addComment("Leyendo parámetro " + parameteri.name);
+						if (parameteri.type == Symbol.Types.ARRAY && !(parameteri.parClass == Symbol.ParameterClass.REF)) {
+							SymbolArray sarr = (SymbolArray)parameteri;
+							for (int j=sarr.maxInd; j>=sarr.minInd; j--) {
+								cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
+								cb.addInst(PCodeInstruction.OpCode.ASGI);
+								dirBaseParametro--;
+							}
+						} else {
 							cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
 							cb.addInst(PCodeInstruction.OpCode.ASGI);
 							dirBaseParametro--;
 						}
-					} else {
-						cb.addInst(PCodeInstruction.OpCode.SRF, 0, dirBaseParametro);
-						cb.addInst(PCodeInstruction.OpCode.ASGI);
-						dirBaseParametro--;
 					}
 				}
+				
 
 				// JMP para saltar al código del procc/func actual, sino se ejecutaría el código
 				// de los procedimientos y funciones declarados internamente, que es lo que se encuentra
@@ -455,9 +459,9 @@ CodeBlock declaracion_proc():
 			
 			if(Constants.verbose) System.out.println("Procedimiento reconocido: " + st.toString());
 			st.removeBlock();
-			if (Constants.errorFree && Constants.xmlOutput)	{
+			if (Constants.errorFree)	{
 				cb.addInst(PCodeInstruction.OpCode.CSF);
-				cb.encloseXMLTags("Procedimiento_" + proc.name);
+				if (Constants.xmlOutput) cb.encloseXMLTags("Procedimiento_" + proc.name);
 			}
 			return cb;
 		}
@@ -508,6 +512,7 @@ CodeBlock declaracion_func():
 				if (func.parList != null) {
 					for (int i=func.parList.size()-1; i>=0; i--) {
 						Symbol parameteri = func.parList.get(i);
+						cb.addComment("Leyendo parámetro " + parameteri.name);
 						if (parameteri.type == Symbol.Types.ARRAY && !(parameteri.parClass == Symbol.ParameterClass.REF)) {
 							SymbolArray sarr = (SymbolArray)parameteri;
 							for (int j=sarr.maxInd; j>=sarr.minInd; j--) {
@@ -989,7 +994,11 @@ TypeValue expresion(Attributes at, CodeBlock cb):
 	// Si por el contrario la expresión es un identificador o una constante, se consumirá el parámetro de la pila que puede ser una referencia
 	// y al volver de la invocación se consumirá el valor de la pila que se ha dejado en la invocación si el método anterior para consumir la pila era remove
 	Attributes atPeek = new Attributes(at.state, Attributes.DequeueMethod.Peek, at.ioInst);
-	atPeek.paramIsRefInvocacion = at.paramIsRefInvocacion;
+	if (at.paramIsRefInvocacion != null) {
+		atPeek.paramIsRefInvocacion = new PriorityQueue<Boolean>(at.paramIsRefInvocacion);
+	} else {
+		atPeek.setQueue(Symbol.ParameterClass.REF);
+	}
 	// "and" y "or" son asociativos a la izqda. pero mezclados, no está definida su asociatividad, por lo que hay que usar paréntesis que definan la prioridad de las operaciones.
 }
 {
@@ -1002,7 +1011,7 @@ TypeValue expresion(Attributes at, CodeBlock cb):
 			cb.addInst(PCodeInstruction.OpCode.AND);
 		}
 	})+
-	| (op = <tOR> srel = relacion(at, cb) {
+	| (op = <tOR> srel = relacion(atLocal, cb) {
 		result = SemanticFunctions.expresion(srel, result, op, tAND, tOR);
 		if(Constants.verbose) System.out.println("Encontrada expresión OR correcta");
 		if(Constants.errorFree){
@@ -1103,43 +1112,31 @@ TypeValue termino(Attributes at, CodeBlock cb):
 	Attributes atLocal = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
-    fact = factor(at, cb) ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(atLocal, cb) )? {
+    fact = factor(at, cb) ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(atLocal, cb, op) )? {
 		TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
-		if(Constants.errorFree){
-			if (op != null) {
-				if(Constants.comments) cb.addComment("Término " + op.image);
-				switch(op.kind) {
-					case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
-					case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
-					case tMOD: cb.addInst(PCodeInstruction.OpCode.MOD); break;
-				}
-			}
-		}
+		if(Constants.errorFree && op != null && Constants.comments) cb.addComment("Término " + op.image);
 		return tv;
     }
 }
 
 
-TypeValue lista_una_o_mas_terminos(Attributes at, CodeBlock cb):
+TypeValue lista_una_o_mas_terminos(Attributes at, CodeBlock cb, Token opAnterior):
 {
     TypeValue fact = null, fact_resultante = null;
     Token op = null;
 }
 {
-    fact = factor(at, cb) ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(at, cb))? {
-		TypeValue tv = SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
+    fact = factor(at, cb) { 
 		if(Constants.errorFree){
-			if (op != null) {
-				if(Constants.comments) cb.addComment("Término " + op.image);
-				switch(op.kind) {
-					case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
-					case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
-					case tMOD: cb.addInst(PCodeInstruction.OpCode.MOD); break;
-				}
+			if(Constants.comments) cb.addComment("Término " + opAnterior.image);
+			switch(opAnterior.kind) {
+				case tTIMES: cb.addInst(PCodeInstruction.OpCode.TMS); break;
+				case tDIV: cb.addInst(PCodeInstruction.OpCode.DIV); break;
+				case tMOD: cb.addInst(PCodeInstruction.OpCode.MOD); break;
 			}
 		}
-	
-   	 	return tv;
+	 } ( op = operador_multiplicativo() fact_resultante = lista_una_o_mas_terminos(at, cb, op))? {
+		return SemanticFunctions.termino(fact, op, fact_resultante, tTIMES, tDIV, tMOD);
     }
 }
 
@@ -1215,8 +1212,7 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 		if (s.type == Symbol.Types.FUNCTION) attrsLocal.setQueue(((SymbolFunction) s).parList);
 		else if (s.type == Symbol.Types.PROCEDURE) attrsLocal.setQueue(((SymbolProcedure) s).parList);
 		else attrsLocal.setQueue(Symbol.ParameterClass.VAL);
-		// si es func/proc -> instanciar attributes a "EnInvocacion" + poner en attributes todos los parámetros y sus tipos (val/ref)
-		// si es array -> no hace falta, todo es por valor
+		
 	} exps = lista_una_o_mas_exps(attrsLocal, cb) <tCPAR> /*invoc. func. o comp. array*/ {
 		TypeValue semanticResult = SemanticFunctions.invoc_func_o_comp_array(id, exps, st);
 		// mirar ts con id.img para obtener el Symbol.dir
@@ -1288,7 +1284,7 @@ TypeValue invoc_o_asign_primario(Attributes at, CodeBlock cb):
 	
 		// mirar ts con id.img para obtener el Symbol.dir
 		s = st.getSymbol(id.image);
-		
+		//System.out.println(id.image + "(" + id.beginLine + ")  -> " + at.state.toString() + ": Params -> " + (at.paramIsRefInvocacion != null ? at.paramIsRefInvocacion.toString() : "ES NULL"));
 		// Es una variable por referencia si esta en una invocación de un proc/func y consumo de la cola si el parámetro
 		// que se está reconociendo es por referencia
 		// Attributes.State.EnInvocación significa que lo evaluado es un parámetro de una función o procedimiento que está

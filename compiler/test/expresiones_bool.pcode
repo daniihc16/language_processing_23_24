@@ -1,0 +1,1589 @@
+; --Entrada al programa
+  ENP L0
+; --Leyendo parámetros del procedimiento
+L1:
+; --Leyendo parámetro numTrues
+  SRF  0  5
+  ASGI
+; --Leyendo parámetro numFormulas
+  SRF  0  4
+  ASGI
+; --Leyendo parámetro b
+  SRF  0  3
+  ASGI
+  JMP L2
+L2:
+  SRF  0  3
+  DRF
+  JMF elseif3
+  SRF  0  5
+  DRF
+  SRF  0  5
+  DRF
+  DRF
+; --Storing constant integer -> 1
+  STC  1
+  PLUS
+  ASG
+elseif3:
+  SRF  0  4
+  DRF
+  SRF  0  4
+  DRF
+  DRF
+; --Storing constant integer -> 1
+  STC  1
+  PLUS
+  ASG
+  CSF
+L0:
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Storing constant character -> -
+  STC 45
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+  SRF  0 15
+; --Storing constant integer -> 0
+  STC  0
+  ASG
+  SRF  0 16
+; --Storing constant integer -> 0
+  STC  0
+  ASG
+  SRF  0  9
+; --Storing constant boolean -> true
+  STC  1
+  ASG
+  SRF  0 10
+; --Storing constant boolean -> true
+  STC  1
+  ASG
+  SRF  0 11
+; --Storing constant boolean -> true
+  STC  1
+  ASG
+  SRF  0 12
+; --Storing constant boolean -> true
+  STC  1
+  ASG
+  SRF  0 13
+; --Storing constant boolean -> true
+  STC  1
+  ASG
+  SRF  0 14
+; --Storing constant boolean -> true
+  STC  1
+  ASG
+  SRF  0  3
+; --Storing constant integer -> 1
+  STC  1
+  ASG
+  SRF  0  4
+; --Storing constant integer -> 2
+  STC  2
+  ASG
+  SRF  0  5
+; --Storing constant integer -> 3
+  STC  3
+  ASG
+  SRF  0  6
+; --Storing constant integer -> 4
+  STC  4
+  ASG
+  SRF  0  7
+; --Storing constant integer -> 5
+  STC  5
+  ASG
+; --Storing constant character -> E
+  STC 69
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> p
+  STC 112
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> g
+  STC 103
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> v
+  STC 118
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> ú
+  STC 250
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> j
+  STC 106
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> x
+  STC 120
+  WRT  0
+; --Storing constant character -> p
+  STC 112
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> b
+  STC 98
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Storing constant boolean -> true
+  STC  1
+; --Storing constant boolean -> true
+  STC  1
+  AND
+; --Storing constant boolean -> true
+  STC  1
+; --Negación lógica
+  NGB
+  AND
+; --Storing constant integer -> 3
+  STC  3
+; --Storing constant integer -> 5
+  STC  5
+; --Relación >
+  GT
+  AND
+; --Storing constant integer -> 6
+  STC  6
+; --Storing constant integer -> 5
+  STC  5
+; --Relación >
+  GT
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  SRF  0 11
+  DRF
+  OR
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+; --Negación lógica
+  NGB
+  SRF  0 10
+  DRF
+  OR
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+  AND
+  SRF  0 13
+  DRF
+  SRF  0 14
+  DRF
+  AND
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+  SRF  0 13
+  DRF
+; --Negación lógica
+  NGB
+  AND
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+; --Negación lógica
+  NGB
+  AND
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+; --Negación lógica
+  NGB
+  SRF  0 10
+  DRF
+; --Negación lógica
+  NGB
+  AND
+  SRF  0 11
+  DRF
+; --Negación lógica
+  NGB
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  AND
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+  SRF  0 11
+  DRF
+; --Negación lógica
+  NGB
+  OR
+  SRF  0 12
+  DRF
+  SRF  0 13
+  DRF
+  AND
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+; --Negación lógica
+  NGB
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+; --Negación lógica
+  NGB
+  AND
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+; --Relación =
+  EQ
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  OR
+  SRF  0 11
+  DRF
+; --Negación lógica
+  NGB
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  OR
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+  AND
+  SRF  0 13
+  DRF
+  SRF  0 14
+  DRF
+  OR
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+; --Relación =
+  EQ
+; --Negación lógica
+  NGB
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  OR
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+  OR
+  SRF  0 13
+  DRF
+  SRF  0 14
+  DRF
+  OR
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  AND
+; --Negación lógica
+  NGB
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  OR
+; --Negación lógica
+  NGB
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  AND
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  AND
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  AND
+; --Relación =
+  EQ
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  OR
+  SRF  0 11
+  DRF
+  SRF  0 12
+  DRF
+  OR
+  AND
+  SRF  0 13
+  DRF
+  SRF  0 14
+  DRF
+  OR
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  9
+  DRF
+  SRF  0 10
+  DRF
+  OR
+  SRF  0 11
+  DRF
+  OR
+; --Negación lógica
+  NGB
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 10
+  STC 10
+; --Relación >
+  GT
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 5
+  STC  5
+; --Relación <=
+  LTE
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+  PLUS
+; --Storing constant integer -> 2
+  STC  2
+; --Término *
+  TMS
+; --Término *
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+  SBT
+; --Relación >=
+  GTE
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 0
+  STC  0
+; --Relación >
+  GT
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 100
+  STC 100
+; --Relación <
+  LT
+  AND
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 42
+  STC 42
+; --Relación =
+  EQ
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Término *
+  TMS
+; --Término *
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+  PLUS
+; --Relación =
+  EQ
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 20
+  STC 20
+; --Relación >=
+  GTE
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 5
+  STC  5
+; --Relación <
+  LT
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 10
+  STC 10
+; --Relación >=
+  GTE
+  OR
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 3
+  STC  3
+; --Término mod
+  MOD
+; --Término mod
+; --Storing constant integer -> 0
+  STC  0
+; --Relación =
+  EQ
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 2
+  STC  2
+; --Término mod
+  MOD
+; --Término mod
+; --Storing constant integer -> 1
+  STC  1
+; --Relación =
+  EQ
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 2
+  STC  2
+; --Término /
+  DIV
+; --Término /
+; --Storing constant integer -> 10
+  STC 10
+; --Relación >
+  GT
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 7
+  STC  7
+; --Relación =
+  EQ
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+  SBT
+; --Storing constant integer -> 5
+  STC  5
+; --Relación >=
+  GTE
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+  PLUS
+; --Storing constant integer -> 100
+  STC 100
+; --Relación <
+  LT
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 5
+  STC  5
+; --Término /
+  DIV
+; --Término /
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 2
+  STC  2
+; --Término /
+  DIV
+; --Término /
+; --Relación =
+  EQ
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 10
+  STC 10
+; --Relación >
+  GT
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 3
+  STC  3
+; --Término *
+  TMS
+; --Término *
+  PLUS
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 2
+  STC  2
+; --Término /
+  DIV
+; --Término /
+; --Relación >=
+  GTE
+  SRF  0  6
+  DRF
+; --Storing constant integer -> 7
+  STC  7
+; --Relación =
+  EQ
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 10
+  STC 10
+; --Término /
+  DIV
+; --Término /
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 4
+  STC  4
+; --Término mod
+  MOD
+; --Término mod
+; --Relación =
+  EQ
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 20
+  STC 20
+; --Relación >
+  GT
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+; --Storing constant integer -> 10
+  STC 10
+  SRF  0  3
+  DRF
+; --Relación <=
+  LTE
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 5
+  STC  5
+; --Relación <
+  LT
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 15
+  STC 15
+; --Relación >=
+  GTE
+  OR
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Término *
+  TMS
+; --Término *
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+  PLUS
+; --Relación >
+  GT
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 0
+  STC  0
+; --Relación >=
+  GTE
+; --Negación lógica
+  NGB
+  SRF  0  4
+  DRF
+; --Storing constant integer -> 100
+  STC 100
+; --Relación <
+  LT
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Relación =
+  EQ
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+; --Relación =
+  EQ
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+; --Storing constant integer -> 2
+  STC  2
+; --Término /
+  DIV
+; --Término /
+  SRF  0  4
+  DRF
+; --Relación /=
+  NEQ
+  SRF  0  5
+  DRF
+; --Storing constant integer -> 5
+  STC  5
+; --Relación >
+  GT
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+  PLUS
+; --Storing constant integer -> 7
+  STC  7
+; --Término mod
+  MOD
+; --Término mod
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+; --Término *
+  TMS
+; --Término *
+; --Storing constant integer -> 10
+  STC 10
+; --Término mod
+  MOD
+; --Término mod
+; --Relación =
+  EQ
+  SRF  0  7
+  DRF
+; --Storing constant integer -> 3
+  STC  3
+; --Relación >=
+  GTE
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+  PLUS
+; --Storing constant integer -> 50
+  STC 50
+; --Relación >
+  GT
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+  PLUS
+; --Storing constant integer -> 100
+  STC 100
+; --Relación <
+  LT
+  OR
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+  SRF  0  3
+  DRF
+  SRF  0  4
+  DRF
+; --Relación =
+  EQ
+  SRF  0  5
+  DRF
+  SRF  0  6
+  DRF
+; --Relación >
+  GT
+  AND
+  SRF  0 15
+  SRF  0 16
+  OSF 17  0 L1
+; --Storing constant character -> D
+  STC 68
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> b
+  STC 98
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> í
+  STC 237
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> h
+  STC 104
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> b
+  STC 98
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> g
+  STC 103
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> q
+  STC 113
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> í
+  STC 237
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> p
+  STC 112
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> b
+  STC 98
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> e
+  STC 101
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> é
+  STC 233
+  WRT  0
+; --Storing constant character -> x
+  STC 120
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> á
+  STC 225
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> t
+  STC 116
+  WRT  0
+; --Storing constant character -> i
+  STC 105
+  WRT  0
+; --Storing constant character -> c
+  STC 99
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Storing constant character -> y
+  STC 121
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> d
+  STC 100
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> 3
+  STC 51
+  WRT  0
+; --Storing constant character -> 8
+  STC 56
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> f
+  STC 102
+  WRT  0
+; --Storing constant character -> ó
+  STC 243
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> y
+  STC 121
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> 1
+  STC 49
+  WRT  0
+; --Storing constant character -> 9
+  STC 57
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> T
+  STC 84
+  WRT  0
+; --Storing constant character -> R
+  STC 82
+  WRT  0
+; --Storing constant character -> U
+  STC 85
+  WRT  0
+; --Storing constant character -> E
+  STC 69
+  WRT  0
+; --Storing constant character -> S
+  STC 83
+  WRT  0
+; --Storing constant character -> .
+  STC 46
+  WRT  0
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Storing constant integer -> 9
+  STC  9
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character -> F
+  STC 70
+  WRT  0
+; --Storing constant character -> o
+  STC 111
+  WRT  0
+; --Storing constant character -> r
+  STC 114
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> l
+  STC 108
+  WRT  0
+; --Storing constant character -> a
+  STC 97
+  WRT  0
+; --Storing constant character -> s
+  STC 115
+  WRT  0
+; --Storing constant character -> :
+  STC 58
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+  SRF  0 15
+  DRF
+  WRT  1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+; --Storing constant integer -> 9
+  STC  9
+  WRT  0
+; --Storing constant character -> n
+  STC 110
+  WRT  0
+; --Storing constant character -> u
+  STC 117
+  WRT  0
+; --Storing constant character -> m
+  STC 109
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character -> T
+  STC 84
+  WRT  0
+; --Storing constant character -> R
+  STC 82
+  WRT  0
+; --Storing constant character -> U
+  STC 85
+  WRT  0
+; --Storing constant character -> E
+  STC 69
+  WRT  0
+; --Storing constant character -> S
+  STC 83
+  WRT  0
+; --Storing constant character -> :
+  STC 58
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+; --Storing constant character ->  
+  STC 32
+  WRT  0
+  SRF  0 16
+  DRF
+  WRT  1
+; --Salto de línea
+  STC 13
+  WRT  0
+  STC 10
+  WRT  0
+  LVP

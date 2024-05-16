@@ -10,8 +10,8 @@ if [ "$1" = "-t" ]; then
     COMPILER=$PATH_TO_COMPILER_TEACHER 
     TARGET=$2 
 elif [ "$1" = "-c" ]; then
-        COMMENT="$1"
-        TARGET="$2.al"
+    COMMENT="$1"
+    TARGET="$2.al"
 else
     TARGET="$1.al"
 fi
@@ -31,6 +31,7 @@ if [ "$1" = "-t" ]; then
 else
     echo "--------------------------------- Compilando TARGET con compilador ---------------------------------"
 fi
+
 echo "java -jar $COMPILER $COMMENT "test/${TARGET}""
 java -jar $COMPILER $COMMENT "test/${TARGET}"
 

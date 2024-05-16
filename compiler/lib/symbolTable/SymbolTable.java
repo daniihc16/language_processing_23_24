@@ -62,7 +62,7 @@ public class SymbolTable {
         } else {
             s.nivel = level;
             s.dir = dirBase[level];
-            if (s.type == Symbol.Types.ARRAY) {
+            if (s.type == Symbol.Types.ARRAY && s.parClass != Symbol.ParameterClass.REF) {
                 SymbolArray sar = (SymbolArray)s;
                 dirBase[level] += sar.maxInd - sar.minInd;
             } 

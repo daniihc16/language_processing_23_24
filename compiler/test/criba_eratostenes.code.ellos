@@ -1,21 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eratostenes>
+; --- Program "eratostenes"
   ENP L0
+<constant_variable_declaration>
+; --- Simple variable "n", type INT, level 0,  address [3]!
+; --- Array variable "criba", type BOOL, size 101, level 0, address [4:104]!
+</constant_variable_declaration>
+<function_pedir_entero>
 L1:
   JMP L2
+<constant_variable_declaration>
+; --- Simple variable "n", type INT, level 1,  address [3]!
+</constant_variable_declaration>
 L2:
+<pedir_entero_instruction_block>
+<Assignment_to_simple_variable_n>
+; --- Address of variable / parameter "n"
   SRF  0  3
   STC  0
   ASG 
+</Assignment_to_simple_variable_n>
+<while>
 L3:
+<condition>
+; --- Constant / variable / parameter "n"
   SRF  0  3
   DRF 
   STC  1
   LT 
+; --- Constant / variable / parameter "n"
   SRF  0  3
   DRF 
   STC 100
   GT 
   OR 
+</condition>
   JMF L4
+<while_instruction_block>
+<put>
+; --- Write STRING "Dame un numero entre 1 y 100: "
+; --- Standard string writing
   STC 68
   WRT  0
   STC 97
@@ -76,15 +100,30 @@ L3:
   WRT  0
   STC 32
   WRT  0
+</put>
+<get>
+; --- Get simple variable/parameter "n".
   SRF  0  3
   RD  1
+</get>
+</while_instruction_block>
   JMP L3
 L4:
+</while>
+<return>
+; --- Constant / variable / parameter "n"
   SRF  0  3
   DRF 
   CSF 
+</return>
   CSF 
+</pedir_entero_instruction_block>
+</function_pedir_entero>
+<procedure_escrib_vect>
 L5:
+; --- Val array parameter "v", type BOOL, class VAL, size 101, level 1, address [3:103]!
+<recover_argument_1>
+; --- Recover array val variable parameter "v" (number 1).
   SRF  0 103
   ASGI 
   SRF  0 102
@@ -287,21 +326,46 @@ L5:
   ASGI 
   SRF  0  3
   ASGI 
+</recover_argument_1>
   JMP L6
+<constant_variable_declaration>
+; --- Simple variable "m", type INT, level 1,  address [104]!
+; --- Simple variable "i", type INT, level 1,  address [105]!
+; --- Simple variable "salir", type BOOL, level 1,  address [106]!
+</constant_variable_declaration>
 L6:
+<escrib_vect_instruction_block>
+<Assignment_to_simple_variable_i>
+; --- Address of variable / parameter "i"
   SRF  0 105
   STC  2
   ASG 
+</Assignment_to_simple_variable_i>
+<Assignment_to_simple_variable_m>
+; --- Address of variable / parameter "m"
   SRF  0 104
   STC  0
   ASG 
+</Assignment_to_simple_variable_m>
+<Assignment_to_simple_variable_salir>
+; --- Address of variable / parameter "salir"
   SRF  0 106
+; --- Boolean value 0
   STC  0
   ASG 
+</Assignment_to_simple_variable_salir>
+<put>
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<put>
+; --- Write STRING "Numeros primos hasta "
+; --- Standard string writing
   STC 78
   WRT  0
   STC 117
@@ -344,48 +408,98 @@ L6:
   WRT  0
   STC 32
   WRT  0
+</put>
+<put>
+; --- Constant / variable / parameter "n"
   SRF  1  3
   DRF 
+; --- Put INTEGER
   WRT  1
+</put>
+<put>
+; --- Write STRING ": "
+; --- Standard string writing
   STC 58
   WRT  0
   STC 32
   WRT  0
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<put>
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<while>
 L7:
+<condition>
+; --- Constant / variable / parameter "salir"
   SRF  0 106
   DRF 
+; --- Negate boolean
   NGB 
+</condition>
   JMF L8
+<while_instruction_block>
+<if-then>
+<condition>
+; --- Constant / variable / parameter "i"
   SRF  0 105
   DRF 
+; --- Constant / variable / parameter "n"
   SRF  1  3
   DRF 
   GT 
+</condition>
   JMF L9
+<then>
+<Assignment_to_simple_variable_salir>
+; --- Address of variable / parameter "salir"
   SRF  0 106
+; --- Boolean value 1
   STC  1
   ASG 
+</Assignment_to_simple_variable_salir>
   JMP L10
+</then>
+<else>
 L9:
+<if-then>
+<condition>
+<component_of_array_v>
+; --- Constant / variable / parameter "i"
   SRF  0 105
   DRF 
   STC  0
   SBT 
+; --- Initial address of array "v"
   SRF  0  3
   PLUS 
   DRF 
+</component_of_array_v>
+</condition>
   JMF L11
+<then>
+<put>
+; --- Constant / variable / parameter "i"
   SRF  0 105
   DRF 
+; --- Put INTEGER
   WRT  1
+</put>
+<put>
+; --- Write STRING " es primo."
+; --- Standard string writing
   STC 32
   WRT  0
   STC 101
@@ -406,30 +520,56 @@ L9:
   WRT  0
   STC 46
   WRT  0
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<Assignment_to_simple_variable_m>
+; --- Address of variable / parameter "m"
   SRF  0 104
+; --- Constant / variable / parameter "m"
   SRF  0 104
   DRF 
   STC  1
   PLUS 
   ASG 
+</Assignment_to_simple_variable_m>
+</then>
 L11:
+</if-then>
+<Assignment_to_simple_variable_i>
+; --- Address of variable / parameter "i"
   SRF  0 105
+; --- Constant / variable / parameter "i"
   SRF  0 105
   DRF 
   STC  1
   PLUS 
   ASG 
+</Assignment_to_simple_variable_i>
+</else>
 L10:
+</if-then>
+</while_instruction_block>
   JMP L7
 L8:
+</while>
+<put>
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<put>
+; --- Write STRING "Hasta "
+; --- Standard string writing
   STC 72
   WRT  0
   STC 97
@@ -442,9 +582,17 @@ L8:
   WRT  0
   STC 32
   WRT  0
+</put>
+<put>
+; --- Constant / variable / parameter "n"
   SRF  1  3
   DRF 
+; --- Put INTEGER
   WRT  1
+</put>
+<put>
+; --- Write STRING " hay "
+; --- Standard string writing
   STC 32
   WRT  0
   STC 104
@@ -455,9 +603,17 @@ L8:
   WRT  0
   STC 32
   WRT  0
+</put>
+<put>
+; --- Constant / variable / parameter "m"
   SRF  0 104
   DRF 
+; --- Put INTEGER
   WRT  1
+</put>
+<put>
+; --- Write STRING " números primos."
+; --- Standard string writing
   STC 32
   WRT  0
   STC 110
@@ -492,122 +648,242 @@ L8:
   WRT  0
   STC 46
   WRT  0
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
   CSF 
+</escrib_vect_instruction_block>
+</procedure_escrib_vect>
+<procedure_inicializar>
 L12:
+; --- Ref array parameter "v", type BOOL, class REF, size 101, level 1, address [3]!
+<recover_argument_1>
+; --- Recover array ref variable parameter "v" (number 1).
   SRF  0  3
   ASGI 
+</recover_argument_1>
   JMP L13
+<constant_variable_declaration>
+; --- Simple variable "i", type INT, level 1,  address [4]!
+</constant_variable_declaration>
 L13:
+<inicializar_instruction_block>
+<Assignment_to_simple_variable_i>
+; --- Address of variable / parameter "i"
   SRF  0  4
   STC  1
   ASG 
+</Assignment_to_simple_variable_i>
+<while>
 L14:
+<condition>
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
+; --- Constant / variable / parameter "n"
   SRF  1  3
   DRF 
   LTE 
+</condition>
   JMF L15
+<while_instruction_block>
+<Assignment_to_component_of_array_v>
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
   STC  0
   SBT 
+; --- Initial address of array "v"
   SRF  0  3
   DRF 
   PLUS 
+; --- Boolean value 1
   STC  1
   ASG 
+</Assignment_to_component_of_array_v>
+<Assignment_to_simple_variable_i>
+; --- Address of variable / parameter "i"
   SRF  0  4
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
   STC  1
   PLUS 
   ASG 
+</Assignment_to_simple_variable_i>
+</while_instruction_block>
   JMP L14
 L15:
+</while>
   CSF 
+</inicializar_instruction_block>
+</procedure_inicializar>
+<procedure_eliminar_no_primos>
 L16:
+; --- Ref array parameter "v", type BOOL, class REF, size 101, level 1, address [3]!
+<recover_argument_1>
+; --- Recover array ref variable parameter "v" (number 1).
   SRF  0  3
   ASGI 
+</recover_argument_1>
   JMP L17
+<constant_variable_declaration>
+; --- Simple variable "i", type INT, level 1,  address [4]!
+; --- Simple variable "j", type INT, level 1,  address [5]!
+</constant_variable_declaration>
 L17:
+<eliminar_no_primos_instruction_block>
+<Assignment_to_simple_variable_i>
+; --- Address of variable / parameter "i"
   SRF  0  4
   STC  2
   ASG 
+</Assignment_to_simple_variable_i>
+<while>
 L18:
+<condition>
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
+; --- Constant / variable / parameter "n"
   SRF  1  3
   DRF 
   STC  2
   DIV 
   LTE 
+</condition>
   JMF L19
+<while_instruction_block>
+<if-then>
+<condition>
+<component_of_array_v>
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
   STC  0
   SBT 
+; --- Initial address of array "v"
   SRF  0  3
   DRF 
   PLUS 
   DRF 
+</component_of_array_v>
+</condition>
   JMF L20
+<then>
+<Assignment_to_simple_variable_j>
+; --- Address of variable / parameter "j"
   SRF  0  5
   STC  2
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
   TMS 
   ASG 
+</Assignment_to_simple_variable_j>
+<while>
 L21:
+<condition>
+; --- Constant / variable / parameter "j"
   SRF  0  5
   DRF 
+; --- Constant / variable / parameter "n"
   SRF  1  3
   DRF 
   LTE 
+</condition>
   JMF L22
+<while_instruction_block>
+<Assignment_to_component_of_array_v>
+; --- Constant / variable / parameter "j"
   SRF  0  5
   DRF 
   STC  0
   SBT 
+; --- Initial address of array "v"
   SRF  0  3
   DRF 
   PLUS 
+; --- Boolean value 0
   STC  0
   ASG 
+</Assignment_to_component_of_array_v>
+<Assignment_to_simple_variable_j>
+; --- Address of variable / parameter "j"
   SRF  0  5
+; --- Constant / variable / parameter "j"
   SRF  0  5
   DRF 
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
   PLUS 
   ASG 
+</Assignment_to_simple_variable_j>
+</while_instruction_block>
   JMP L21
 L22:
+</while>
+</then>
 L20:
+</if-then>
+<Assignment_to_simple_variable_i>
+; --- Address of variable / parameter "i"
   SRF  0  4
+; --- Constant / variable / parameter "i"
   SRF  0  4
   DRF 
   STC  1
   PLUS 
   ASG 
+</Assignment_to_simple_variable_i>
+</while_instruction_block>
   JMP L18
 L19:
+</while>
   CSF 
+</eliminar_no_primos_instruction_block>
+</procedure_eliminar_no_primos>
+<procedure_procesar>
 L23:
+; --- Ref array parameter "v", type BOOL, class REF, size 101, level 1, address [3]!
+<recover_argument_1>
+; --- Recover array ref variable parameter "v" (number 1).
   SRF  0  3
   ASGI 
+</recover_argument_1>
   JMP L24
+<constant_variable_declaration>
+</constant_variable_declaration>
 L24:
+<procesar_instruction_block>
+<procedure_call_inicializar>
+; --- Procedure call inicializar
+<argument_1>
+; --- Constant / variable / parameter "v"
   SRF  0  3
   DRF 
+</argument_1>
   OSF  4  1 L12
+</procedure_call_inicializar>
+<procedure_call_eliminar_no_primos>
+; --- Procedure call eliminar_no_primos
+<argument_1>
+; --- Constant / variable / parameter "v"
   SRF  0  3
   DRF 
+</argument_1>
   OSF  4  1 L16
+</procedure_call_eliminar_no_primos>
+<procedure_call_escrib_vect>
+; --- Procedure call escrib_vect
+<argument_1>
+; --- Constant / variable / parameter "v"
   SRF  0  3
   DRF 
   STC  0
@@ -1113,9 +1389,17 @@ L24:
   STC 100
   PLUS 
   DRF 
+</argument_1>
   OSF  4  1 L5
+</procedure_call_escrib_vect>
   CSF 
+</procesar_instruction_block>
+</procedure_procesar>
 L0:
+<eratostenes_instruction_block>
+<put>
+; --- Write STRING "Criba de Eratóstenes: primos hasta un n dado"
+; --- Standard string writing
   STC 67
   WRT  0
   STC 114
@@ -1206,10 +1490,17 @@ L0:
   WRT  0
   STC 111
   WRT  0
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<put>
+; --- Write STRING "https://es.wikipedia.org/wiki/Criba_de_Erat%C3%B3stenes"
+; --- Standard string writing
   STC 104
   WRT  0
   STC 116
@@ -1320,17 +1611,40 @@ L0:
   WRT  0
   STC 115
   WRT  0
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<put>
+</put>
+<put_line>
+; --- CR/LF
   STC 13
   WRT  0
   STC 10
   WRT  0
+</put_line>
+<Assignment_to_simple_variable_n>
+; --- Address of variable / parameter "n"
   SRF  0  3
+<function_call_pedir_entero>
+; --- Function call pedir_entero
   OSF 105  0 L1
+</function_call_pedir_entero>
   ASG 
+</Assignment_to_simple_variable_n>
+<procedure_call_procesar>
+; --- Procedure call procesar
+<argument_1>
+; --- Constant / variable / parameter "criba"
   SRF  0  4
+</argument_1>
   OSF 105  0 L23
+</procedure_call_procesar>
+</eratostenes_instruction_block>
   LVP 
+</eratostenes>

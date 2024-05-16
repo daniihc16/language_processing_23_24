@@ -108,16 +108,16 @@ begin
    limite_n := 100;
    sumo := false;
    while n < limite_n loop
-         dividir (sumanloop, resultaloop, n);
-         if sumo then
-            sumar (pi, resultaloop);
-         else
-            restar (pi, resultaloop);
-         end if;
-         sumo := not sumo;
-         put ("Pi con ", (n - 1) / 2, " componentes de la serie: ");
-         mostrar_numero (pi);
-         n := n + 2;
+      dividir (sumanloop, resultaloop, n);
+      if sumo then
+         sumar (pi, resultaloop);
+      else
+         restar (pi, resultaloop);
+      end if;
+      sumo := not sumo;
+      put ("Pi con ", (n - 1) / 2, " componentes de la serie: ");
+      mostrar_numero (pi);
+      n := n + 2;
    end loop;
    put_line ("");
    put_line ("La convergencia es lenta porque los términos de la suma son proprcionales a 1/k");
