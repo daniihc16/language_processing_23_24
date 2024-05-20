@@ -1,4 +1,4 @@
-package lib.tools;
+package lib.attributes;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ import lib.tools.codeGeneration.PCodeInstruction;
 //      procOFunc(a, b, c + d, funcSinParam, func(a,b), array,  array(a), true and...)
 
 
-// EL PASO POR PARÁMETROS ES BIEN JODIDO
+
 // si en  procOFunc a es un parámetro por referencia: en procedure al invocarlo pasarán en la pila el parámetro que será el puntero a a
 // por lo que en procOFunc se tiene que acabar pasando ese mismo puntero, es decir el valor del parámetro a y no la referencia auqnque en
 // procOFunc el parámetro en la posición de a sea por referencia -> Si la variable que tienes es una referencia cambia el código generado

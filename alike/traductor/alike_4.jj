@@ -23,7 +23,7 @@ import lib.tools.SemanticFunctions;
 import lib.tools.exceptions.*;
 import lib.tools.Constants;
 import lib.tools.codeGeneration.*;
-import lib.tools.Attributes;
+import lib.attributes.Attributes;
 import java.io.*;
 
 
@@ -38,7 +38,6 @@ public class alike {
 		// flags posibles: -v, -x, -v = verbose, -x = xmlOutput
 		int i = 0;
 		while (i < args.length && args[i].startsWith("-")) {
-			System.out.println("Argumento: " + args[i]);
 			if (args[i].equals("-v")) {
 				Constants.verbose = true;
 			} else if (args[i].equals("-x")) {
@@ -62,12 +61,17 @@ public class alike {
 				parser = new alike(System.in);
 			}
 			else {
-				parser = new alike(new java.io.FileInputStream(args[i]));
+				parser = new alike(new java.io.FileInputStream(args[i] + ".al"));
 			}
+			// Extract the filename without the extension
+			String[] path = new File(args[args.length - 1]).getName().split("/");
+			String filename = path[path.length-1];
+			// Generate the output filename
+			String outputFile = filename + ".pcode";
 			//Programa es el símbolo inicial de la gramática
-			parser.Programa(args[args.length - 1].split("\\.")[0] + ".pcode");
+			parser.Programa(outputFile);
 			//...
-			System.out.println("***** Análisis terminado con éxito *****");
+			// System.out.println("***** Análisis terminado con éxito *****");
 		}
 		catch (java.io.FileNotFoundException e) {
 			System.err.println ("Fichero " + args[0] + " no encontrado.");
@@ -303,7 +307,7 @@ void Programa(String outputFile) :
 					BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 					writer.write(cb.toString());
 					writer.close();
-					System.out.println("Generado código en " + outputFile);
+					System.out.println("Compilación finalizada. Se ha generado el fichero " + outputFile);
 				} catch (Exception e) {
 					System.out.println("Error escribiendo en " + outputFile);
 				}				
@@ -818,13 +822,6 @@ CodeBlock inst_if(Symbol sf) :
 }
 {
 	
-	// if (exp) insts		-- (exp) | jmf  elsif0 | insts | jmp labelFinIf
-	// else if (exp) insts  -- jmt  trueElsif0 (... jmt trueElsifx)
-	// else insts			-- insts
-	// end if;
-	//						-- elsif0: (exp) | jmf elsifx | insts | jmp labelFinIf
-	//						-- elsifx(else): insts
-    // debe haber por lo menos una instrucción en el bloque condicional (null en casos donde no se haga nada)
     tif = <tIF> expif = expresion(attrs, cb) <tTHEN> {
 		// expif es un TypeValue, por lo que si tiene valor no generaremos todo el código
 		SemanticFunctions.inst_if(expif, tif);
@@ -939,7 +936,6 @@ CodeBlock inst_exit() :
 {
 	Token texit = null;
 	CodeBlock cb = new CodeBlock();
-	Attributes attrs = new Attributes(Attributes.State.Normal, Attributes.DequeueMethod.Remove);
 }
 {
 	texit = <tEXIT> {
